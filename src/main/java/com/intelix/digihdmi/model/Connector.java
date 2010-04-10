@@ -1,34 +1,42 @@
 package com.intelix.digihdmi.model;
 
- 
- 
- public class Connector
- {
-   public String name;
-   public String icon;
- 
-   public Connector()
-   {
-   }
- 
-   public Connector(String name, String icon)
-   {
-     this.name = name; this.icon = icon;
-   }
-   public String getIcon() {
-     return this.icon;
-   }
- 
-   public String getName() {
-     return this.name;
-   }
- 
-   public void setName(String name) {
-     this.name = name;
-   }
- }
+public class Connector {
 
-/* Location:           /Users/developer/Downloads/dist/DigiHdmiApp-1.0.0-SNAPSHOT.jar
- * Qualified Name:     com.intelix.hdmimodel.Connector
- * JD-Core Version:    0.5.4
- */
+    private String name;
+    private String icon;
+    private int index;
+
+    public Connector() {
+    }
+
+    public Connector(String name, String icon, int index) {
+        this.name = name;
+        this.index = index;
+        this.icon = icon;
+    }
+
+    public String getIcon() {
+        return this.icon;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+}

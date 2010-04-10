@@ -26,10 +26,10 @@ public class Device {
     private static ResourceBundle config;
     private boolean connected;
     private IPConnection connection;
-    private static final int MAX = 10;
-    private static final boolean DELAY = false;
-    private static final int MAX_INPUTS = 8;
-    private static final int MAX_OUTPUTS = 8;
+    private static boolean DELAY = false;
+    private static int MAX_INPUTS = 0;
+    private static int MAX_OUTPUTS = 0;
+    private static int MAX_PRESETS = 0;
 
     private static ResourceBundle getConfiguration() {
         if (config == null) {
@@ -39,68 +39,74 @@ public class Device {
     }
 
     public Device() {
-        this.connected = false;
-        this.connection = new IPConnection();
+        connected = false;
+        connection = new IPConnection();
         try {
-            this.connection.setIpAddr(getConfiguration().getString("ipAddr"));
-            this.connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
+            connection.setIpAddr(getConfiguration().getString("ipAddr"));
+            connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
+            MAX_INPUTS = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
+            MAX_OUTPUTS = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
+            MAX_PRESETS = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
         } catch (NullPointerException ex) {
-            this.connection = null;
+            connection = null;
         } catch (MissingResourceException ex) {
-            this.connection = null;
+            connection = null;
         }
 
-        this.inputs = new ArrayList();
-        this.outputs = new ArrayList();
+        inputs = new ArrayList();
+        outputs = new ArrayList();
 
-        for (int i = 0; i < 10; ++i) {
-            this.inputs.add(new Connector("INPUT_" + (i + 1), ""));
-            this.outputs.add(new Connector("OUTPUT_" + (i + 1), ""));
+        // MRC - This initialization assumes that # inputs == # outputs
+        for (int i = 0; i < MAX_INPUTS; ++i) {
+            inputs.add(new Connector("INPUT_" + (i + 1), "", i+1));
 
-            this.connections.put(Integer.valueOf(i), Integer.valueOf(i));
+            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i+1));
 
-            this.presets.add(new Preset(i + " - Test", i));
+            connections.put(Integer.valueOf(i), Integer.valueOf(i));
         }
+
+        for (int i=0; i<MAX_PRESETS; i++)
+            presets.add(new Preset((i+1) + " - Test", i));
     }
 
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        if (this.connected) {
+        if (connected) {
             disconnect();
         }
     }
 
     public void connect()
             throws IOException {
-        if (this.connection != null) {
-            this.connection.connect();
-            this.connected = true;
+        if (connection != null) {
+            connection.connect();
+            connected = true;
         } else {
             throw new IOException("Device can't be found. Check your device's configuration.");
         }
     }
 
     public void disconnect() throws IOException {
-        if (this.connection != null) {
-            this.connection.disconnect();
-            this.connected = false;
+        if (connection != null) {
+            connection.disconnect();
+            connected = false;
         }
     }
 
     public boolean isConnected() {
-        return this.connected;
+        return connected;
     }
 
     public Connector getInputForSelectedOutput() {
-        return (Connector) this.inputs.get(((Integer) this.connections.get(Integer.valueOf(this.selectedOutput))).intValue());
+        return (Connector) inputs.get(((Integer) connections.get(Integer.valueOf(selectedOutput))).intValue());
     }
 
     public void makeConnection() {
-        if ((this.connected) && (((this.selectedInput < 0) || (this.selectedOutput < 0)))) {
+        if ((connected) && (((selectedInput < 0) || (selectedOutput < 0)))) {
             return;
         }
-        this.connections.put(Integer.valueOf(this.selectedOutput), Integer.valueOf(this.selectedInput));
+        connections.put(Integer.valueOf(selectedOutput), Integer.valueOf(selectedInput));
     }
 
     public Enumeration<Preset> getPresets() {
@@ -110,18 +116,18 @@ public class Device {
 
             @Override
             public boolean hasMoreElements() {
-                return this.index < Device.this.presets.size();
+                return index < Device.this.presets.size();
             }
 
             @Override
             public Preset nextElement() {
-                return (Preset) Device.this.presets.get(this.index++);
+                return (Preset) Device.this.presets.get(index++);
             }
         };
     }
 
     public Enumeration<Connector> getInputs() {
-        return new ConnectorEnumeration(this.inputs) {
+        return new ConnectorEnumeration(inputs) {
 
             @Override
             public Command getNameLookupCommand(int index) {
@@ -131,7 +137,7 @@ public class Device {
     }
 
     public Enumeration<Connector> getOutputs() {
-        return new ConnectorEnumeration(this.outputs) {
+        return new ConnectorEnumeration(outputs) {
 
             @Override
             public Command getNameLookupCommand(int index) {
@@ -141,19 +147,19 @@ public class Device {
     }
 
     public void setSelectedOutput(int selectedOutput) {
-        this.selectedOutput = selectedOutput;
+        selectedOutput = selectedOutput;
     }
 
     public Connector getSelectedOutput() {
-        return (Connector) this.outputs.get(this.selectedOutput);
+        return (Connector) outputs.get(selectedOutput);
     }
 
     public void setSelectedInput(int selectedInput) {
-        this.selectedInput = selectedInput;
+        selectedInput = selectedInput;
     }
 
     public Connector getSelectedInput() {
-        return (Connector) this.inputs.get(this.selectedInput);
+        return (Connector) inputs.get(selectedInput);
     }
 
     abstract class ConnectorEnumeration
@@ -167,42 +173,37 @@ public class Device {
 
         public ConnectorEnumeration(List<Connector> l)
         {
-            this.list = l;
+            list = l;
         }
 
         @Override
         public boolean hasMoreElements() {
             if (Device.this.connected) {
-                return this.index < 8;
+                return index < 8;
             }
-            return this.index < this.list.size();
+            return index < list.size();
         }
 
         @Override
         public Connector nextElement() {
             if (Device.this.connected) {
                 try {
-                    Device.this.connection.write(getNameLookupCommand(this.index + 1));
+                    Device.this.connection.write(getNameLookupCommand(index + 1));
 
                     Command c = Device.this.connection.readOne();
                     if (c.getPayload() instanceof ConnectorPayload) {
                         ConnectorPayload p = (ConnectorPayload) c.getPayload();
                         String name = p.getData();
-                        this.list.add(this.index, new Connector(name, ""));
+                        list.add(index, new Connector(name, "", index + 1));
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
-            return (Connector) this.list.get(this.index++);
+            return (Connector) list.get(index++);
         }
 
         public abstract Command getNameLookupCommand(int paramInt);
     }
 }
-
-/* Location:           /Users/developer/Downloads/dist/DigiHdmiApp-1.0.0-SNAPSHOT.jar
- * Qualified Name:     com.intelix.hdmimodel.Device
- * JD-Core Version:    0.5.4
- */
