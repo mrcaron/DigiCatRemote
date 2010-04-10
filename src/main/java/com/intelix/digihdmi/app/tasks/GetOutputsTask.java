@@ -13,10 +13,12 @@ public class GetOutputsTask extends GetConnectorsTask {
         super(app);
     }
 
+    @Override
     protected Enumeration<Connector> getConnectors() {
         return this.device.getOutputs();
     }
 
+    @Override
     protected Action getConnectorAction(Connector c) {
         ActionMap m = getContext().getActionMap(new ConnectorActions());
         Action getInputs = m.get("showInputListForSelection");

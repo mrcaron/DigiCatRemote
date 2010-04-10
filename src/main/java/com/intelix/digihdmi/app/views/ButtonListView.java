@@ -87,6 +87,7 @@ public class ButtonListView extends JPanel {
                 f.getContentPane().add(m);
 
                 m.setHomeAction(new BasicAction() {
+
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         JOptionPane.showMessageDialog(null, "Hello World!");
@@ -94,6 +95,7 @@ public class ButtonListView extends JPanel {
                 });
 
                 SwingWorker w = new SwingWorker() {
+
                     @Override
                     protected Object doInBackground() throws Exception {
                         for (int i = 0; i < 4; ++i) {

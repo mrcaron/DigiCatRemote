@@ -1,16 +1,8 @@
 package com.intelix.digihdmi.model;
 
- 
- 
- class BadConfigurationException extends Exception
- {
-   public BadConfigurationException(String string)
-   {
-     super(string);
-   }
- }
+class BadConfigurationException extends Exception {
 
-/* Location:           /Users/developer/Downloads/dist/DigiHdmiApp-1.0.0-SNAPSHOT.jar
- * Qualified Name:     com.intelix.hdmimodel.BadConfigurationException
- * JD-Core Version:    0.5.4
- */
+    public BadConfigurationException(String string) {
+        super(string);
+    }
+}

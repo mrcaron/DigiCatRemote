@@ -37,18 +37,18 @@ public class DigiHdmiApp extends SingleFrameApplication {
     Device device;
 
     public DigiHdmiApp() {
-        this.currentView = null;
-        this.homeView = null;
-        this.roomView = null;
-        this.roomSelectionView = null;
-        this.presetView = null;
-        this.mainFrame = null;
+        currentView = null;
+        homeView = null;
+        roomView = null;
+        roomSelectionView = null;
+        presetView = null;
+        mainFrame = null;
 
-        this.device = null;
+        device = null;
     }
 
     public JComponent getCurrentView() {
-        return this.currentView;
+        return currentView;
     }
 
     public void setCurrentView(JComponent currentView) {
@@ -56,7 +56,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     public Device getDevice() {
-        return this.device;
+        return device;
     }
 
     /**
@@ -64,11 +64,11 @@ public class DigiHdmiApp extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-        this.device = new Device();
+        device = new Device();
 
         /*if (!getContext().getResourceMap().getString("connectOnStart", new Object[0]).isEmpty()) {
             try {
-                this.device.connect();
+                device.connect();
             } catch (IOException ex) {
                 int choice = JOptionPane.showConfirmDialog(null, "An error occured during startup, would you like to continue in off-line mode?\nError: " + ex.getMessage(), "Error during startup", 0);
 
@@ -78,16 +78,17 @@ public class DigiHdmiApp extends SingleFrameApplication {
             }
         }*/
 
-        this.mainFrame = new DigiHdmiAppMainView(this);
+        mainFrame = new DigiHdmiAppMainView(this);
         initializeComponents();
 
-        show(this.mainFrame);
+        show(mainFrame);
         showHomeView();
-        this.mainFrame.getFrame().setMinimumSize(new Dimension(600, 400));
-        this.mainFrame.getFrame().setPreferredSize(new Dimension(600, 400));
-        this.mainFrame.getFrame().setLocationRelativeTo(null);
+        mainFrame.getFrame().setMinimumSize(new Dimension(600, 400));
+        mainFrame.getFrame().setPreferredSize(new Dimension(600, 400));
+        mainFrame.getFrame().setLocationRelativeTo(null);
     }
 
+    @Override
     protected void ready() {
         super.ready();
     }
@@ -117,31 +118,31 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     private void initializeComponents() {
-        this.roomView = new RoomView();
-        this.roomSelectionView = new RoomSelectionView();
-        this.presetView = new PresetLoadListView();
-        this.homeView = new HomePanel();
+        roomView = new RoomView();
+        roomSelectionView = new RoomSelectionView();
+        presetView = new PresetLoadListView();
+        homeView = new HomePanel();
 
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
-        ((DigiHdmiAppMainView) this.mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
-        ((DigiHdmiAppMainView) this.mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
+        ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
+        ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
     }
 
     @org.jdesktop.application.Action
     public void showHomeView() {
-        showPanel(this.homeView, "Home");
+        showPanel(homeView, "Home");
     }
 
     @org.jdesktop.application.Action
     public void showRoomView() {
-        ((ButtonListView) this.roomView).getButtonsPanel().clear();
-        showPanel(this.roomView, "Room View", new ConnectorActions(), "showOutputList");
+        ((ButtonListView) roomView).getButtonsPanel().clear();
+        showPanel(roomView, "Room View", new ConnectorActions(), "showOutputList");
     }
 
     @org.jdesktop.application.Action
     public void showRoomSelectionView() {
-        ((ButtonListView) this.roomSelectionView).getButtonsPanel().clear();
-        showPanel(this.roomSelectionView, "Inputs View");
+        ((ButtonListView) roomSelectionView).getButtonsPanel().clear();
+        showPanel(roomSelectionView, "Inputs View");
     }
 
     @org.jdesktop.application.Action
@@ -151,17 +152,17 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showPresetListView() {
-        ((ButtonListView) this.presetView).getButtonsPanel().clear();
-        showPanel(this.presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
+        ((ButtonListView) presetView).getButtonsPanel().clear();
+        showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
     }
 
     private void showPanel(JComponent panel, String title) {
-        this.currentView = panel;
-        this.mainFrame.setComponent(this.currentView);
-        this.mainFrame.getFrame().setTitle(title);
+        currentView = panel;
+        mainFrame.setComponent(currentView);
+        mainFrame.getFrame().setTitle(title);
 
-        this.mainFrame.getFrame().setVisible(true);
-        this.mainFrame.getFrame().repaint();
+        mainFrame.getFrame().setVisible(true);
+        mainFrame.getFrame().repaint();
     }
 
     private void showPanel(JComponent panel, String title, Object actionsInstance, String actionName) {

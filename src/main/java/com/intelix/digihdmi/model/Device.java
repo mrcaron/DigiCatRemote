@@ -58,15 +58,16 @@ public class Device {
 
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < MAX_INPUTS; ++i) {
-            inputs.add(new Connector("INPUT_" + (i + 1), "", i+1));
+            inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));
 
-            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i+1));
+            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));
 
             connections.put(Integer.valueOf(i), Integer.valueOf(i));
         }
 
-        for (int i=0; i<MAX_PRESETS; i++)
-            presets.add(new Preset((i+1) + " - Test", i));
+        for (int i = 0; i < MAX_PRESETS; i++) {
+            presets.add(new Preset((i + 1) + " - Test", i));
+        }
     }
 
     @Override
@@ -171,8 +172,7 @@ public class Device {
         public ConnectorEnumeration() {
         }
 
-        public ConnectorEnumeration(List<Connector> l)
-        {
+        public ConnectorEnumeration(List<Connector> l) {
             list = l;
         }
 

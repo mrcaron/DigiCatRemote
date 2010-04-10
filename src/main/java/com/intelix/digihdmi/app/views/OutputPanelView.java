@@ -2,12 +2,7 @@ package com.intelix.digihdmi.app.views;
 
 import javax.swing.JButton;
 
-public class OutputPanelView extends ButtonListView
-{
-  JButton outputBtn;
-}
+public class OutputPanelView extends ButtonListView {
 
-/* Location:           /Users/developer/Downloads/dist/DigiHdmiApp-1.0.0-SNAPSHOT.jar
- * Qualified Name:     com.intelix.digihdmiapp.OutputPanelView
- * JD-Core Version:    0.5.4
- */
+    JButton outputBtn;
+}

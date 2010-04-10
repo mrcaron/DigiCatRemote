@@ -99,8 +99,3 @@ public class GetConnectorsTask extends Task {
         }
     }
 }
-
-/* Location:           /Users/developer/Downloads/dist/DigiHdmiApp-1.0.0-SNAPSHOT.jar
- * Qualified Name:     com.intelix.digihdmiapp.GetConnectorsTask
- * JD-Core Version:    0.5.4
- */
