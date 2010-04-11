@@ -35,7 +35,12 @@ public class ConnectorActions {
         AbstractButton b = (AbstractButton) ev.getSource();
         int index = b.getName().lastIndexOf('_') + 1;
         int inputNumber = Integer.parseInt(b.getName().substring(index));
+
+        // avoid setting the selected input here because if the task fails, we
+        // want the task to reset to the previously selected without another
+        // round trip to the device.
         MakeConnectionTask t = new MakeConnectionTask(Application.getInstance(), inputNumber);
+        
         return t;
     }
 

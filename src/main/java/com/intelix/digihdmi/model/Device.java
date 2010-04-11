@@ -142,14 +142,15 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
-    public void makeConnection() {
+    public boolean makeConnection() {
         if (connected) {
             if ((selectedInput < 0) || (selectedOutput < 0)) {
-                return;
+                return false;
             }
             // TODO: do the real connection making here.
         }
         cxnMatrix.put(selectedOutput, selectedInput);
+        return true;
     }
 
     //------------------------------------------------------------------------
