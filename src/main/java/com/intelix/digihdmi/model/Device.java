@@ -1,10 +1,12 @@
 package com.intelix.digihdmi.model;
 
 import com.intelix.net.Command;
+import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
 import com.intelix.net.GetOutputNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.payload.ConnectorPayload;
+import com.intelix.net.payload.PairSequencePayload;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -121,8 +123,20 @@ public class Device {
     public Connector getInputForSelectedOutput() {
         if (connected)
         {
-            // TODO: Get the input for selected output here and then
-            // stick it in the matrix for saving.
+            try {
+                Command c = new GetCrosspointCommand(selectedOutput);
+                connection.write(c);
+
+                c = connection.readOne();
+                if (c.getPayload() instanceof PairSequencePayload) {
+                    PairSequencePayload p = (PairSequencePayload) c.getPayload();
+                    selectedInput = p.get(selectedOutput) - 1;
+
+                    cxnMatrix.put(selectedOutput, selectedInput);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return (Connector) inputs.get(cxnMatrix.get(selectedOutput));
     }
