@@ -26,7 +26,7 @@ public class MakeConnectionTask extends Task {
         int index = oldName.lastIndexOf('_') + 1;
         this.oldInput = Integer.parseInt(oldName.substring(index));
 
-        device.setSelectedInput(this.inputNumber - 1);
+        device.setSelectedInput(this.inputNumber);
         device.makeConnection();
         return null;
     }

@@ -15,6 +15,16 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A Device has a set of inputs and outputs as well as an active connection matrix.
+ * Inputs and outputs are 1-based on the device itself! The model assumes a zero-based
+ * system, and does the translation to the 1-based system internally. That is, everything
+ * working with the device should assume that things are one-based; for example,
+ * setting the selected output to 1 if the first output is selected. It would never
+ * be set to 0.
+ *
+ * @author Michael Caron <michael.r.caron@gmail.com>
+ */
 public class Device {
 
     private int selectedOutput;
@@ -22,7 +32,7 @@ public class Device {
     private ArrayList<Connector> inputs = new ArrayList();
     private ArrayList<Connector> outputs = new ArrayList();
     private ArrayList<Preset> presets = new ArrayList();
-    private HashMap<Integer, Integer> connections = new HashMap();
+    private HashMap<Integer, Integer> cxnMatrix = new HashMap();
     private static ResourceBundle config;
     private boolean connected;
     private IPConnection connection;
@@ -31,6 +41,7 @@ public class Device {
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
 
+    //------------------------------------------------------------------------
     private static ResourceBundle getConfiguration() {
         if (config == null) {
             config = ResourceBundle.getBundle("Device");
@@ -38,6 +49,8 @@ public class Device {
         return config;
     }
 
+    //------------------------------------------------------------------------
+    /* Initialize the Device */
     public Device() {
         connected = false;
         connection = new IPConnection();
@@ -58,11 +71,9 @@ public class Device {
 
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < MAX_INPUTS; ++i) {
-            inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));
-
-            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));
-
-            connections.put(Integer.valueOf(i), Integer.valueOf(i));
+            inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
+            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));          
+            cxnMatrix.put(i,i);
         }
 
         for (int i = 0; i < MAX_PRESETS; i++) {
@@ -70,7 +81,9 @@ public class Device {
         }
     }
 
+    //------------------------------------------------------------------------
     @Override
+    /* Kill the connection on finailzation in the case that it's still up. */
     protected void finalize() throws Throwable {
         super.finalize();
         if (connected) {
@@ -78,6 +91,8 @@ public class Device {
         }
     }
 
+    //------------------------------------------------------------------------
+    /* connect to the actual HDMI devine if we can. */
     public void connect()
             throws IOException {
         if (connection != null) {
@@ -88,6 +103,8 @@ public class Device {
         }
     }
 
+    //------------------------------------------------------------------------
+    /* Disconnect from the device */
     public void disconnect() throws IOException {
         if (connection != null) {
             connection.disconnect();
@@ -95,38 +112,50 @@ public class Device {
         }
     }
 
+    //------------------------------------------------------------------------
     public boolean isConnected() {
         return connected;
     }
 
+    //------------------------------------------------------------------------
     public Connector getInputForSelectedOutput() {
-        return (Connector) inputs.get(((Integer) connections.get(Integer.valueOf(selectedOutput))).intValue());
-    }
-
-    public void makeConnection() {
-        if ((connected) && (((selectedInput < 0) || (selectedOutput < 0)))) {
-            return;
+        if (connected)
+        {
+            // TODO: Get the input for selected output here and then
+            // stick it in the matrix for saving.
         }
-        connections.put(Integer.valueOf(selectedOutput), Integer.valueOf(selectedInput));
+        return (Connector) inputs.get(cxnMatrix.get(selectedOutput));
     }
 
+    //------------------------------------------------------------------------
+    public void makeConnection() {
+        if (connected) {
+            if ((selectedInput < 0) || (selectedOutput < 0)) {
+                return;
+            }
+            // TODO: do the real connection making here.
+        }
+        cxnMatrix.put(selectedOutput, selectedInput);
+    }
+
+    //------------------------------------------------------------------------
     public Enumeration<Preset> getPresets() {
         return new Enumeration() {
-
-            int index;
+            int index = 0;
 
             @Override
             public boolean hasMoreElements() {
-                return index < Device.this.presets.size();
+                return index < presets.size();
             }
 
             @Override
             public Preset nextElement() {
-                return (Preset) Device.this.presets.get(index++);
+                return (Preset) presets.get(index++);
             }
         };
     }
 
+    //------------------------------------------------------------------------
     public Enumeration<Connector> getInputs() {
         return new ConnectorEnumeration(inputs) {
 
@@ -137,6 +166,7 @@ public class Device {
         };
     }
 
+    //------------------------------------------------------------------------
     public Enumeration<Connector> getOutputs() {
         return new ConnectorEnumeration(outputs) {
 
@@ -147,22 +177,27 @@ public class Device {
         };
     }
 
+    //------------------------------------------------------------------------
     public void setSelectedOutput(int selectedOutput) {
-        selectedOutput = selectedOutput;
+        this.selectedOutput = selectedOutput-1;
     }
 
+    //------------------------------------------------------------------------
     public Connector getSelectedOutput() {
         return (Connector) outputs.get(selectedOutput);
     }
 
+    //------------------------------------------------------------------------
     public void setSelectedInput(int selectedInput) {
-        selectedInput = selectedInput;
+        this.selectedInput = selectedInput-1;
     }
 
+    //------------------------------------------------------------------------
     public Connector getSelectedInput() {
         return (Connector) inputs.get(selectedInput);
     }
 
+    //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
 
@@ -178,7 +213,7 @@ public class Device {
 
         @Override
         public boolean hasMoreElements() {
-            if (Device.this.connected) {
+            if (connected) {
                 return index < 8;
             }
             return index < list.size();
@@ -186,11 +221,11 @@ public class Device {
 
         @Override
         public Connector nextElement() {
-            if (Device.this.connected) {
+            if (connected) {
                 try {
-                    Device.this.connection.write(getNameLookupCommand(index + 1));
+                    connection.write(getNameLookupCommand(index + 1));
 
-                    Command c = Device.this.connection.readOne();
+                    Command c = connection.readOne();
                     if (c.getPayload() instanceof ConnectorPayload) {
                         ConnectorPayload p = (ConnectorPayload) c.getPayload();
                         String name = p.getData();

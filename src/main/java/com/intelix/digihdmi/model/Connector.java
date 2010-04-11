@@ -4,7 +4,7 @@ public class Connector {
 
     private String name;
     private String icon;
-    private int index;
+    private int index;     // 1-based
 
     public Connector() {
     }

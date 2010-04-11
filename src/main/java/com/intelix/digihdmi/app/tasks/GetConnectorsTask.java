@@ -22,18 +22,18 @@ public class GetConnectorsTask extends Task {
     public GetConnectorsTask(Application app) {
         super(app);
 
-        this.device = ((DigiHdmiApp) app).getDevice();
+        device = ((DigiHdmiApp) app).getDevice();
 
         JComponent c = ((DigiHdmiApp) app).getCurrentView();
         if (c instanceof ButtonListView) {
-            this.panel = ((ButtonListView) c).getButtonsPanel();
+            panel = ((ButtonListView) c).getButtonsPanel();
         } else {
-            this.panel = null;
+            panel = null;
         }
     }
 
     protected Enumeration<Connector> getConnectors() {
-        return this.device.getOutputs();
+        return device.getOutputs();
     }
 
     protected Action getConnectorAction(Connector c) {
@@ -49,12 +49,12 @@ public class GetConnectorsTask extends Task {
     @Override
     protected Object doInBackground()
             throws Exception {
-        if ((this.panel != null) && (this.device != null)) {
+        if ((panel != null) && (device != null)) {
             Enumeration connectorList = getConnectors();
             while (connectorList.hasMoreElements()) {
                 Connector c = (Connector) connectorList.nextElement();
                 setMessage("Working... [" + c.getName() + "]");
-                this.panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
+                panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
                 Thread.sleep(200L);
             }
             Thread.sleep(200L);

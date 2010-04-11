@@ -15,7 +15,7 @@ public class GetOutputsTask extends GetConnectorsTask {
 
     @Override
     protected Enumeration<Connector> getConnectors() {
-        return this.device.getOutputs();
+        return device.getOutputs();
     }
 
     @Override

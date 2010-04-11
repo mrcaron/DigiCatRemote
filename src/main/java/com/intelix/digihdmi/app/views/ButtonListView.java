@@ -27,11 +27,11 @@ public class ButtonListView extends JPanel {
     }
 
     public void setHomeAction(Action a) {
-        this.btnHome.setAction(a);
+        btnHome.setAction(a);
     }
 
     public ButtonContainerPanel getButtonsPanel() {
-        return this.buttonsPanel;
+        return buttonsPanel;
     }
 
     private void initializeComponents() {
@@ -40,13 +40,13 @@ public class ButtonListView extends JPanel {
         setLayout(new MigLayout("", "[left]10[right,fill,grow]", "[][grow]"));
 
         initializeButtonsPanel();
-        this.scrollPane = new JScrollPane(this.buttonsPanel);
+        scrollPane = new JScrollPane(buttonsPanel);
         initializeHomePanel();
         initializeBottomPanel();
 
-        add(this.homePanel, "aligny top, grow");
-        add(this.scrollPane, "spany 2, grow, wrap");
-        add(this.bottomPanel, "aligny bottom, grow");
+        add(homePanel, "aligny top, grow");
+        add(scrollPane, "spany 2, grow, wrap");
+        add(bottomPanel, "aligny bottom, grow");
     }
 
     protected JPanel createHomePanel() {
@@ -54,9 +54,9 @@ public class ButtonListView extends JPanel {
     }
 
     protected void initializeHomePanel() {
-        this.homePanel = createHomePanel();
-        this.btnHome = new JButton();
-        this.homePanel.add(this.btnHome);
+        homePanel = createHomePanel();
+        btnHome = new JButton();
+        homePanel.add(btnHome);
         setHomeAction(Application.getInstance().getContext().getActionMap().get("showHomeView"));
     }
 
@@ -65,7 +65,7 @@ public class ButtonListView extends JPanel {
     }
 
     protected void initializeBottomPanel() {
-        this.bottomPanel = createBottomPanel();
+        bottomPanel = createBottomPanel();
     }
 
     protected ButtonContainerPanel createButtonsPanel() {
@@ -73,7 +73,7 @@ public class ButtonListView extends JPanel {
     }
 
     protected void initializeButtonsPanel() {
-        this.buttonsPanel = createButtonsPanel();
+        buttonsPanel = createButtonsPanel();
     }
 
     public static void main(String[] args) {

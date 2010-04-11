@@ -13,15 +13,19 @@ import org.jdesktop.application.Task;
 
 public class ConnectorActions {
 
+    DigiHdmiApp appInstance;
+
+    public ConnectorActions() {
+        appInstance = (DigiHdmiApp) Application.getInstance();
+    }
+
     @Action
     public Task showInputListForSelection(ActionEvent ev) {
         JButton b = (JButton) ev.getSource();
         int index = b.getName().lastIndexOf('_') + 1;
         int outputNumber = Integer.parseInt(b.getName().substring(index));
-
-        ((DigiHdmiApp) Application.getInstance()).getDevice().setSelectedOutput(outputNumber - 1);
-
-        ((DigiHdmiApp) Application.getInstance()).showRoomSelectionView();
+        appInstance.getDevice().setSelectedOutput(outputNumber);
+        appInstance.showRoomSelectionView();
 
         return new GetInputsTask(Application.getInstance());
     }

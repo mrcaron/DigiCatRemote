@@ -17,7 +17,7 @@ public class GetInputsTask extends GetConnectorsTask {
 
     @Override
     protected Enumeration<Connector> getConnectors() {
-        return this.device.getInputs();
+        return device.getInputs();
     }
 
     @Override
@@ -34,11 +34,10 @@ public class GetInputsTask extends GetConnectorsTask {
 
         Connector c = ((DigiHdmiApp) Application.getInstance()).getDevice().getInputForSelectedOutput();
         if (c != null) {
-            int index = c.getName().lastIndexOf('_') + 1;
-            int buttonNumber = Integer.parseInt(c.getName().substring(index));
+            int buttonNumber = c.getIndex() - 1;   // buttons are zero - based, connectors are 1-based
             AbstractButton b = panel.getButton(buttonNumber);
             b.setSelected(true);
-            this.device.setSelectedInput(buttonNumber - 1);
+            device.setSelectedInput(c.getIndex());
         }
 
         return obj;
