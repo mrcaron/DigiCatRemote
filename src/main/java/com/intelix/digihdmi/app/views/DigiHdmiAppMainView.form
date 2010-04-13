@@ -43,7 +43,6 @@
           <SubComponents>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="menuItemConnected">
               <Properties>
-                <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" resourceKey="menuItemConnected.text"/>
                 <Property name="name" type="java.lang.String" value="menuItemConnected" noResource="true"/>
               </Properties>

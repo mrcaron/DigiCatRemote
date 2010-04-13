@@ -151,7 +151,6 @@ public class DigiHdmiAppMainView extends FrameView {
         menuDevice.setText(resourceMap.getString("menuDevice.text")); // NOI18N
         menuDevice.setName("menuDevice"); // NOI18N
 
-        menuItemConnected.setSelected(true);
         menuItemConnected.setText(resourceMap.getString("menuItemConnected.text")); // NOI18N
         menuItemConnected.setName("menuItemConnected"); // NOI18N
         menuDevice.add(menuItemConnected);

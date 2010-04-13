@@ -5,6 +5,7 @@ import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
 import com.intelix.net.GetOutputNameCommand;
 import com.intelix.net.IPConnection;
+import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
 import java.io.IOException;
@@ -124,13 +125,13 @@ public class Device {
         if (connected)
         {
             try {
-                Command c = new GetCrosspointCommand(selectedOutput);
+                Command c = new GetCrosspointCommand(selectedOutput+1);
                 connection.write(c);
 
                 c = connection.readOne();
                 if (c.getPayload() instanceof PairSequencePayload) {
                     PairSequencePayload p = (PairSequencePayload) c.getPayload();
-                    selectedInput = p.get(selectedOutput) - 1;
+                    selectedInput = p.get(selectedOutput + 1) - 1;
 
                     cxnMatrix.put(selectedOutput, selectedInput);
                 }
@@ -148,6 +149,18 @@ public class Device {
                 return false;
             }
             // TODO: do the real connection making here.
+            Command c = new SetCrosspointCommand(selectedInput+1, selectedOutput+1);
+            try {
+                connection.write(c);
+                c = connection.readOne();
+                if (c.getPayload() instanceof PairSequencePayload) {
+                    PairSequencePayload p = (PairSequencePayload) c.getPayload();
+                    selectedInput = p.get(selectedOutput + 1) - 1;
+                    cxnMatrix.put(selectedOutput, selectedInput);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         cxnMatrix.put(selectedOutput, selectedInput);
         return true;
