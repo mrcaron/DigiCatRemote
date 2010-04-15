@@ -4,10 +4,12 @@ import com.intelix.net.Command;
 import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
 import com.intelix.net.GetOutputNameCommand;
+import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
+import com.intelix.net.payload.PresetNamePayload;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -173,11 +175,30 @@ public class Device {
 
             @Override
             public boolean hasMoreElements() {
+                if (connected)
+                {
+                    return index < MAX_PRESETS;
+                }
                 return index < presets.size();
             }
 
             @Override
             public Preset nextElement() {
+                if (connected)
+                {
+                   try {
+                    connection.write(new GetPresetNameCommand(index + 1));
+
+                    Command c = connection.readOne();
+                    if (c.getPayload() instanceof PresetNamePayload) {
+                        PresetNamePayload p = (PresetNamePayload) c.getPayload();
+                        String name = p.getData();
+                        presets.add(index, new Preset(name, index + 1));
+                    }
+                    } catch (Exception ex) {
+                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 return (Preset) presets.get(index++);
             }
         };
@@ -191,6 +212,11 @@ public class Device {
             public Command getNameLookupCommand(int index) {
                 return new GetInputNameCommand(index);
             }
+
+            @Override
+            public int getMax() {
+                return MAX_INPUTS;
+            }
         };
     }
 
@@ -202,6 +228,12 @@ public class Device {
             public Command getNameLookupCommand(int index) {
                 return new GetOutputNameCommand(index);
             }
+
+            @Override
+            public int getMax() {
+                return MAX_OUTPUTS;
+            }
+
         };
     }
 
@@ -242,7 +274,7 @@ public class Device {
         @Override
         public boolean hasMoreElements() {
             if (connected) {
-                return index < 8;
+                return index < getMax();
             }
             return index < list.size();
         }
@@ -268,5 +300,6 @@ public class Device {
         }
 
         public abstract Command getNameLookupCommand(int paramInt);
+        public abstract int getMax();
     }
 }
