@@ -4,12 +4,14 @@ import com.intelix.net.Command;
 import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
 import com.intelix.net.GetOutputNameCommand;
+import com.intelix.net.GetPresetCommand;
 import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
 import com.intelix.net.payload.PresetNamePayload;
+import com.intelix.net.payload.PresetReportPayload;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -37,7 +39,7 @@ public class Device {
     private ArrayList<Connector> inputs = new ArrayList();
     private ArrayList<Connector> outputs = new ArrayList();
     private ArrayList<Preset> presets = new ArrayList();
-    private HashMap<Integer, Integer> cxnMatrix = new HashMap();
+    private HashMap<Integer, Integer> cxnMatrix = new HashMap();  /* KEY=Output,VALUE=Input */
     private static ResourceBundle config;
     private boolean connected;
     private IPConnection connection;
@@ -82,7 +84,7 @@ public class Device {
         }
 
         for (int i = 0; i < MAX_PRESETS; i++) {
-            presets.add(new Preset((i + 1) + " - Test", i));
+            presets.add(new Preset((i + 1) + " - Test", i + 1));
         }
     }
 
@@ -124,7 +126,11 @@ public class Device {
 
     //------------------------------------------------------------------------
     public Connector getInputForSelectedOutput() {
-        if (connected)
+        return getInputForSelectedOutput(true);
+    }
+    
+    public Connector getInputForSelectedOutput(boolean live) {
+        if (connected && live)
         {
             try {
                 Command c = new GetCrosspointCommand(selectedOutput+1);
@@ -193,7 +199,7 @@ public class Device {
                     if (c.getPayload() instanceof PresetNamePayload) {
                         PresetNamePayload p = (PresetNamePayload) c.getPayload();
                         String name = p.getData();
-                        presets.add(index, new Preset(name, index + 1));
+                        presets.set(index, new Preset(name, index + 1));
                     }
                     } catch (Exception ex) {
                         Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,8 +211,12 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
+    
     public Enumeration<Connector> getInputs() {
-        return new ConnectorEnumeration(inputs) {
+        return getInputs(true);
+    }
+    public Enumeration<Connector> getInputs(boolean live) {
+        return new ConnectorEnumeration(inputs, live) {
 
             @Override
             public Command getNameLookupCommand(int index) {
@@ -222,8 +232,11 @@ public class Device {
 
     //------------------------------------------------------------------------
     public Enumeration<Connector> getOutputs() {
-        return new ConnectorEnumeration(outputs) {
+        return getOutputs(true);
+    }
 
+    public Enumeration<Connector> getOutputs(boolean live) {
+        return new ConnectorEnumeration(outputs, live) {
             @Override
             public Command getNameLookupCommand(int index) {
                 return new GetOutputNameCommand(index);
@@ -258,22 +271,61 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
+    public void loadPreset(int number)
+    {
+        // get the preset from the array
+        Preset p = presets.get(number - 1);
+
+        if (connected)
+        {
+            // TODO - fetch preset for number from device,
+            //        load into the preset collection.
+            try {
+                connection.write(new GetPresetCommand(number));
+
+                Command c = connection.readOne();
+                if (c.getPayload() instanceof PresetReportPayload) {
+                    PresetReportPayload pld = (PresetReportPayload) c.getPayload();
+
+                    p = new Preset(p.getName(), number);
+                    for(int i=1; i<=MAX_OUTPUTS; i++)
+                    {
+                        p.makeConnection(i, pld.getInputForOutput(i));
+                    }
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // set the connection matrix from this
+        cxnMatrix = p.getConnections();
+    }
+
+    //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
 
         int index = 0;
         List<Connector> list = null;
+        boolean live;
 
         public ConnectorEnumeration() {
         }
 
         public ConnectorEnumeration(List<Connector> l) {
+            this(l,true);
+        }
+
+        public ConnectorEnumeration(List<Connector> l, boolean live)
+        {
             list = l;
+            this.live = live;
         }
 
         @Override
         public boolean hasMoreElements() {
-            if (connected) {
+            if (connected && live) {
                 return index < getMax();
             }
             return index < list.size();
@@ -281,7 +333,7 @@ public class Device {
 
         @Override
         public Connector nextElement() {
-            if (connected) {
+            if (connected && live) {
                 try {
                     connection.write(getNameLookupCommand(index + 1));
 

@@ -40,8 +40,8 @@ public class ButtonContainerPanel extends JPanel {
         return new JButton(name);
     }
 
-    public AbstractButton getButton(int outputNumber) {
-        return (AbstractButton) this.buttonList.get(outputNumber);
+    public AbstractButton getButton(int index) {
+        return (AbstractButton) this.buttonList.get(index);
     }
 
     public void clear() {

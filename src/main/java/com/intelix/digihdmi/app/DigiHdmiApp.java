@@ -11,6 +11,7 @@ import com.intelix.digihdmi.app.views.RoomSelectionView;
 import com.intelix.digihdmi.app.views.DigiHdmiAppMainView;
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.app.views.HomePanel;
+import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.app.views.RoomView;
 import com.intelix.digihdmi.model.Device;
 import java.awt.Dimension;
@@ -33,6 +34,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent roomView;
     JComponent roomSelectionView;
     JComponent presetView;
+    JComponent matrixView;
     FrameView mainFrame;
     Device device;
 
@@ -122,6 +124,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         roomSelectionView = new RoomSelectionView();
         presetView = new PresetLoadListView();
         homeView = new HomePanel();
+        matrixView = new MatrixView();
 
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
@@ -147,7 +150,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showMatrixView() {
-        JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+        showPanel(matrixView, "Matrix View");
+        //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
     }
 
     @org.jdesktop.application.Action

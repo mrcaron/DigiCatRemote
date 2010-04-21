@@ -27,7 +27,7 @@ public class ConnectorActions {
         appInstance.getDevice().setSelectedOutput(outputNumber);
         appInstance.showRoomSelectionView();
 
-        return new GetInputsTask(Application.getInstance());
+        return new GetInputsTask(appInstance);
     }
 
     @Action
@@ -39,13 +39,13 @@ public class ConnectorActions {
         // avoid setting the selected input here because if the task fails, we
         // want the task to reset to the previously selected without another
         // round trip to the device.
-        MakeConnectionTask t = new MakeConnectionTask(Application.getInstance(), inputNumber);
+        MakeConnectionTask t = new MakeConnectionTask(appInstance, inputNumber);
         
         return t;
     }
 
     @Action
     public Task showOutputList() {
-        return new GetOutputsTask(Application.getInstance());
+        return new GetOutputsTask(appInstance);
     }
 }
