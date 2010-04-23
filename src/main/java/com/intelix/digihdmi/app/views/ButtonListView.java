@@ -4,76 +4,33 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.Action;
-import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 
-public class ButtonListView extends JPanel {
+public class ButtonListView extends ApplicationView {
 
     private ButtonContainerPanel buttonsPanel;
     private JScrollPane scrollPane;
-    private JButton btnHome;
-    protected JPanel homePanel;
-    protected JPanel bottomPanel;
-
-    public ButtonListView() {
-        initializeComponents();
-    }
-
-    public void setHomeAction(Action a) {
-        btnHome.setAction(a);
-    }
 
     public ButtonContainerPanel getButtonsPanel() {
         return buttonsPanel;
-    }
-
-    private void initializeComponents() {
-        setMinimumSize(new Dimension(600, 400));
-        setPreferredSize(new Dimension(600, 400));
-        setLayout(new MigLayout("", "[left]10[right,fill,grow]", "[][grow]"));
-
-        initializeButtonsPanel();
-        scrollPane = new JScrollPane(buttonsPanel);
-        initializeHomePanel();
-        initializeBottomPanel();
-
-        add(homePanel, "aligny top, grow");
-        add(scrollPane, "spany 2, grow, wrap");
-        add(bottomPanel, "aligny bottom, grow");
-    }
-
-    protected JPanel createHomePanel() {
-        return new JPanel(new MigLayout("wrap 1, aligny top", "[fill,grow]"));
-    }
-
-    protected void initializeHomePanel() {
-        homePanel = createHomePanel();
-        btnHome = new JButton();
-        homePanel.add(btnHome);
-        setHomeAction(Application.getInstance().getContext().getActionMap().get("showHomeView"));
-    }
-
-    protected JPanel createBottomPanel() {
-        return new JPanel(new MigLayout("wrap 1, aligny bottom"));
-    }
-
-    protected void initializeBottomPanel() {
-        bottomPanel = createBottomPanel();
     }
 
     protected ButtonContainerPanel createButtonsPanel() {
         return new ButtonContainerPanel();
     }
 
-    protected void initializeButtonsPanel() {
+    @Override
+    protected JComponent createRightComponent() {
         buttonsPanel = createButtonsPanel();
+        scrollPane = new JScrollPane(buttonsPanel);
+        return scrollPane;
     }
 
     public static void main(String[] args) {
