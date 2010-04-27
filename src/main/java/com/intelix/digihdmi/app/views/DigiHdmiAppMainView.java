@@ -108,6 +108,10 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemConnected.setAction(a);
     }
 
+    public void setResetCacheMenuItemAction(javax.swing.Action a) {
+        this.menuItemResetCache.setAction(a);
+    }
+
     public JCheckBoxMenuItem getMenuItemConnected() {
         return this.menuItemConnected;
     }
@@ -124,6 +128,7 @@ public class DigiHdmiAppMainView extends FrameView {
 
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
+        menuItemResetCache = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
         menuItemConnected = new javax.swing.JCheckBoxMenuItem();
@@ -140,6 +145,10 @@ public class DigiHdmiAppMainView extends FrameView {
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getResourceMap(DigiHdmiAppMainView.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
+
+        menuItemResetCache.setText(resourceMap.getString("menuItemResetCache.text")); // NOI18N
+        menuItemResetCache.setName("menuItemResetCache"); // NOI18N
+        fileMenu.add(menuItemResetCache);
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getActionMap(DigiHdmiAppMainView.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
@@ -211,6 +220,7 @@ public class DigiHdmiAppMainView extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
     private javax.swing.JCheckBoxMenuItem menuItemConnected;
+    private javax.swing.JMenuItem menuItemResetCache;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;

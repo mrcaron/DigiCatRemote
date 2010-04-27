@@ -24,6 +24,10 @@
                         <manifest>
                             <mainClass>com.intelix.digihdmi.app.DigiHdmiApp</mainClass>
                             <packageName>com.intelix.digihdmi.app</packageName>
+                            <!-- add classpath to the gen'd jar
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib</classpathPrefix>
+                            -->
                         </manifest>
                     </archive>
                 </configuration>

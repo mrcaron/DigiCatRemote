@@ -21,6 +21,21 @@ public class MenuActions {
     public void menuDevice() {
     }
 
+    @Action
+    public Task resetCache() {
+        return new ResetCacheTask(Application.getInstance());
+    }
+
+    private class ResetCacheTask extends Task {
+        ResetCacheTask(Application app) {super(app);}
+        @Override
+        protected Object doInBackground() throws Exception {
+            ((DigiHdmiApp)getApplication()).getDevice().setFullReset(true);
+            setMessage("Cache Reset.");
+            return null;
+        }
+    }
+
     private class ToggleDeviceConnectTask extends Task<Object, Void> {
 
         JCheckBoxMenuItem item;

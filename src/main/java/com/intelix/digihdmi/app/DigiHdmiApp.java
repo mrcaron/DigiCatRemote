@@ -129,6 +129,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
+        ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
     }
 
     @org.jdesktop.application.Action

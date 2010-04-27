@@ -48,6 +48,12 @@ public class Device {
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
 
+    // flag used to determine if we need to visit the device for input/output information
+    private boolean resetInput = true;
+    private boolean resetOutput = true;
+    private boolean resetPresets = true;
+    private boolean resetXP = true;
+
     //------------------------------------------------------------------------
     private static ResourceBundle getConfiguration() {
         if (config == null) {
@@ -105,6 +111,7 @@ public class Device {
         if (connection != null) {
             connection.connect();
             connected = true;
+            setFullReset(true);
         } else {
             throw new IOException("Device can't be found. Check your device's configuration.");
         }
@@ -181,16 +188,20 @@ public class Device {
 
             @Override
             public boolean hasMoreElements() {
-                if (connected)
+                if (connected && resetPresets)
                 {
-                    return index < MAX_PRESETS;
+                    boolean r = index < MAX_PRESETS;
+                    if (!r) { 
+                        resetPresets = false;
+                    }
+                    return r;
                 }
                 return index < presets.size();
             }
 
             @Override
             public Preset nextElement() {
-                if (connected)
+                if (connected && resetPresets)
                 {
                    try {
                     connection.write(new GetPresetNameCommand(index + 1));
@@ -213,10 +224,18 @@ public class Device {
     //------------------------------------------------------------------------
     
     public Enumeration<Connector> getInputs() {
-        return getInputs(true);
+        return getInputs(false);
     }
     public Enumeration<Connector> getInputs(boolean live) {
         return new ConnectorEnumeration(inputs, live) {
+
+            @Override
+            public boolean isReset() { return resetInput; }
+
+            @Override
+            public void setReset(boolean r) {
+                resetInput = r;
+            }
 
             @Override
             public Command getNameLookupCommand(int index) {
@@ -232,11 +251,21 @@ public class Device {
 
     //------------------------------------------------------------------------
     public Enumeration<Connector> getOutputs() {
-        return getOutputs(true);
+        return getOutputs(false);
     }
 
     public Enumeration<Connector> getOutputs(boolean live) {
         return new ConnectorEnumeration(outputs, live) {
+            @Override
+            public boolean isReset() { 
+                return resetOutput;
+            }
+
+            @Override
+            public void setReset(boolean r) {
+                resetOutput = r;
+            }
+
             @Override
             public Command getNameLookupCommand(int index) {
                 return new GetOutputNameCommand(index);
@@ -250,6 +279,10 @@ public class Device {
         };
     }
 
+    //------------------------------------------------------------------------
+    public void setFullReset(boolean reset) {
+        resetInput = resetOutput = resetPresets = resetXP = reset;
+    }
     //------------------------------------------------------------------------
     public void setSelectedOutput(int selectedOutput) {
         this.selectedOutput = selectedOutput-1;
@@ -314,7 +347,7 @@ public class Device {
         }
 
         public ConnectorEnumeration(List<Connector> l) {
-            this(l,true);
+            this(l,false);
         }
 
         public ConnectorEnumeration(List<Connector> l, boolean live)
@@ -325,15 +358,20 @@ public class Device {
 
         @Override
         public boolean hasMoreElements() {
-            if (connected && live) {
-                return index < getMax();
+            if (connected && (live || isReset())) {
+                boolean r = index < getMax();
+                // We do not need to fetch from the device any longer
+                if (!r) { 
+                    setReset(false);
+                }
+                return r;
             }
             return index < list.size();
         }
 
         @Override
         public Connector nextElement() {
-            if (connected && live) {
+            if (connected && (live || isReset())) {
                 try {
                     connection.write(getNameLookupCommand(index + 1));
 
@@ -341,7 +379,14 @@ public class Device {
                     if (c.getPayload() instanceof ConnectorPayload) {
                         ConnectorPayload p = (ConnectorPayload) c.getPayload();
                         String name = p.getData();
-                        list.add(index, new Connector(name, "", index + 1));
+
+                        Connector ctr = new Connector(name, "", index + 1);
+                        /*try {*/
+                            list.set(index, ctr);
+                        /*}
+                        catch (IndexOutOfBoundsException ex) {
+                            list.add(index, ctr);
+                        }*/
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -351,6 +396,8 @@ public class Device {
             return (Connector) list.get(index++);
         }
 
+        public abstract boolean isReset();
+        public abstract void setReset(boolean r);
         public abstract Command getNameLookupCommand(int paramInt);
         public abstract int getMax();
     }
