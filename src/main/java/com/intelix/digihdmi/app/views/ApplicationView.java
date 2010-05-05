@@ -5,7 +5,6 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 
@@ -24,9 +23,9 @@ public abstract class ApplicationView extends JPanel {
         btnHome.setAction(a);
     }
 
-    private void initializeComponents() {
-        setMinimumSize(new Dimension(600, 400));
-        setPreferredSize(new Dimension(600, 400));
+    protected void initializeComponents() {
+        //setMinimumSize(new Dimension(800, 400));
+        //setPreferredSize(new Dimension(800, 400));
         setLayout(new MigLayout("", "[left]10[right,fill,grow]", "[][grow]"));
 
         initializeRightComponent();

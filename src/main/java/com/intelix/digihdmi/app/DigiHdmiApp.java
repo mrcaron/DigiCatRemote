@@ -4,6 +4,7 @@
 package com.intelix.digihdmi.app;
 
 import com.intelix.digihdmi.app.actions.ConnectorActions;
+import com.intelix.digihdmi.app.actions.MatrixActions;
 import com.intelix.digihdmi.app.actions.MenuActions;
 import com.intelix.digihdmi.app.actions.PresetActions;
 import com.intelix.digihdmi.app.views.PresetLoadListView;
@@ -16,7 +17,6 @@ import com.intelix.digihdmi.app.views.RoomView;
 import com.intelix.digihdmi.model.Device;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -85,8 +85,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         show(mainFrame);
         showHomeView();
-        mainFrame.getFrame().setMinimumSize(new Dimension(600, 400));
-        mainFrame.getFrame().setPreferredSize(new Dimension(600, 400));
+        mainFrame.getFrame().setMinimumSize(new Dimension(700, 400));
+        mainFrame.getFrame().setPreferredSize(new Dimension(700, 400));
         mainFrame.getFrame().setLocationRelativeTo(null);
     }
 
@@ -124,6 +124,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         roomSelectionView = new RoomSelectionView();
         presetView = new PresetLoadListView();
         homeView = new HomePanel();
+        //int numOuts = getDevice().getNumOutputs();
         matrixView = new MatrixView();
 
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -151,7 +152,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showMatrixView() {
-        showPanel(matrixView, "Matrix View");
+        showPanel(matrixView, "Matrix View"/*, new MatrixActions(), "loadMatrix"*/);
         //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
     }
 

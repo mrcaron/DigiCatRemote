@@ -10,8 +10,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import net.miginfocom.swing.MigLayout;
-import org.jdesktop.application.Application;
 
 public class ButtonListView extends ApplicationView {
 

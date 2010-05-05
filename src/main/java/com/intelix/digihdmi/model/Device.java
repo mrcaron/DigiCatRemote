@@ -335,6 +335,10 @@ public class Device {
         cxnMatrix = p.getConnections();
     }
 
+    public int getNumOutputs() {
+        return MAX_OUTPUTS;
+    }
+
     //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {

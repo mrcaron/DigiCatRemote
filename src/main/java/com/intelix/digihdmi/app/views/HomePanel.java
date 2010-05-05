@@ -4,7 +4,10 @@ import com.intelix.digihdmi.app.DigiHdmiApp;
 import java.awt.Dimension;
 import javax.swing.ActionMap;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.layout.GroupLayout;
@@ -53,10 +56,29 @@ public class HomePanel extends JPanel {
         btnLock.setText(resourceMap.getString("btnLock.text", new Object[0]));
         btnLock.setName("btnLock");
 
-        GroupLayout layout = new GroupLayout(this);
-        setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(1).add(layout.createSequentialGroup().addContainerGap(433, 32767).add(btnLock).addPreferredGap(1).add(btnAdmin).addContainerGap()).add(layout.createSequentialGroup().add(238, 238, 238).add(layout.createParallelGroup(4).add(btnMatrixView).add(btnRoomView).add(btnPresetView)).addContainerGap(245, 32767)));
+        setLayout(new MigLayout(
+                (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
+                "al 50% 50%, gapy 10"));
 
-        layout.setVerticalGroup(layout.createParallelGroup(1).add(2, layout.createSequentialGroup().add(115, 115, 115).add(btnRoomView).add(18, 18, 18).add(btnMatrixView).add(18, 18, 18).add(btnPresetView).addPreferredGap(0, 116, 32767).add(layout.createParallelGroup(3).add(btnAdmin).add(btnLock)).addContainerGap()));
+        this.add(btnRoomView, "wrap");
+        this.add(btnMatrixView, "wrap");
+        this.add(btnPresetView, "wrap");
+        this.add(btnLock, "id blk, pos (visual.x2 - pref) (visual.y2 - pref)");
+        this.add(btnAdmin, "pos (blk.x - pref) (blk.y)");
+        
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame f = new JFrame("Home Panel");
+                System.setProperty("DEBUG_UI", "true");
+                HomePanel lv = new HomePanel();
+                f.getContentPane().add(lv);
+                f.setSize(700,400);
+                f.setVisible(true);
+            }
+        });
     }
 }
