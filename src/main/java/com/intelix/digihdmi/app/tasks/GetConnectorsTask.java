@@ -55,9 +55,7 @@ public class GetConnectorsTask extends Task {
                 Connector c = (Connector) connectorList.nextElement();
                 setMessage("Working... [" + c.getName() + "]");
                 panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
-                Thread.sleep(200L);
             }
-            Thread.sleep(200L);
         }
         return null;
     }

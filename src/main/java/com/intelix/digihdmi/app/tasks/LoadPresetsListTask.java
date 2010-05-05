@@ -40,9 +40,7 @@ public class LoadPresetsListTask extends Task {
                 Preset c = (Preset) presetList.nextElement();
                 setMessage("Working... [" + c.getName() + "]");
                 this.panel.addButton(c.getName(), null, map.get("applyPresetAndShowMatrixView"));
-                Thread.sleep(200L);
             }
-            Thread.sleep(200L);
         }
         return null;
     }
