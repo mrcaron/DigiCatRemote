@@ -152,7 +152,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showMatrixView() {
-        showPanel(matrixView, "Matrix View"/*, new MatrixActions(), "loadMatrix"*/);
+        showPanel(matrixView, "Matrix View", new MatrixActions(), "loadMatrix");
         //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
     }
 

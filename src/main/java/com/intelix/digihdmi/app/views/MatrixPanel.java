@@ -98,6 +98,14 @@ public class MatrixPanel extends JPanel {
         }
     }
 
+    public void setInputName(int i, String name) {
+        inputLabels.get(i).setText(name);
+    }
+
+    public void setOutputName(int i, String name) {
+        outputLabels.get(i).setText(name);
+    }
+
     /**
      * @param args the command line arguments
      */
