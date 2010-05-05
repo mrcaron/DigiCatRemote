@@ -36,19 +36,8 @@ public class InitMatrixTask extends Task {
         MatrixView view = (MatrixView) dApp.getCurrentView();
         MatrixPanel panel = view.getMatrixPanel();
 
-        // Set the input names
-        Enumeration<Connector> inputs = device.getInputs();
-        for (int i=0;inputs.hasMoreElements();i++)
-        {
-            panel.setInputName(i,inputs.nextElement().getName());
-        }
-        // Set the output names
-        Enumeration<Connector> outputs = device.getOutputs();
-        for (int i=0;outputs.hasMoreElements();i++)
-        {
-            panel.setOutputName(i,outputs.nextElement().getName());
-        }
         // Get the connections
+        message("loadingConnections");
         HashMap<Integer,Integer> xp = device.getCrossPoints();
         Iterator<Entry<Integer,Integer>> xpIterator = xp.entrySet().iterator();
         while(xpIterator.hasNext())
@@ -57,8 +46,25 @@ public class InitMatrixTask extends Task {
             panel.select(e.getKey() /* Output */, e.getValue() /* Input */);
         }
 
-        return null;
+        // Set the input names
+        message("loadingInputNames");
+        Enumeration<Connector> inputs = device.getInputs();
+        for (int i=0;inputs.hasMoreElements();i++)
+        {
+            message("loadingInputNameX",i);
+            panel.setInputName(i,inputs.nextElement().getName());
+        }
+        // Set the output names
+        Enumeration<Connector> outputs = device.getOutputs();
+        message("loadingOutputNames");
+        for (int i=0;outputs.hasMoreElements();i++)
+        {
+            message("loadingOutputNameX",i);
+            panel.setOutputName(i,outputs.nextElement().getName());
+        }
 
+        message("loadingFinished");
+        return null;
     }
 
     private Object MatrixView(DigiHdmiApp digiHdmiApp) {
