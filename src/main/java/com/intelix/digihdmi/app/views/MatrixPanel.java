@@ -6,6 +6,7 @@
 package com.intelix.digihdmi.app.views;
 
 import java.util.ArrayList;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -69,7 +70,7 @@ public class MatrixPanel extends JPanel {
                 }
 
                 JRadioButton b = new JRadioButton();
-                b.setName("b_" + x + "_" + y);
+                b.setName("b_" + x + "_" + y);   // name is "b_<OUTPUT>_<INPUT>"
                 b.setSelected(y == 0);
 
                 g.add(b);

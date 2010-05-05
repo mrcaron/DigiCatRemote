@@ -21,6 +21,11 @@ public class MakeConnectionTask extends Task {
 
     }
 
+    public MakeConnectionTask(Application app, int inputNumber, int outputNumber) {
+        this(app, inputNumber);
+        device.setSelectedOutput(outputNumber);
+    }
+
     @Override
     protected Object doInBackground() throws Exception {
         message("startMessage");

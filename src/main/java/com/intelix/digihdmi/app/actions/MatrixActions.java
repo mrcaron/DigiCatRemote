@@ -7,7 +7,10 @@ package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.tasks.InitMatrixTask;
+import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
 import com.intelix.digihdmi.model.Device;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractButton;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
@@ -29,5 +32,14 @@ public class MatrixActions {
     @Action
     public Task loadMatrix() {
         return new InitMatrixTask(appInstance);
+    }
+
+    @Action
+    public Task setConnection(ActionEvent e) {
+        AbstractButton b = (AbstractButton) e.getSource();
+        String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
+        String[] parts = toggleInfo.split("_");
+
+        return null; //new MakeConnectionTask(appInstance, Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
     }
 }
