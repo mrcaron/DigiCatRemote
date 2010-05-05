@@ -1,6 +1,7 @@
 package com.intelix.digihdmi.model;
 
 import com.intelix.net.Command;
+import com.intelix.net.GetAllCrosspointsCommand;
 import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
 import com.intelix.net.GetOutputNameCommand;
@@ -12,6 +13,7 @@ import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
 import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
+import com.intelix.net.payload.SequencePayload;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -86,7 +88,7 @@ public class Device {
         for (int i = 0; i < MAX_INPUTS; ++i) {
             inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
             outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));          
-            cxnMatrix.put(i,i);
+            cxnMatrix.put(i,0);
         }
 
         for (int i = 0; i < MAX_PRESETS; i++) {
@@ -280,6 +282,34 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
+    public HashMap<Integer,Integer> getCrossPoints() {
+        return getCrossPoints(false);
+    }
+    public HashMap<Integer,Integer> getCrossPoints(boolean live)
+    {
+        if (connected && resetXP)
+        {
+            try {
+                connection.write(new GetAllCrosspointsCommand());
+                Command c = connection.readOne();
+                if (c.getPayload() instanceof SequencePayload)
+                {
+                    SequencePayload p = (SequencePayload)c.getPayload();
+                    for(int i=0; i<p.size(); i++)
+                    {
+                        cxnMatrix.put(i/*Output*/,p.get(i)-1/*Input*/);
+                    }
+                }
+                resetXP = false;
+            } catch (Exception ex)
+            {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return cxnMatrix;
+    }
+
+    //------------------------------------------------------------------------
     public void setFullReset(boolean reset) {
         resetInput = resetOutput = resetPresets = resetXP = reset;
     }
@@ -335,6 +365,7 @@ public class Device {
         cxnMatrix = p.getConnections();
     }
 
+    //------------------------------------------------------------------------
     public int getNumOutputs() {
         return MAX_OUTPUTS;
     }

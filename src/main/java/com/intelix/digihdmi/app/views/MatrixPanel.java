@@ -73,6 +73,7 @@ public class MatrixPanel extends JPanel {
                 b.setSelected(y == 0);
 
                 g.add(b);
+                radioButtons.add(b);
                 this.add(b,"align 50% 50%");
             }
         }
@@ -120,6 +121,11 @@ public class MatrixPanel extends JPanel {
                 f.setVisible(true);
             }
         });
+    }
+
+    public void select(Integer key, Integer value) {
+        JRadioButton b = radioButtons.get(cols*value+key);
+        b.doClick();
     }
 
 }
