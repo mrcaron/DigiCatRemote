@@ -20,9 +20,12 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
+import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.application.Task;
+import org.jdesktop.application.Task.InputBlocker;
 
 /**
  * The main class of the application.
@@ -197,5 +200,24 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showUtilView() {
         JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+    }
+
+    public class BusyInputBlocker extends InputBlocker
+    {
+        public BusyInputBlocker(Task t) {
+            super(t, Task.BlockingScope.WINDOW,mainFrame.getFrame().getGlassPane());
+            mainFrame.getFrame().getGlassPane().addMouseListener(new MouseInputAdapter() {});
+        }
+
+        @Override
+        protected void block() {
+            getMainFrame().getGlassPane().setVisible(true);
+            getMainFrame().getGlassPane().requestFocusInWindow();
+        }
+
+        @Override
+        protected void unblock() {
+            getMainFrame().getGlassPane().setVisible(false);
+        }
     }
 }

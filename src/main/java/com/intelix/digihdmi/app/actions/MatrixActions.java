@@ -29,17 +29,21 @@ public class MatrixActions {
         device = appInstance.getDevice();
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task loadMatrix() {
-        return new InitMatrixTask(appInstance);
+        Task t = new InitMatrixTask(appInstance);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task setConnection(ActionEvent e) {
         AbstractButton b = (AbstractButton) e.getSource();
         String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
         String[] parts = toggleInfo.split("_");
 
-        return new MakeConnectionTask(appInstance, Integer.parseInt(parts[2])+1, Integer.parseInt(parts[1])+1);
+        Task t = new MakeConnectionTask(appInstance, Integer.parseInt(parts[2])+1, Integer.parseInt(parts[1])+1);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 }

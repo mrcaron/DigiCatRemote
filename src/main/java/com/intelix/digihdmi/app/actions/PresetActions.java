@@ -18,9 +18,11 @@ public class PresetActions {
         appInstance = (DigiHdmiApp) Application.getInstance();
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task showPresetListForLoad() {
-        return new LoadPresetsListTask(Application.getInstance());
+        Task t = new LoadPresetsListTask(Application.getInstance());
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 
     @Action
@@ -28,7 +30,7 @@ public class PresetActions {
         return null;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task applyPresetAndShowMatrixView(ActionEvent ev) {
         AbstractButton b = (AbstractButton) ev.getSource();
         int index = b.getName().lastIndexOf('_') + 1;
@@ -38,6 +40,8 @@ public class PresetActions {
         appInstance.showMatrixView();
 
         // populate the matrix view with results from preset application
-        return new ApplyPresetTask(appInstance, presetNumber);
+        Task t = new ApplyPresetTask(appInstance, presetNumber);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 }

@@ -4,7 +4,6 @@ import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.views.ButtonContainerPanel;
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.model.Device;
-import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 

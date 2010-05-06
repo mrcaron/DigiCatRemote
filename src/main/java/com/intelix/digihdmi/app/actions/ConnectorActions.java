@@ -19,7 +19,7 @@ public class ConnectorActions {
         appInstance = (DigiHdmiApp) Application.getInstance();
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task showInputListForSelection(ActionEvent ev) {
         JButton b = (JButton) ev.getSource();
         int index = b.getName().lastIndexOf('_') + 1;
@@ -27,10 +27,12 @@ public class ConnectorActions {
         appInstance.getDevice().setSelectedOutput(outputNumber);
         appInstance.showRoomSelectionView();
 
-        return new GetInputsTask(appInstance);
+        Task t = new GetInputsTask(appInstance);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task connectInputAndOutput(ActionEvent ev) {
         AbstractButton b = (AbstractButton) ev.getSource();
         int index = b.getName().lastIndexOf('_') + 1;
@@ -40,12 +42,15 @@ public class ConnectorActions {
         // want the task to reset to the previously selected without another
         // round trip to the device.
         MakeConnectionTask t = new MakeConnectionTask(appInstance, inputNumber);
-        
+
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task showOutputList() {
-        return new GetOutputsTask(appInstance);
+        Task t = new GetOutputsTask(appInstance);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 }
