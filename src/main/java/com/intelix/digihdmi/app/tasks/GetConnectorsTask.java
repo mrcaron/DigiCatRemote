@@ -5,8 +5,8 @@ import com.intelix.digihdmi.app.views.ButtonContainerPanel;
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
+import com.intelix.digihdmi.util.BasicAction;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -63,37 +63,5 @@ public class GetConnectorsTask extends Task {
     @Override
     protected void succeeded(Object result) {
         setMessage("Done.");
-    }
-
-    protected abstract class BasicAction implements Action {
-
-        BasicAction() {
-        }
-
-        @Override
-        public Object getValue(String key) {
-            return null;
-        }
-
-        @Override
-        public void putValue(String key, Object value) {
-        }
-
-        @Override
-        public void setEnabled(boolean b) {
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return true;
-        }
-
-        @Override
-        public void addPropertyChangeListener(PropertyChangeListener listener) {
-        }
-
-        @Override
-        public void removePropertyChangeListener(PropertyChangeListener listener) {
-        }
     }
 }
