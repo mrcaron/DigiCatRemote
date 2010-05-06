@@ -35,7 +35,6 @@ public class DigiHdmiAboutBox extends javax.swing.JDialog {
         javax.swing.JLabel homepageLabel = new javax.swing.JLabel();
         javax.swing.JLabel appHomepageLabel = new javax.swing.JLabel();
         javax.swing.JLabel appDescLabel = new javax.swing.JLabel();
-        javax.swing.JLabel imageLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getResourceMap(DigiHdmiAboutBox.class);
@@ -76,16 +75,12 @@ public class DigiHdmiAboutBox extends javax.swing.JDialog {
         appDescLabel.setText(resourceMap.getString("appDescLabel.text")); // NOI18N
         appDescLabel.setName("appDescLabel"); // NOI18N
 
-        imageLabel.setIcon(resourceMap.getIcon("imageLabel.icon")); // NOI18N
-        imageLabel.setName("imageLabel"); // NOI18N
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(imageLabel)
-                .add(18, 18, 18)
+                .add(20, 20, 20)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -98,13 +93,12 @@ public class DigiHdmiAboutBox extends javax.swing.JDialog {
                             .add(appVendorLabel)
                             .add(appHomepageLabel)))
                     .add(org.jdesktop.layout.GroupLayout.LEADING, appTitleLabel)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, appDescLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, appDescLabel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .add(closeButton))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(imageLabel, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(appTitleLabel)
@@ -122,7 +116,7 @@ public class DigiHdmiAboutBox extends javax.swing.JDialog {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(homepageLabel)
                     .add(appHomepageLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 51, Short.MAX_VALUE)
                 .add(closeButton)
                 .addContainerGap())
         );
