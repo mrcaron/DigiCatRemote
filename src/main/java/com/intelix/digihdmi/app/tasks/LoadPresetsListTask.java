@@ -36,9 +36,11 @@ public class LoadPresetsListTask extends Task {
 
         if ((this.panel != null) && (this.device != null)) {
             Enumeration presetList = this.device.getPresets();
-            while (presetList.hasMoreElements()) {
+
+            for (int i=0;presetList.hasMoreElements();i++) {
+                message("loadingPresetD",i);
                 Preset c = (Preset) presetList.nextElement();
-                setMessage("Working... [" + c.getName() + "]");
+                message("loadedPresetDS",i,c.getName());
                 this.panel.addButton(c.getName(), null, map.get("applyPresetAndShowMatrixView"));
             }
         }

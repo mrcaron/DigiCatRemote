@@ -45,7 +45,6 @@ public class Device {
     private static ResourceBundle config;
     private boolean connected;
     private IPConnection connection;
-    private static boolean DELAY = false;
     private static int MAX_INPUTS = 0;
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
@@ -55,6 +54,9 @@ public class Device {
     private boolean resetOutput = true;
     private boolean resetPresets = true;
     private boolean resetXP = true;
+
+    // DEBUG PROPERTIES
+    private static int DELAY = 0;
 
     //------------------------------------------------------------------------
     private static ResourceBundle getConfiguration() {
@@ -69,12 +71,25 @@ public class Device {
     public Device() {
         connected = false;
         connection = new IPConnection();
+
+        try {
+            String delay = getConfiguration().getString("delay");
+            DELAY = Integer.parseInt(delay);
+        } catch (Exception e)
+        {
+            // IGNORE - We'll just have a 0 delay then.
+        }
+
         try {
             connection.setIpAddr(getConfiguration().getString("ipAddr"));
             connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
+
             MAX_INPUTS = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
             MAX_OUTPUTS = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
             MAX_PRESETS = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
+
+
+
         } catch (NullPointerException ex) {
             connection = null;
         } catch (MissingResourceException ex) {
@@ -215,6 +230,13 @@ public class Device {
                         presets.set(index, new Preset(name, index + 1));
                     }
                     } catch (Exception ex) {
+                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                if (DELAY > 0) {
+                    try {
+                        Thread.sleep(DELAY);
+                    } catch (InterruptedException ex) {
                         Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
@@ -377,7 +399,7 @@ public class Device {
         int index = 0;
         List<Connector> list = null;
         boolean live;
-
+        
         public ConnectorEnumeration() {
         }
 
@@ -427,7 +449,13 @@ public class Device {
                     Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-
+            if (DELAY > 0) {
+                try {
+                    Thread.sleep(DELAY);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
             return (Connector) list.get(index++);
         }
 

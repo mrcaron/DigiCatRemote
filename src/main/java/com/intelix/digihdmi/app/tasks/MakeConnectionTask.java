@@ -52,8 +52,8 @@ public class MakeConnectionTask extends Task {
     protected void succeeded(Object result) {
         super.succeeded(result);
         message("success");
-        JOptionPane.showMessageDialog(((DigiHdmiApp)getApplication()).getMainFrame(),
-                "Connection Made! Input:" + inputNumber);
+        //JOptionPane.showMessageDialog(((DigiHdmiApp)getApplication()).getMainFrame(),
+        //        "Connection Made! Input:" + inputNumber);
     }
 
     @Override

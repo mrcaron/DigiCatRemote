@@ -51,9 +51,10 @@ public class GetConnectorsTask extends Task {
             throws Exception {
         if ((panel != null) && (device != null)) {
             Enumeration connectorList = getConnectors();
-            while (connectorList.hasMoreElements()) {
+            for (int i=0; connectorList.hasMoreElements(); i++) {
+                message("loadingConnectionD",i);
                 Connector c = (Connector) connectorList.nextElement();
-                setMessage("Working... [" + c.getName() + "]");
+                message("loadedConnectionDS",i,c.getName());
                 panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
             }
         }
@@ -62,6 +63,6 @@ public class GetConnectorsTask extends Task {
 
     @Override
     protected void succeeded(Object result) {
-        setMessage("Done.");
+        message("finished");
     }
 }
