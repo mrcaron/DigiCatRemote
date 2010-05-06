@@ -165,7 +165,6 @@ public class Device {
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
-            // TODO: do the real connection making here.
             Command c = new SetCrosspointCommand(selectedInput+1, selectedOutput+1);
             try {
                 connection.write(c);
@@ -173,10 +172,11 @@ public class Device {
                 if (c.getPayload() instanceof PairSequencePayload) {
                     PairSequencePayload p = (PairSequencePayload) c.getPayload();
                     selectedInput = p.get(selectedOutput + 1) - 1;
-                    cxnMatrix.put(selectedOutput, selectedInput);
+                    //cxnMatrix.put(selectedOutput, selectedInput);
                 }
             } catch (Exception ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                return false;
             }
         }
         cxnMatrix.put(selectedOutput, selectedInput);

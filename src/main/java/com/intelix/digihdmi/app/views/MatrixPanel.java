@@ -5,7 +5,10 @@
 
 package com.intelix.digihdmi.app.views;
 
+import com.intelix.digihdmi.util.BasicAction;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
@@ -34,13 +37,18 @@ public class MatrixPanel extends JPanel {
     ArrayList<JLabel> inputLabels = new ArrayList<JLabel>();
 
     public MatrixPanel() {
-        this(8,8);
+        this(8,8,null);
     }
 
-    public MatrixPanel(int rows, int cols) {
+    public MatrixPanel(Action defaultAction) {
+        this(8,8,defaultAction);
+    }
+
+    public MatrixPanel(int rows, int cols, Action defaultAction) {
         this.rows = rows;
         this.cols = cols;
         initComponents();
+        setDefaultButtonAction(defaultAction);
     }
 
     protected void initComponents() {
@@ -108,6 +116,24 @@ public class MatrixPanel extends JPanel {
         outputLabels.get(i).setText(name);
     }
 
+    public void setDefaultButtonAction(Action a)
+    {
+        Iterator<JRadioButton> allButtons = radioButtons.iterator();
+        while(allButtons.hasNext())
+        {
+            allButtons.next().setAction(a);
+        }
+    }
+
+    public void select(Integer key, Integer value, boolean init) {
+        JRadioButton b = radioButtons.get(cols*value+key);
+        if (init)
+            b.setSelected(true);
+        else
+            b.doClick();
+    }
+
+
     /**
      * @param args the command line arguments
      */
@@ -123,10 +149,4 @@ public class MatrixPanel extends JPanel {
             }
         });
     }
-
-    public void select(Integer key, Integer value) {
-        JRadioButton b = radioButtons.get(cols*value+key);
-        b.doClick();
-    }
-
 }

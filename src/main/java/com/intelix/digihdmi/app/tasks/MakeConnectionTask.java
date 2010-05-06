@@ -31,11 +31,13 @@ public class MakeConnectionTask extends Task {
         message("startMessage");
         oldInputNumber = device.getSelectedInput().getIndex();
         device.setSelectedInput(inputNumber);
-        
+
+        boolean result = false;
         try {
             message("makingConnection");
-            boolean result = device.makeConnection();
-            message("connectionMade");
+            result = device.makeConnection();
+            if (result)
+                message("connectionMade");
 
         } catch (Exception e)
         {
@@ -43,7 +45,7 @@ public class MakeConnectionTask extends Task {
             System.err.println("Exception processing connection : " + e.getMessage());
             e.printStackTrace(System.err);
         }
-        return null;
+        return new Boolean(result);
     }
 
     @Override

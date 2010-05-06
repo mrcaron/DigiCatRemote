@@ -40,6 +40,6 @@ public class MatrixActions {
         String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
         String[] parts = toggleInfo.split("_");
 
-        return null; //new MakeConnectionTask(appInstance, Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
+        return new MakeConnectionTask(appInstance, Integer.parseInt(parts[2])+1, Integer.parseInt(parts[1])+1);
     }
 }

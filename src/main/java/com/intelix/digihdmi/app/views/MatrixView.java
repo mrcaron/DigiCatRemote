@@ -1,5 +1,6 @@
 package com.intelix.digihdmi.app.views;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import org.jdesktop.application.Application;

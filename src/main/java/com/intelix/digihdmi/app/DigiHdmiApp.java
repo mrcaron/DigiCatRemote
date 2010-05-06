@@ -126,6 +126,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
         matrixView = new MatrixView();
+        ((MatrixView)matrixView).getMatrixPanel().setDefaultButtonAction(
+            getContext().getActionMap(new MatrixActions()).get("setConnection")
+        );
+
 
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));

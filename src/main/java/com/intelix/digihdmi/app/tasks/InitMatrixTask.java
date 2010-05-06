@@ -43,7 +43,7 @@ public class InitMatrixTask extends Task {
         while(xpIterator.hasNext())
         {
             Entry<Integer,Integer> e = xpIterator.next();
-            panel.select(e.getKey() /* Output */, e.getValue() /* Input */);
+            panel.select(e.getKey() /* Output */, e.getValue() /* Input */, true /*INIT*/);
         }
 
         // Set the input names
