@@ -162,6 +162,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
         showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
     }
 
+    @org.jdesktop.application.Action
+    public void showPresetSaveView() {
+        ((ButtonListView) presetView).getButtonsPanel().clear();
+        showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForSave");
+    }
+
     private void showPanel(JComponent panel, String title) {
         currentView = panel;
         mainFrame.setComponent(currentView);

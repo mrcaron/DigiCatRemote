@@ -1,6 +1,8 @@
 package com.intelix.digihdmi.app.views;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import org.jdesktop.application.Application;
 
 /**
  *
@@ -9,6 +11,7 @@ import javax.swing.JComponent;
 public class MatrixView extends ApplicationView {
 
     MatrixPanel panel;
+    JButton btnSavePreset, btnLoadPreset;
 
     @Override
     protected JComponent createRightComponent() {
@@ -17,6 +20,25 @@ public class MatrixView extends ApplicationView {
         panel = new MatrixPanel();
         return panel;
     }
+
+    @Override
+    protected void initializeHomePanel() {
+        super.initializeHomePanel();
+
+        btnSavePreset = new JButton("Save Preset");
+        btnLoadPreset = new JButton("Load Preset");
+
+        // right here is breaking the snizzle...
+        btnLoadPreset.setAction(
+                Application.getInstance().getContext().getActionMap().get("showPresetListView"));
+        btnSavePreset.setAction(
+                Application.getInstance().getContext().getActionMap().get("showPresetSaveView"));
+
+        homePanel.add(btnSavePreset);
+        homePanel.add(btnLoadPreset);
+    }
+
+
 
     public MatrixPanel getMatrixPanel() {
         return panel;
