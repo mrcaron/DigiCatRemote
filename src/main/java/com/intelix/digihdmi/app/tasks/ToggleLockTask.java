@@ -47,24 +47,7 @@ public class ToggleLockTask extends Task {
         } else {
             message("unlockStart");
             
-            // get actual pass digest
-            byte[] passHash = device.getPasswordHash();
-            
-            // digest submitted password
-            MessageDigest md;
-            byte[] submittedDigest = null;
-            try {
-                md = MessageDigest.getInstance("MD5");
-                md.update(password.getBytes());
-                submittedDigest = md.digest();
-            } catch (NoSuchAlgorithmException ex)
-            {
-                // bah!
-            }
-
-            // check equality
-            if (passHash != null && submittedDigest != null &&
-                java.util.Arrays.equals(passHash, submittedDigest))
+            if (device.unlock(password))
             {
                 ((DigiHdmiApp)getApplication()).showHomeView();
             }

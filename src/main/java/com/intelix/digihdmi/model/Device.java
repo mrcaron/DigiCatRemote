@@ -408,6 +408,27 @@ public class Device {
         return digested;
     }
 
+    public boolean unlock(String password) {
+        // get actual pass digest
+        byte[] passHash = getPasswordHash();
+
+        // digest submitted password
+        MessageDigest md;
+        byte[] submittedDigest = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            md.update(password.getBytes());
+            submittedDigest = md.digest();
+        } catch (NoSuchAlgorithmException ex)
+        {
+            // bah!
+        }
+
+        // check equality
+        return passHash != null && submittedDigest != null &&
+            java.util.Arrays.equals(passHash, submittedDigest);
+    }
+
     //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
