@@ -2,6 +2,7 @@ package com.intelix.digihdmi.app.views;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import java.awt.Dimension;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,41 +20,28 @@ public class HomePanel extends JPanel {
     private JButton btnPresetView;
     private JButton btnRoomView;
 
+    private ResourceMap resourceMap;
+
     public HomePanel() {
+        resourceMap = ((DigiHdmiApp) Application.getInstance(DigiHdmiApp.class)).getContext().getResourceMap(HomePanel.class);
         initComponents();
     }
 
     private void initComponents() {
         btnRoomView = new JButton();
+        btnRoomView.setName("btnRoomView");
         btnMatrixView = new JButton();
+        btnMatrixView.setName("btnMatrixView");
         btnPresetView = new JButton();
+        btnPresetView.setName("btnPresetView");
         btnAdmin = new JButton();
+        btnAdmin.setName("btnAdmin");
         btnLock = new JButton();
+        btnLock.setName("btnLock");
+
 
         setMinimumSize(new Dimension(600, 400));
         setName("Form");
-
-        ActionMap actionMap = ((DigiHdmiApp) Application.getInstance(DigiHdmiApp.class)).getContext().getActionMap(HomePanel.class, this);
-        btnRoomView.setAction(actionMap.get("showRoomView"));
-        ResourceMap resourceMap = ((DigiHdmiApp) Application.getInstance(DigiHdmiApp.class)).getContext().getResourceMap(HomePanel.class);
-        btnRoomView.setText(resourceMap.getString("btnRoomView.text", new Object[0]));
-        btnRoomView.setName("btnRoomView");
-
-        btnMatrixView.setAction(actionMap.get("showMatrixView"));
-        btnMatrixView.setText(resourceMap.getString("btnMatrixView.text", new Object[0]));
-        btnMatrixView.setName("btnMatrixView");
-
-        btnPresetView.setAction(actionMap.get("showPresetListView"));
-        btnPresetView.setText(resourceMap.getString("btnPresetView.text", new Object[0]));
-        btnPresetView.setName("btnPresetView");
-
-        btnAdmin.setAction(actionMap.get("showUtilView"));
-        btnAdmin.setText(resourceMap.getString("btnAdmin.text", new Object[0]));
-        btnAdmin.setName("btnAdmin");
-
-        btnLock.setAction(actionMap.get("lockApp"));
-        btnLock.setText(resourceMap.getString("btnLock.text", new Object[0]));
-        btnLock.setName("btnLock");
 
         setLayout(new MigLayout(
                 (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
@@ -65,6 +53,17 @@ public class HomePanel extends JPanel {
         this.add(btnLock, "id blk, pos (visual.x2 - pref) (visual.y2 - pref)");
         this.add(btnAdmin, "pos (blk.x - pref) (blk.y)");
         
+    }
+
+    public void setLockAction(Action a) { setBtnAction(btnLock, a); }
+    public void setAdminAction(Action a) { setBtnAction(btnAdmin, a); }
+    public void setPresetViewAction(Action a) { setBtnAction(btnPresetView, a); }
+    public void setMatrixViewAction(Action a) { setBtnAction(btnMatrixView, a); }
+    public void setRoomViewAction(Action a) { setBtnAction(btnRoomView, a); }
+    private void setBtnAction(JButton b, Action a)
+    {
+        b.setAction(a);
+        resourceMap.injectComponent(b);
     }
 
     public static void main(String[] args) {

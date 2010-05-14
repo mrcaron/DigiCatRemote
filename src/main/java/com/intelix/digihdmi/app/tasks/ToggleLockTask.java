@@ -43,6 +43,8 @@ public class ToggleLockTask extends Task {
         // connect to the device and lock it
         if (lock) {
             message("lockStart");
+            device.lock();
+            ((DigiHdmiApp)getApplication()).lockApp();
             message("lockEnd");
         } else {
             message("unlockStart");

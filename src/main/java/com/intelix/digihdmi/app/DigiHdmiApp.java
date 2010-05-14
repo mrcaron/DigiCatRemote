@@ -132,6 +132,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
 
+        ((HomePanel)homeView).setLockAction(getContext().getActionMap(new LockActions()).get("lock"));
+        ((HomePanel)homeView).setPresetViewAction(getContext().getActionMap().get("showPresetListView"));
+        ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showRoomView"));
+        ((HomePanel)homeView).setAdminAction(getContext().getActionMap().get("showUtilView"));
+        ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showMatrixView"));
+
         lockView = new LockView();
         ((LockView)lockView).setUnlockAction(getContext().getActionMap(new LockActions()).get("unlock"));
 

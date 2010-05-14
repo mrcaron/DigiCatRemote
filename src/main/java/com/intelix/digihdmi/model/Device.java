@@ -429,6 +429,10 @@ public class Device {
             java.util.Arrays.equals(passHash, submittedDigest);
     }
 
+    public void lock() {
+        // send code to machine to lock itself.
+    }
+
     //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
