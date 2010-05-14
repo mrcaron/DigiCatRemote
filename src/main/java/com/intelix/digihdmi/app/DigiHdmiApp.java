@@ -12,6 +12,7 @@ import com.intelix.digihdmi.app.views.RoomSelectionView;
 import com.intelix.digihdmi.app.views.DigiHdmiAppMainView;
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.app.views.HomePanel;
+import com.intelix.digihdmi.app.views.LockView;
 import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.app.views.RoomView;
 import com.intelix.digihdmi.model.Device;
@@ -38,6 +39,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent roomSelectionView;
     JComponent presetView;
     JComponent matrixView;
+    JComponent lockView;
     FrameView mainFrame;
     Device device;
 
@@ -128,16 +130,20 @@ public class DigiHdmiApp extends SingleFrameApplication {
         presetView = new PresetLoadListView();
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
+
+        lockView = new LockView();
+        ((LockView)lockView).setUnlockAction(getContext().getActionMap().get("showHomeView"));
+
         matrixView = new MatrixView();
         ((MatrixView)matrixView).getMatrixPanel().setDefaultButtonAction(
             getContext().getActionMap(new MatrixActions()).get("setConnection")
         );
 
-
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
         ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
+        
     }
 
     @org.jdesktop.application.Action
@@ -194,7 +200,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void lockApp() {
-        JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+        //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+
+        // TODO: add a confirmation dialog
+        showPanel(lockView, "Lock View");
     }
 
     @org.jdesktop.application.Action

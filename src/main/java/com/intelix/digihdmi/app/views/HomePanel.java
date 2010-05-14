@@ -10,7 +10,6 @@ import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
-import org.jdesktop.layout.GroupLayout;
 
 public class HomePanel extends JPanel {
 
