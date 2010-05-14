@@ -15,6 +15,8 @@ import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
 import com.intelix.net.payload.SequencePayload;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -390,6 +392,20 @@ public class Device {
     //------------------------------------------------------------------------
     public int getNumOutputs() {
         return MAX_OUTPUTS;
+    }
+
+    public byte[] getPasswordHash() {
+        MessageDigest md;
+        byte[] digested = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            md.update("intelix".getBytes());
+            digested = md.digest();
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return digested;
     }
 
     //------------------------------------------------------------------------

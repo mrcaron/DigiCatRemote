@@ -1,5 +1,6 @@
 package com.intelix.digihdmi.app.views;
 
+import com.intelix.digihdmi.app.DigiHdmiApp;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -7,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.ResourceMap;
 
 /**
  * @author Michael Caron <michael.r.caron@gmail.com>
@@ -24,6 +27,7 @@ public class LockView extends JPanel {
         setLayout(new MigLayout("wrap 1,fill","[align center]"));
         
         btnUnlock = new JButton("Unlock");
+        btnUnlock.setName("btnUnlock");
         
         this.add(btnUnlock);
         this.add(new JLabel("Device is now locked."));
@@ -32,6 +36,8 @@ public class LockView extends JPanel {
     public void setUnlockAction(Action a)
     {
         btnUnlock.setAction(a);
+        ResourceMap resourceMap = Application.getInstance().getContext().getResourceMap(this.getClass());
+        resourceMap.injectComponent(btnUnlock);
     }
 
     /**

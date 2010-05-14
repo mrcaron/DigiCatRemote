@@ -4,6 +4,7 @@
 package com.intelix.digihdmi.app;
 
 import com.intelix.digihdmi.app.actions.ConnectorActions;
+import com.intelix.digihdmi.app.actions.LockActions;
 import com.intelix.digihdmi.app.actions.MatrixActions;
 import com.intelix.digihdmi.app.actions.MenuActions;
 import com.intelix.digihdmi.app.actions.PresetActions;
@@ -132,7 +133,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         //int numOuts = getDevice().getNumOutputs();
 
         lockView = new LockView();
-        ((LockView)lockView).setUnlockAction(getContext().getActionMap().get("showHomeView"));
+        ((LockView)lockView).setUnlockAction(getContext().getActionMap(new LockActions()).get("unlock"));
 
         matrixView = new MatrixView();
         ((MatrixView)matrixView).getMatrixPanel().setDefaultButtonAction(
