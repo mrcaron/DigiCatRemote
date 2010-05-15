@@ -9,6 +9,7 @@ import com.intelix.net.GetPresetCommand;
 import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.SetCrosspointCommand;
+import com.intelix.net.ToggleLockCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
 import com.intelix.net.payload.PresetNamePayload;
@@ -50,6 +51,9 @@ public class Device {
     private static int MAX_INPUTS = 0;
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
+    private static int MAX_PASS_LENGTH = 4;
+    private static String PASSWORD = "abcd";
+    private boolean locked = false;
 
     // flag used to determine if we need to visit the device for input/output information
     private boolean resetInput = true;
@@ -77,9 +81,12 @@ public class Device {
         try {
             String delay = getConfiguration().getString("delay");
             DELAY = Integer.parseInt(delay);
+            MAX_PASS_LENGTH = Integer.parseInt(
+                    getConfiguration().getString("MAX_PASS_LENGTH"));
+
         } catch (Exception e)
         {
-            // IGNORE - We'll just have a 0 delay then.
+            // IGNORE - We'll just have a 0 delay then, and a 4 length password
         }
 
         try {
@@ -89,8 +96,6 @@ public class Device {
             MAX_INPUTS = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
             MAX_OUTPUTS = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
             MAX_PRESETS = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
-
-
 
         } catch (NullPointerException ex) {
             connection = null;
@@ -399,7 +404,7 @@ public class Device {
         byte[] digested = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update("intelix".getBytes());
+            md.update(PASSWORD.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -408,29 +413,70 @@ public class Device {
         return digested;
     }
 
+    // Network library just truncates password if it's too long.
     public boolean unlock(String password) {
-        // get actual pass digest
-        byte[] passHash = getPasswordHash();
+        boolean success = false;
+        
+        if (connected) {
+            try {
+                connection.write(new ToggleLockCommand(password));
+                Command c = connection.readOne();
+                if (c.getPayload() instanceof SequencePayload)
+                {
+                    SequencePayload p = (SequencePayload)c.getPayload();
+                    int status = p.get(0);
+                    locked = status == 0;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            // get actual pass digest
+            byte[] passHash = getPasswordHash();
 
-        // digest submitted password
-        MessageDigest md;
-        byte[] submittedDigest = null;
-        try {
-            md = MessageDigest.getInstance("MD5");
-            md.update(password.getBytes());
-            submittedDigest = md.digest();
-        } catch (NoSuchAlgorithmException ex)
-        {
-            // bah!
+            // digest submitted password
+            MessageDigest md;
+            byte[] submittedDigest = null;
+            try {
+                md = MessageDigest.getInstance("MD5");
+                md.update(password.getBytes());
+                submittedDigest = md.digest();
+            } catch (NoSuchAlgorithmException ex)
+            {
+                // bah!
+            }
+
+            // check equality
+            if (passHash != null && submittedDigest != null &&
+                java.util.Arrays.equals(passHash, submittedDigest))
+                locked = false;
         }
 
-        // check equality
-        return passHash != null && submittedDigest != null &&
-            java.util.Arrays.equals(passHash, submittedDigest);
+        return !locked;
     }
 
     public void lock() {
         // send code to machine to lock itself.
+        if (connected) {
+            try {
+                connection.write(new ToggleLockCommand());
+                Command c = connection.readOne();
+                if (c.getPayload() instanceof SequencePayload)
+                {
+                    SequencePayload p = (SequencePayload)c.getPayload();
+                    int status = p.get(0);
+                    locked = status == 0;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            locked = true;
+        }
+    }
+
+    public boolean isLocked() {
+        return locked;
     }
 
     //------------------------------------------------------------------------
