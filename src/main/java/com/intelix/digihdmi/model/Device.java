@@ -114,7 +114,12 @@ public class Device {
         }
 
         for (int i = 0; i < MAX_PRESETS; i++) {
-            presets.add(new Preset((i + 1) + " - Test", i + 1));
+            Preset p = new Preset((i + 1) + " - Test", i + 1);
+            for(int j=0; j < MAX_INPUTS; ++j)
+            {
+                p.makeConnection((j * i) % MAX_INPUTS, (j + i) % MAX_INPUTS);
+            }
+            presets.add(p);
         }
     }
 
