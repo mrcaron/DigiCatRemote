@@ -136,7 +136,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((HomePanel)homeView).setPresetViewAction(getContext().getActionMap().get("showPresetListView"));
         ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showRoomView"));
         ((HomePanel)homeView).setAdminAction(getContext().getActionMap().get("showUtilView"));
-        ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showMatrixView"));
+        ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showAndLoadMatrixView"));
 
         lockView = new LockView();
         ((LockView)lockView).setUnlockAction(getContext().getActionMap(new LockActions()).get("unlock"));
@@ -172,6 +172,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showMatrixView() {
+        showPanel(matrixView, "Matrix View");
+        //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+    }
+
+    @org.jdesktop.application.Action
+    public void showAndLoadMatrixView() {
         showPanel(matrixView, "Matrix View", new MatrixActions(), "loadMatrix");
         //JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
     }

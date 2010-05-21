@@ -8,15 +8,25 @@ import org.jdesktop.application.Task;
 public class SavePresetTask extends Task {
 
     private Device device;
+    int index;
+    String name;
 
-    public SavePresetTask(Application app) {
+    public SavePresetTask(Application app, int index, String name) {
         super(app);
         device = ((DigiHdmiApp)app).getDevice();
+        this.index = index;
+        this.name = name;
     }
 
     @Override
     protected Object doInBackground()
     throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        // Tell the device to save the preset(index)
+        message("savingPreset");
+        device.savePreset(index, name);
+        message("presetSaved");
+
+        // No update to matrix necessary on a save!
+        return null;
     }
 }

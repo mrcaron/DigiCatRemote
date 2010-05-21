@@ -125,8 +125,8 @@ public class MatrixPanel extends JPanel {
         }
     }
 
-    public void select(Integer key, Integer value, boolean init) {
-        JRadioButton b = radioButtons.get(cols*value+key);
+    public void select(Integer output, Integer input, boolean init) {
+        JRadioButton b = radioButtons.get(cols*input+output);
         if (init)
             b.setSelected(true);
         else

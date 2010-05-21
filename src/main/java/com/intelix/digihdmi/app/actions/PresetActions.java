@@ -3,9 +3,12 @@ package com.intelix.digihdmi.app.actions;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.tasks.ApplyPresetTask;
 import com.intelix.digihdmi.app.tasks.LoadPresetsListTask;
+import com.intelix.digihdmi.app.tasks.SavePresetTask;
+import com.intelix.digihdmi.app.tasks.SavePresetsListTask;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
@@ -27,7 +30,9 @@ public class PresetActions {
 
     @Action
     public Task showPresetListForSave() {
-        return null;
+        Task t = new SavePresetsListTask(Application.getInstance());
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 
     @Action (block=Task.BlockingScope.WINDOW)
@@ -43,5 +48,34 @@ public class PresetActions {
         Task t = new ApplyPresetTask(appInstance, presetNumber);
         t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
+    }
+
+    @Action (block=Task.BlockingScope.WINDOW)
+    public Task savePresetAndShowMatrixView(ActionEvent ev) {
+        AbstractButton b = (AbstractButton) ev.getSource();
+        int index = b.getName().lastIndexOf('_') + 1;
+        int presetNumber = Integer.parseInt(b.getName().substring(index));
+
+        // Get the new name of the preset
+        JTextField name = new JTextField(18);
+        int result = JOptionPane.showConfirmDialog(
+            ((DigiHdmiApp)appInstance).getMainFrame(),
+            name,
+            "Enter Name",
+            JOptionPane.OK_CANCEL_OPTION
+            );
+
+        appInstance.showMatrixView();
+
+        if (result != JOptionPane.CANCEL_OPTION)
+        {
+            // populate the matrix view with results from preset application
+            Task t = new SavePresetTask(appInstance, presetNumber, name.getText());
+            t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+            return t;
+        } else {
+            // show the matrix view
+            return null;
+        }
     }
 }

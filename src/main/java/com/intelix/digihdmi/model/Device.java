@@ -9,6 +9,7 @@ import com.intelix.net.GetPresetCommand;
 import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.SetCrosspointCommand;
+import com.intelix.net.SetPresetCommand;
 import com.intelix.net.ToggleLockCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
@@ -375,21 +376,9 @@ public class Device {
 
         if (connected)
         {
-            // TODO - fetch preset for number from device,
-            //        load into the preset collection.
             try {
                 connection.write(new GetPresetCommand(number));
-
-                Command c = connection.readOne();
-                if (c.getPayload() instanceof PresetReportPayload) {
-                    PresetReportPayload pld = (PresetReportPayload) c.getPayload();
-
-                    p = new Preset(p.getName(), number);
-                    for(int i=1; i<=MAX_OUTPUTS; i++)
-                    {
-                        p.makeConnection(i, pld.getInputForOutput(i));
-                    }
-                }
+                p = readPresetReport(p.getName(), number);
             } catch (Exception ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -397,6 +386,54 @@ public class Device {
 
         // set the connection matrix from this
         cxnMatrix = p.getConnections();
+    }
+
+    //------------------------------------------------------------------------
+    public void savePreset(int number, String name)
+    {
+        // Get current preset
+        Preset newPreset = new Preset(name, number);
+
+        // Setup the set preset command while filling up new preset
+        SetPresetCommand saveCmd = new SetPresetCommand(number);
+        for(int i=0; i<cxnMatrix.size(); i++)
+        {
+            // add the input to the payload in the correct slot
+            SequencePayload p = (SequencePayload)saveCmd.getPayload();
+            p.add(cxnMatrix.get(i) + 1);
+
+            // add the input and output to the new internal Preset
+            newPreset.makeConnection(cxnMatrix.get(i), i);
+        }
+
+        if (connected)
+        {
+            try {
+                // Set the name of a preset
+                //SetPresetNameCommand cmd = new SetPresetNameCommand(number, name);
+
+                // Write a Set Preset Command
+                connection.write(saveCmd);
+                newPreset = readPresetReport(name, number);
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        presets.set(number-1, newPreset);
+    }
+
+    private Preset readPresetReport(String name, int number) throws IOException {
+        // Read a Preset Report Command
+        Preset p = new Preset(name, number);
+        Command c = connection.readOne();
+        if (c.getPayload() instanceof PresetReportPayload) {
+            PresetReportPayload pld = (PresetReportPayload) c.getPayload();
+            for (int i = 1; i <= MAX_OUTPUTS; i++) {
+                p.makeConnection(i, pld.getInputForOutput(i));
+            }
+        }
+        return p;
     }
 
     //------------------------------------------------------------------------

@@ -1,9 +1,11 @@
 package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
 import java.util.Enumeration;
+import javax.swing.JComponent;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
@@ -15,7 +17,7 @@ public class ApplyPresetTask extends Task {
 
     int index = 0;
     Device device = null;
-    // MatrixView matrix = null;
+    //MatrixView matrix = null;
 
     public ApplyPresetTask(Application app, int index) {
         super(app);
@@ -37,7 +39,11 @@ public class ApplyPresetTask extends Task {
             setMessage("Setting output " + output.getIndex());
             device.setSelectedOutput(output.getIndex());
             Connector input = device.getInputForSelectedOutput(false /* not live */);
-            // MatrixView.set(output.getIndex(),input.getIndex());
+            JComponent c = ((DigiHdmiApp)getApplication()).getCurrentView();
+            if (c instanceof MatrixView)
+            {
+                ((MatrixView)c).getMatrixPanel().select(output.getIndex(), input.getIndex(), true);
+            }
         }
 
         return null;
