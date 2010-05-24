@@ -24,10 +24,16 @@ import org.jdesktop.application.Task;
 public class InitMatrixTask extends Task {
 
     protected final Device device;
+    boolean loadNames;
 
     public InitMatrixTask(Application app) {
+        this(app, true);
+    }
+
+    public InitMatrixTask(Application app, boolean loadNames) {
         super(app);
         device = ((DigiHdmiApp) app).getDevice();
+        this.loadNames = loadNames;
     }
 
     @Override
@@ -46,28 +52,27 @@ public class InitMatrixTask extends Task {
             panel.select(e.getKey() /* Output */, e.getValue() /* Input */, true /*INIT*/);
         }
 
-        // Set the input names
-        message("loadingInputNames");
-        Enumeration<Connector> inputs = device.getInputs();
-        for (int i=0;inputs.hasMoreElements();i++)
+        if (loadNames)
         {
-            message("loadingInputNameX",i);
-            panel.setInputName(i,inputs.nextElement().getName());
+            // Set the input names
+            message("loadingInputNames");
+            Enumeration<Connector> inputs = device.getInputs();
+            for (int i=0;inputs.hasMoreElements();i++)
+            {
+                message("loadingInputNameX",i);
+                panel.setInputName(i,inputs.nextElement().getName());
+            }
+            // Set the output names
+            Enumeration<Connector> outputs = device.getOutputs();
+            message("loadingOutputNames");
+            for (int i=0;outputs.hasMoreElements();i++)
+            {
+                message("loadingOutputNameX",i);
+                panel.setOutputName(i,outputs.nextElement().getName());
+            }
         }
-        // Set the output names
-        Enumeration<Connector> outputs = device.getOutputs();
-        message("loadingOutputNames");
-        for (int i=0;outputs.hasMoreElements();i++)
-        {
-            message("loadingOutputNameX",i);
-            panel.setOutputName(i,outputs.nextElement().getName());
-        }
-
+        
         message("loadingFinished");
         return null;
-    }
-
-    private Object MatrixView(DigiHdmiApp digiHdmiApp) {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }
