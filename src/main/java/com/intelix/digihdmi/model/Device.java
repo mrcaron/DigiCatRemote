@@ -10,6 +10,7 @@ import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
 import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.SetPresetCommand;
+import com.intelix.net.SetPresetNameCommand;
 import com.intelix.net.ToggleLockCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
@@ -410,7 +411,7 @@ public class Device {
         {
             try {
                 // Set the name of a preset
-                //SetPresetNameCommand cmd = new SetPresetNameCommand(number, name);
+                SetPresetNameCommand cmd = new SetPresetNameCommand(number, name);
 
                 // Write a Set Preset Command
                 connection.write(saveCmd);
