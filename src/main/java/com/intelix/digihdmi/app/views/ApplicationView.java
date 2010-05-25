@@ -43,7 +43,7 @@ public abstract class ApplicationView extends JPanel {
 
     protected void initializeHomePanel() {
         homePanel = createHomePanel();
-        btnHome = new JButton();
+        btnHome = new JButton("Home");
         homePanel.add(btnHome);
         setHomeAction(Application.getInstance().getContext().getActionMap().get("showHomeView"));
     }
