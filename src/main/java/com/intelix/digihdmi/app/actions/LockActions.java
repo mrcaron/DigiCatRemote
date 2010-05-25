@@ -19,23 +19,34 @@ import org.jdesktop.application.Task;
  */
 public class LockActions {
     DigiHdmiApp app;
+    boolean lockEnabled;
 
     public LockActions() {
         app = (DigiHdmiApp) Application.getInstance();
     }
 
-    @Action
+    public boolean isLockEnabled() {
+        return lockEnabled;
+    }
+
+    public void setLockEnabled(boolean lockEnabled) {
+        this.lockEnabled = lockEnabled;
+    }
+
+    @Action/*(enabledProperty="lockEnabled")*/
     public Task lock()
     {
         int result = JOptionPane.showConfirmDialog(
                 ((DigiHdmiApp)app).getMainFrame(), // Modal against main frame
-                "Really lock the system?",
+                "Really lock the device?",
                 "Confirmation",
                 JOptionPane.YES_NO_OPTION
                 );
         if (result == JOptionPane.YES_OPTION)
         {
-            return new ToggleLockTask(app, true /* Lock it */);
+            Task t = new ToggleLockTask(app, true /* Lock it */);
+            
+            return t;
         } else
             return null;
     }

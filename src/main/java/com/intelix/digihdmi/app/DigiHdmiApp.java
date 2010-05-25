@@ -3,11 +3,13 @@
  */
 package com.intelix.digihdmi.app;
 
+import com.intelix.digihdmi.app.actions.AdminActions;
 import com.intelix.digihdmi.app.actions.ConnectorActions;
 import com.intelix.digihdmi.app.actions.LockActions;
 import com.intelix.digihdmi.app.actions.MatrixActions;
 import com.intelix.digihdmi.app.actions.MenuActions;
 import com.intelix.digihdmi.app.actions.PresetActions;
+import com.intelix.digihdmi.app.views.AdminPanel;
 import com.intelix.digihdmi.app.views.PresetLoadListView;
 import com.intelix.digihdmi.app.views.RoomSelectionView;
 import com.intelix.digihdmi.app.views.DigiHdmiAppMainView;
@@ -41,19 +43,11 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent presetView;
     JComponent matrixView;
     JComponent lockView;
+    JComponent adminView;
     FrameView mainFrame;
     Device device;
 
-    public DigiHdmiApp() {
-        currentView = null;
-        homeView = null;
-        roomView = null;
-        roomSelectionView = null;
-        presetView = null;
-        mainFrame = null;
-
-        device = null;
-    }
+    public DigiHdmiApp() {}
 
     public JComponent getCurrentView() {
         return currentView;
@@ -146,6 +140,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
             getContext().getActionMap(new MatrixActions()).get("setConnection")
         );
 
+        adminView = new AdminPanel();
+        AdminActions aa = new AdminActions();
+        ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap(aa).get("setPassword"));
+        ((AdminPanel)adminView).setBtnDefineInputsAction(getContext().getActionMap(aa).get("defineInputs"));
+        ((AdminPanel)adminView).setBtnDefineOutputsAction(getContext().getActionMap(aa).get("defineOutputs"));
+
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
@@ -221,7 +221,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     @org.jdesktop.application.Action
     public void showUtilView() {
-        JOptionPane.showMessageDialog(null, "Ah ah ah! Not so fast! This isn't implemented yet.");
+        showPanel(adminView, "Utilities");
     }
 
     public class BusyInputBlocker extends InputBlocker

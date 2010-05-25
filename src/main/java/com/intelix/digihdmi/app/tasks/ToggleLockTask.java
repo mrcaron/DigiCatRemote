@@ -7,8 +7,6 @@ package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Device;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
@@ -48,7 +46,7 @@ public class ToggleLockTask extends Task {
             message("lockEnd");
         } else {
             message("unlockStart");
-            
+
             if (device.unlock(password))
             {
                 ((DigiHdmiApp)getApplication()).showHomeView();

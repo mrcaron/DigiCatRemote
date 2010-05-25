@@ -27,7 +27,6 @@ public class LockView extends JPanel {
         setLayout(new MigLayout("wrap 1,fill","[align center]"));
         
         btnUnlock = new JButton("Unlock");
-        btnUnlock.setName("btnUnlock");
         
         this.add(btnUnlock);
         this.add(new JLabel("Device is now locked."));
