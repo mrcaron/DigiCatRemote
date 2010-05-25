@@ -8,6 +8,7 @@ import com.intelix.net.GetOutputNameCommand;
 import com.intelix.net.GetPresetCommand;
 import com.intelix.net.GetPresetNameCommand;
 import com.intelix.net.IPConnection;
+import com.intelix.net.SetAdminPasswordCommand;
 import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.SetPresetCommand;
 import com.intelix.net.SetPresetNameCommand;
@@ -53,9 +54,10 @@ public class Device {
     private static int MAX_INPUTS = 0;
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
-    private static int MAX_PASS_LENGTH = 4;
     private static String PASSWORD = "abcd";
     private boolean locked = false;
+
+    private String adminPassword = "abcd";
 
     // flag used to determine if we need to visit the device for input/output information
     private boolean resetInput = true;
@@ -83,9 +85,6 @@ public class Device {
         try {
             String delay = getConfiguration().getString("delay");
             DELAY = Integer.parseInt(delay);
-            MAX_PASS_LENGTH = Integer.parseInt(
-                    getConfiguration().getString("MAX_PASS_LENGTH"));
-
         } catch (Exception e)
         {
             // IGNORE - We'll just have a 0 delay then, and a 4 length password
@@ -424,6 +423,7 @@ public class Device {
         presets.set(number-1, newPreset);
     }
 
+    //------------------------------------------------------------------------
     private Preset readPresetReport(String name, int number) throws IOException {
         // Read a Preset Report Command
         Preset p = new Preset(name, number);
@@ -442,6 +442,7 @@ public class Device {
         return MAX_OUTPUTS;
     }
 
+    //------------------------------------------------------------------------
     public byte[] getPasswordHash() {
         MessageDigest md;
         byte[] digested = null;
@@ -456,6 +457,36 @@ public class Device {
         return digested;
     }
 
+    //------------------------------------------------------------------------
+    // Network library just truncates password if it's too long.
+    public void setAdminPassword(String pwd)
+    {
+        String newPwd = pwd;
+        if (connected)
+        {
+            try {
+                connection.write(new SetAdminPasswordCommand(pwd));
+                Command c = connection.readOne();
+                if (c.getPayload() instanceof SequencePayload)
+                {
+                    SequencePayload p = (SequencePayload)c.getPayload();
+                    int status = p.get(0);
+                    if (status != 0)
+                    {
+                        newPwd = this.adminPassword;
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        this.adminPassword = newPwd;
+    }
+
+    //------------------------------------------------------------------------
+    // Lock functionality
+    //------------------------------------------------------------------------
     // Network library just truncates password if it's too long.
     public boolean unlock(String password) {
         boolean success = false;

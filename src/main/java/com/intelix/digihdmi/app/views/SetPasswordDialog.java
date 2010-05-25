@@ -3,19 +3,13 @@ package com.intelix.digihdmi.app.views;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
@@ -30,17 +24,18 @@ public class SetPasswordDialog extends JDialog {
     JButton btnOK;
     JButton btnCancel;
     String password;
+    boolean cancelled = false;
 
     public SetPasswordDialog(Window w) {
         super(w);
 
+        setModal(true);
+        setTitle("Change password");
         initializeComponents();
     }
 
-    public void initializeComponents()
+    private void initializeComponents()
     {
-        setTitle("Change password");
-
         JPanel p = new JPanel();
         p.setLayout(new MigLayout((System.getProperty("DEBUG_UI") == null ? "" : "debug,")));
 
@@ -56,8 +51,16 @@ public class SetPasswordDialog extends JDialog {
         btnOK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                password = new String(tfPass1.getPassword());
+                String p1 = new String(tfPass1.getPassword());
+                String p2 = new String(tfPass2.getPassword());
+
+                if (p1.equals(p2)) {
+                    password = p1;
                 SetPasswordDialog.this.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Passwords don't match!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
         btnCancel = new JButton("Cancel");
@@ -76,8 +79,13 @@ public class SetPasswordDialog extends JDialog {
         pack();
     }
 
+    // if this is null, then setting the password didn't work!
     public String getValidPass() {
         return password;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     /**
