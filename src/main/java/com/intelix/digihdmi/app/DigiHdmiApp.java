@@ -17,6 +17,7 @@ import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.app.views.HomePanel;
 import com.intelix.digihdmi.app.views.LockView;
 import com.intelix.digihdmi.app.views.MatrixView;
+import com.intelix.digihdmi.app.views.PasswordChangePanel;
 import com.intelix.digihdmi.app.views.RoomView;
 import com.intelix.digihdmi.model.Device;
 import java.awt.Dimension;
@@ -44,6 +45,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent matrixView;
     JComponent lockView;
     JComponent adminView;
+    JComponent passwordView;
+    
     FrameView mainFrame;
     Device device;
 
@@ -142,9 +145,15 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         adminView = new AdminPanel();
         AdminActions aa = new AdminActions();
-        ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap(aa).get("setPassword"));
+        ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap().get("showPasswdView"));
         ((AdminPanel)adminView).setBtnDefineInputsAction(getContext().getActionMap(aa).get("defineInputs"));
         ((AdminPanel)adminView).setBtnDefineOutputsAction(getContext().getActionMap(aa).get("defineOutputs"));
+
+        passwordView = new PasswordChangePanel();
+        ((PasswordChangePanel)passwordView).setBtnAdminPsswdAction(
+                getContext().getActionMap(aa).get("setAdminPassword"));
+        ((PasswordChangePanel)passwordView).setBtnUnlockPsswdAction(
+                getContext().getActionMap(aa).get("setUnlockPassword"));
 
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
@@ -222,6 +231,11 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showUtilView() {
         showPanel(adminView, "Utilities");
+    }
+
+    @org.jdesktop.application.Action
+    public void showPasswdView() {
+        showPanel(passwordView, "Change Passwords");
     }
 
     public class BusyInputBlocker extends InputBlocker

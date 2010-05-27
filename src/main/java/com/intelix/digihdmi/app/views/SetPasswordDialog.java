@@ -69,6 +69,7 @@ public class SetPasswordDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 password = "";
                 SetPasswordDialog.this.setVisible(false);
+                SetPasswordDialog.this.cancelled = true;
             }
         });
 

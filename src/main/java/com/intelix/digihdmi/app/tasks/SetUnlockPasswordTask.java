@@ -6,19 +6,19 @@ import org.jdesktop.application.Application;
  *
  * @author mcaron
  */
-public class SetAdminPasswordTask extends SetPasswordTask {
+public class SetUnlockPasswordTask extends SetPasswordTask {
 
-    public SetAdminPasswordTask(Application app) {
+    public SetUnlockPasswordTask(Application app) {
         super(app);
     }
 
-    public SetAdminPasswordTask(Application app, String passwd) {
+    public SetUnlockPasswordTask(Application app, String passwd) {
         super(app, passwd);
     }
 
     @Override
     protected void deviceChangePassword() {
-        device.setAdminPassword(pwd);
+        device.setUnlockPassword(pwd);
     }
 
 }

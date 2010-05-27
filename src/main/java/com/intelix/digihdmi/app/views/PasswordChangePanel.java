@@ -23,14 +23,14 @@ public class PasswordChangePanel extends ApplicationView {
     private JButton btnSetLockPass;
 
     public void setBtnAdminPsswdAction(Action action){ btnSetAdminPass.setAction(action); }
-    public void setBtnLockPsswdAction(Action action){ btnSetLockPass.setAction(action); }
+    public void setBtnUnlockPsswdAction(Action action){ btnSetLockPass.setAction(action); }
 
     @Override
     protected JComponent createRightComponent() {
         JPanel p = new JPanel();
 
         btnSetAdminPass = new JButton("Set Admin Password");
-        btnSetLockPass = new JButton("Set Lock Password");
+        btnSetLockPass = new JButton("Set Unlock Password");
 
         p.setLayout(new MigLayout(
                 (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
