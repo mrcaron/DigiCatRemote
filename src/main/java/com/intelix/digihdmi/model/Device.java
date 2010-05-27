@@ -57,7 +57,7 @@ public class Device {
     private static int MAX_PRESETS = 0;
     private boolean locked = false;
 
-    private String lockPassword = "abcd";
+    private String unlockPassword = "abcd";
     private String adminPassword = "abcd";
 
     // flag used to determine if we need to visit the device for input/output information
@@ -449,7 +449,7 @@ public class Device {
         byte[] digested = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(lockPassword.getBytes());
+            md.update(unlockPassword.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -492,7 +492,7 @@ public class Device {
     }
 
     public void setUnlockPassword(String pwd) {
-        this.lockPassword = setPassword(new SetUnlockPasswordCommand(pwd), pwd);
+        this.unlockPassword = setPassword(new SetUnlockPasswordCommand(pwd), pwd);
     }
 
     //------------------------------------------------------------------------
