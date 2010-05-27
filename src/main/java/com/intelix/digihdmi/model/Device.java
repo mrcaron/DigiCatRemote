@@ -12,6 +12,7 @@ import com.intelix.net.SetAdminPasswordCommand;
 import com.intelix.net.SetCrosspointCommand;
 import com.intelix.net.SetPresetCommand;
 import com.intelix.net.SetPresetNameCommand;
+import com.intelix.net.SetUnlockPasswordCommand;
 import com.intelix.net.ToggleLockCommand;
 import com.intelix.net.payload.ConnectorPayload;
 import com.intelix.net.payload.PairSequencePayload;
@@ -54,9 +55,9 @@ public class Device {
     private static int MAX_INPUTS = 0;
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
-    private static String PASSWORD = "abcd";
     private boolean locked = false;
 
+    private String lockPassword = "abcd";
     private String adminPassword = "abcd";
 
     // flag used to determine if we need to visit the device for input/output information
@@ -448,7 +449,7 @@ public class Device {
         byte[] digested = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(PASSWORD.getBytes());
+            md.update(lockPassword.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -458,18 +459,19 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
+    // Password operations
     // Network library just truncates password if it's too long.
-    public void setAdminPassword(String pwd)
+    private String setPassword(Command cmdIn, String pwd)
     {
         String newPwd = pwd;
         if (connected)
         {
             try {
-                connection.write(new SetAdminPasswordCommand(pwd));
-                Command c = connection.readOne();
-                if (c.getPayload() instanceof SequencePayload)
+                connection.write(cmdIn);
+                Command cmdOut = connection.readOne();
+                if (cmdOut.getPayload() instanceof SequencePayload)
                 {
-                    SequencePayload p = (SequencePayload)c.getPayload();
+                    SequencePayload p = (SequencePayload)cmdOut.getPayload();
                     int status = p.get(0);
                     if (status != 0)
                     {
@@ -481,7 +483,16 @@ public class Device {
             }
         }
 
-        this.adminPassword = newPwd;
+        return newPwd;
+    }
+
+    public void setAdminPassword(String pwd)
+    {
+        this.adminPassword = setPassword(new SetAdminPasswordCommand(pwd), pwd);
+    }
+
+    public void setUnlockPassword(String pwd) {
+        this.lockPassword = setPassword(new SetUnlockPasswordCommand(pwd), pwd);
     }
 
     //------------------------------------------------------------------------
