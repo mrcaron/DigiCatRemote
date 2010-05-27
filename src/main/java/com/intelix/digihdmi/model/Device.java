@@ -127,8 +127,8 @@ public class Device {
 
     //------------------------------------------------------------------------
     @Override
-    /* Kill the connection on finailzation in the case that it's still up. */
     protected void finalize() throws Throwable {
+    /* Kill the connection on finailzation in the case that it's still up. */
         super.finalize();
         if (connected) {
             disconnect();
@@ -444,12 +444,12 @@ public class Device {
     }
 
     //------------------------------------------------------------------------
-    public byte[] getPasswordHash() {
+    public byte[] getPasswordHash(String pwd) {
         MessageDigest md;
         byte[] digested = null;
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(unlockPassword.getBytes());
+            md.update(pwd.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
@@ -517,7 +517,7 @@ public class Device {
             }
         } else {
             // get actual pass digest
-            byte[] passHash = getPasswordHash();
+            byte[] passHash = getPasswordHash(unlockPassword);
 
             // digest submitted password
             MessageDigest md;
