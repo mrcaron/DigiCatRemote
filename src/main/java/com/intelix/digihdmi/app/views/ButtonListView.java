@@ -3,8 +3,6 @@ package com.intelix.digihdmi.app.views;
 import com.intelix.digihdmi.util.BasicAction;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
-import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +26,10 @@ public class ButtonListView extends ApplicationView {
     @Override
     protected JComponent createRightComponent() {
         buttonsPanel = createButtonsPanel();
+        buttonsPanel.setOpaque(false);
         scrollPane = new JScrollPane(buttonsPanel);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
         return scrollPane;
     }
 

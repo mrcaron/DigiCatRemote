@@ -13,6 +13,7 @@ public class ButtonContainerPanel extends JPanel {
 
     public ButtonContainerPanel() {
         initComponents();
+        setOpaque(false);
     }
 
     private void initComponents() {
@@ -30,7 +31,7 @@ public class ButtonContainerPanel extends JPanel {
         b.setAction(action);
         b.setText(name);
         b.setName(name.replace(' ', '_') + "_" + this.buttonList.size());
-
+        b.setOpaque(false);
         add(b);
         validate();
         getParent().validate();
