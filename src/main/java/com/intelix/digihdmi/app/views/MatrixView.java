@@ -27,8 +27,10 @@ public class MatrixView extends ApplicationView {
 
         btnSavePreset = new JButton("Save Preset");
         btnSavePreset.setName("btnSavePreset");
+        btnSavePreset.setOpaque(false);
         btnLoadPreset = new JButton("Load Preset");
         btnLoadPreset.setName("btnLoadPreset");
+        btnLoadPreset.setOpaque(false);
 
         // right here is breaking the snizzle...
         btnLoadPreset.setAction(

@@ -5,8 +5,8 @@
 
 package com.intelix.digihdmi.app.views;
 
-import com.intelix.digihdmi.util.BasicAction;
-import java.awt.event.ActionEvent;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.Action;
@@ -57,6 +57,7 @@ public class MatrixPanel extends JPanel {
         for (int x=0; x<cols; x++)
         {
             JLabel l = new JLabel("OUT_" + x);
+            l.setForeground(Color.white);
             outputLabels.add(l);
             this.add(l, x==0 ? "skip" : "");
         }
@@ -64,6 +65,7 @@ public class MatrixPanel extends JPanel {
         for (int y=0; y<rows; y++) /* INPUTS */
         {
             JLabel lin = new JLabel("IN_" + y);
+            lin.setForeground(Color.white);
             inputLabels.add(lin);
             this.add(lin);
             for (int x=0; x<cols; x++)  /* OUTPUTS */
@@ -78,6 +80,7 @@ public class MatrixPanel extends JPanel {
                 }
 
                 JRadioButton b = new JRadioButton();
+                b.setOpaque(false);
                 b.setName("b_" + x + "_" + y);   // name is "b_<OUTPUT>_<INPUT>"
                 b.setSelected(y == 0);
 
