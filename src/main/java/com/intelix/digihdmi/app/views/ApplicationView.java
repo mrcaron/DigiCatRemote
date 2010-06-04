@@ -1,6 +1,8 @@
 package com.intelix.digihdmi.app.views;
 
-import java.awt.Dimension;
+import com.intelix.digihdmi.util.IconImageButton;
+import com.intelix.digihdmi.util.PaintedJPanel;
+import java.awt.Image;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -8,12 +10,13 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 
-public abstract class ApplicationView extends JPanel {
+public abstract class ApplicationView extends PaintedJPanel {
 
     private JComponent rightComponent;
     private JButton btnHome;
     protected JPanel homePanel;
     protected JPanel bottomPanel;
+    private Image bgImage;
 
     public ApplicationView() {
         initializeComponents();
@@ -38,18 +41,22 @@ public abstract class ApplicationView extends JPanel {
     }
 
     protected JPanel createHomePanel() {
-        return new JPanel(new MigLayout("wrap 1, aligny top", "[fill,grow]"));
+        JPanel p = new JPanel(new MigLayout("wrap 1, aligny top", "[grow]"));
+        p.setOpaque(false);
+        return p;
     }
 
     protected void initializeHomePanel() {
         homePanel = createHomePanel();
-        btnHome = new JButton("Home");
-        homePanel.add(btnHome);
+        btnHome = new IconImageButton("Home_under");
+        homePanel.add(btnHome, "align center");
         setHomeAction(Application.getInstance().getContext().getActionMap().get("showHomeView"));
     }
 
     protected JPanel createBottomPanel() {
-        return new JPanel(new MigLayout("wrap 1, aligny bottom"));
+        JPanel p = new JPanel(new MigLayout("wrap 1, aligny bottom"));
+        p.setOpaque(false);
+        return p;
     }
 
     protected void initializeBottomPanel() {
@@ -60,5 +67,6 @@ public abstract class ApplicationView extends JPanel {
     protected void initializeRightComponent()
     {
         rightComponent = createRightComponent();
+        rightComponent.setOpaque(false);
     }
 }
