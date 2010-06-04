@@ -30,7 +30,9 @@ public class PasswordChangePanel extends ApplicationView {
         JPanel p = new JPanel();
 
         btnSetAdminPass = new JButton("Set Admin Password");
+        btnSetAdminPass.setOpaque(false);
         btnSetLockPass = new JButton("Set Unlock Password");
+        btnSetLockPass.setOpaque(false);
 
         p.setLayout(new MigLayout(
                 (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +

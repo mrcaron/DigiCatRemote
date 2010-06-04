@@ -1,5 +1,6 @@
 package com.intelix.digihdmi.app.views;
 
+import com.intelix.digihdmi.util.IconImageButton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import org.jdesktop.application.Application;
@@ -25,10 +26,10 @@ public class MatrixView extends ApplicationView {
     protected void initializeHomePanel() {
         super.initializeHomePanel();
 
-        btnSavePreset = new JButton("Save Preset");
+        btnSavePreset = new IconImageButton("Save_underBtn");
         btnSavePreset.setName("btnSavePreset");
         btnSavePreset.setOpaque(false);
-        btnLoadPreset = new JButton("Load Preset");
+        btnLoadPreset = new IconImageButton("Load_underBtn");
         btnLoadPreset.setName("btnLoadPreset");
         btnLoadPreset.setOpaque(false);
 

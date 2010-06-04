@@ -5,6 +5,7 @@
 
 package com.intelix.digihdmi.app.views;
 
+import com.intelix.digihdmi.util.TextImageButton;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -31,17 +32,17 @@ public class AdminPanel extends ApplicationView {
     protected JComponent createRightComponent() {
         JPanel p = new JPanel();
 
-        btnSetPassword = new JButton("Set Password");
-        btnDefineInputs = new JButton("Define Inputs");
-        btnDefineOutputs = new JButton("Define Outputs");
+        btnSetPassword = new TextImageButton("SetPasswordBtn");
+        btnDefineInputs = new TextImageButton("DefInputsBtn");
+        btnDefineOutputs = new TextImageButton("DefOutputsBtn");
 
         p.setLayout(new MigLayout(
                 (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
                 "al 50% 50%, gapy 10"));
 
-        p.add(btnSetPassword,   "align center, growx, wrap");
-        p.add(btnDefineInputs,  "align center, growx, wrap");
-        p.add(btnDefineOutputs, "align center, growx, wrap");
+        p.add(btnSetPassword,   "align center, wrap");
+        p.add(btnDefineInputs,  "align center, wrap");
+        p.add(btnDefineOutputs, "align center, wrap");
 
         return p;
     }
