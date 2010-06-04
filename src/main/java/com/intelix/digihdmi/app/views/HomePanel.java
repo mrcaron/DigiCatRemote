@@ -1,18 +1,21 @@
 package com.intelix.digihdmi.app.views;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.util.IconImageButton;
+import com.intelix.digihdmi.util.PaintedJPanel;
+import com.intelix.digihdmi.util.TextImageButton;
 import java.awt.Dimension;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
-public class HomePanel extends JPanel {
+public class HomePanel extends PaintedJPanel {
 
     private JButton btnAdmin;
     private JButton btnLock;
@@ -24,19 +27,19 @@ public class HomePanel extends JPanel {
 
     public HomePanel() {
         resourceMap = ((DigiHdmiApp) Application.getInstance(DigiHdmiApp.class)).getContext().getResourceMap(HomePanel.class);
-        initComponents();
+        initializeComponents();
     }
 
-    private void initComponents() {
-        btnRoomView = new JButton();
+    protected void initializeComponents() {
+        btnRoomView = new TextImageButton("RoomViewBtn");
         btnRoomView.setName("btnRoomView");
-        btnMatrixView = new JButton();
+        btnMatrixView = new TextImageButton("MatrixViewBtn");
         btnMatrixView.setName("btnMatrixView");
-        btnPresetView = new JButton();
+        btnPresetView = new TextImageButton("PresetViewBtn");
         btnPresetView.setName("btnPresetView");
-        btnAdmin = new JButton();
+        btnAdmin = new IconImageButton("UtilBtn");;
         btnAdmin.setName("btnAdmin");
-        btnLock = new JButton();
+        btnLock = new IconImageButton("LockBtn");
         btnLock.setName("btnLock");
 
 
@@ -71,7 +74,7 @@ public class HomePanel extends JPanel {
             @Override
             public void run() {
                 JFrame f = new JFrame("Home Panel");
-                System.setProperty("DEBUG_UI", "true");
+                //System.setProperty("DEBUG_UI", "true");
                 HomePanel lv = new HomePanel();
                 f.getContentPane().add(lv);
                 f.setSize(700,400);
