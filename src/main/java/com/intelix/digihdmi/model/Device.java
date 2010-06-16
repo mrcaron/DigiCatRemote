@@ -20,6 +20,7 @@ import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
 import com.intelix.net.payload.SequencePayload;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -55,6 +56,9 @@ public class Device {
     private static int MAX_INPUTS = 0;
     private static int MAX_OUTPUTS = 0;
     private static int MAX_PRESETS = 0;
+
+    private static int MAX_TRIES = 3;
+
     private boolean locked = false;
 
     private String unlockPassword = "abcd";
@@ -195,8 +199,10 @@ public class Device {
                 return false;
             }
             Command c = new SetCrosspointCommand(selectedInput+1, selectedOutput+1);
+            boolean obtained = false;
             try {
                 connection.write(c);
+                Thread.sleep(1500);
                 c = connection.readOne();
                 if (c.getPayload() instanceof PairSequencePayload) {
                     PairSequencePayload p = (PairSequencePayload) c.getPayload();
@@ -234,17 +240,23 @@ public class Device {
             public Preset nextElement() {
                 if (connected && resetPresets)
                 {
-                   try {
-                    connection.write(new GetPresetNameCommand(index + 1));
-
-                    Command c = connection.readOne();
-                    if (c.getPayload() instanceof PresetNamePayload) {
-                        PresetNamePayload p = (PresetNamePayload) c.getPayload();
-                        String name = p.getData();
-                        presets.set(index, new Preset(name, index + 1));
-                    }
-                    } catch (Exception ex) {
-                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                    boolean obtained = false;
+                    int i = 0;
+                    while(!obtained && i < MAX_TRIES)
+                    {
+                        try {
+                            connection.write(new GetPresetNameCommand(index + 1));
+                            //Thread.sleep(1000);
+                            Command c = connection.readOne();
+                            if (c.getPayload() instanceof PresetNamePayload) {
+                                PresetNamePayload p = (PresetNamePayload) c.getPayload();
+                                String name = p.getData();
+                                presets.set(index, new Preset(name, index + 1));
+                            }
+                            obtained = true;
+                        } catch (IOException ex) {
+                            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
                 }
                 if (DELAY > 0) {
@@ -432,7 +444,7 @@ public class Device {
         if (c.getPayload() instanceof PresetReportPayload) {
             PresetReportPayload pld = (PresetReportPayload) c.getPayload();
             for (int i = 1; i <= MAX_OUTPUTS; i++) {
-                p.makeConnection(i, pld.getInputForOutput(i));
+                p.makeConnection(pld.getInputForOutput(i), i);
             }
         }
         return p;
@@ -468,6 +480,7 @@ public class Device {
         {
             try {
                 connection.write(cmdIn);
+                //Thread.sleep(1500);
                 Command cmdOut = connection.readOne();
                 if (cmdOut.getPayload() instanceof SequencePayload)
                 {
@@ -480,7 +493,10 @@ public class Device {
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } /*catch (InterruptedException ex)
+            {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
         }
 
         return newPwd;

@@ -41,7 +41,7 @@ public class ApplyPresetTask extends Task {
         {
             setMessage("Setting output " + (i+1));
             Entry<Integer,Integer> e = xpIterator.next();
-            panel.select(e.getKey() /* Output */, e.getValue() /* Input */, true /*INIT*/);
+            panel.select(e.getKey()-1 /* Output */, e.getValue()-1 /* Input */, true /*INIT*/);
         }
         
 
