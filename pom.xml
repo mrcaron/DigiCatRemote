@@ -4,8 +4,11 @@
     <groupId>com.intelix</groupId>
     <artifactId>DigiHdmiApp</artifactId>
     <packaging>jar</packaging>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
     <name>DigiHdmiApp - AppFramework Application</name>
+    <properties>
+        <netbeans.hint.license>intelix</netbeans.hint.license>
+    </properties>
     <build>
         <plugins>
             <plugin>
