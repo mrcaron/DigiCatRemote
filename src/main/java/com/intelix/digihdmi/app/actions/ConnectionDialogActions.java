@@ -81,7 +81,7 @@ public class ConnectionDialogActions {
             fail = false;
         } catch (IOException ex)
         {
-            JOptionPane.showMessageDialog(dlg, "Connection failed!\n" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
         }
 
         if (! fail)
@@ -94,7 +94,7 @@ public class ConnectionDialogActions {
                 device.connect();
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(dlg, "Error reconnecting to previously set connection!\n"
-                    + "Remaining in disconnected state."
+                    + "Remaining in disconnected state.\n\nDetails:\n\t"
                     + ex.getMessage(),
                     "Fail!", JOptionPane.ERROR_MESSAGE);
         }
@@ -112,7 +112,7 @@ public class ConnectionDialogActions {
                 device.connect();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
-                        + "Remaining in disconnected state."
+                        + "Remaining in disconnected state.\n\nDetails:\n\t"
                         + ex.getMessage(),
                         "Fail!", JOptionPane.ERROR_MESSAGE);
             }
