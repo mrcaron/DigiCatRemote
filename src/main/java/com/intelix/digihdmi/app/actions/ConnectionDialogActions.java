@@ -28,8 +28,15 @@ public class ConnectionDialogActions {
     @Action
     public void onOk()
     {
+        alterDevice();
+        dlg.setVisible(false);
+    }
+
+    protected boolean alterDevice() {
         String dlgIA = dlg.getIpAddr();
         int dlgPt = dlg.getPort();
+
+        boolean altered = false;
 
         Connection c = device.getConnection();
         if (c instanceof IPConnection)
@@ -37,12 +44,18 @@ public class ConnectionDialogActions {
             IPConnection ipc = (IPConnection) c;
 
             if (! ipc.getIpAddr().equals(dlgIA))
+            {
                 ipc.setIpAddr(dlgIA);
+                altered = true;
+            }
             if (ipc.getPort() != dlgPt)
+            {
                 ipc.setPort(dlgPt);
+                altered = true;
+            }
         }
 
-        dlg.setVisible(false);
+        return altered;
     }
 
     @Action
@@ -91,6 +104,18 @@ public class ConnectionDialogActions {
     @Action
     public void onConnect()
     {
-        
+        boolean altered = alterDevice();
+
+        if (altered)
+        {
+            try {
+                device.connect();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
+                        + "Remaining in disconnected state."
+                        + ex.getMessage(),
+                        "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
