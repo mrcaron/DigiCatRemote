@@ -108,6 +108,10 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemConnected.setAction(a);
     }
 
+    public void setOptionsMenuItemAction(javax.swing.Action a) {
+        this.menuItemOptions.setAction(a);
+    }
+
     public void setResetCacheMenuItemAction(javax.swing.Action a) {
         this.menuItemResetCache.setAction(a);
     }
@@ -132,6 +136,7 @@ public class DigiHdmiAppMainView extends FrameView {
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
         menuItemConnected = new javax.swing.JCheckBoxMenuItem();
+        menuItemOptions = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -163,6 +168,11 @@ public class DigiHdmiAppMainView extends FrameView {
         menuItemConnected.setText(resourceMap.getString("menuItemConnected.text")); // NOI18N
         menuItemConnected.setName("menuItemConnected"); // NOI18N
         menuDevice.add(menuItemConnected);
+
+        menuItemOptions.setText(resourceMap.getString("menuItemOptions.text")); // NOI18N
+        menuItemOptions.setActionCommand(resourceMap.getString("menuItemOptions.actionCommand")); // NOI18N
+        menuItemOptions.setName("menuItemOptions"); // NOI18N
+        menuDevice.add(menuItemOptions);
 
         menuBar.add(menuDevice);
 
@@ -220,6 +230,7 @@ public class DigiHdmiAppMainView extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
     private javax.swing.JCheckBoxMenuItem menuItemConnected;
+    private javax.swing.JMenuItem menuItemOptions;
     private javax.swing.JMenuItem menuItemResetCache;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;

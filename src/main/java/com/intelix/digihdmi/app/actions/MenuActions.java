@@ -1,15 +1,24 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.app.views.DeviceConnectionDlg;
+import com.intelix.digihdmi.app.views.DevicePrefsDlg;
 import com.intelix.digihdmi.model.Device;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import javax.swing.ActionMap;
 import javax.swing.JCheckBoxMenuItem;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
 public class MenuActions {
+
+    ActionMap actionMap = null;
+
+    public MenuActions() {
+        actionMap = Application.getInstance().getContext().getActionMap(this);
+    }
 
     @Action
     public Task toggleDeviceConnect(ActionEvent av) {

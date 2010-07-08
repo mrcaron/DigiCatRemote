@@ -53,6 +53,13 @@
                 <Property name="name" type="java.lang.String" value="menuItemConnected" noResource="true"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemOptions">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="menuItemOptions.text"/>
+                <Property name="actionCommand" type="java.lang.String" resourceKey="menuItemOptions.actionCommand"/>
+                <Property name="name" type="java.lang.String" value="menuItemOptions" noResource="true"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="helpMenu">

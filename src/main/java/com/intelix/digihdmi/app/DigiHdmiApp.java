@@ -8,12 +8,15 @@ import com.intelix.digihdmi.app.actions.ConnectorActions;
 import com.intelix.digihdmi.app.actions.LockActions;
 import com.intelix.digihdmi.app.actions.MatrixActions;
 import com.intelix.digihdmi.app.actions.MenuActions;
+import com.intelix.digihdmi.app.actions.OptionsDialogActions;
 import com.intelix.digihdmi.app.actions.PresetActions;
 import com.intelix.digihdmi.app.views.AdminPanel;
 import com.intelix.digihdmi.app.views.PresetLoadListView;
 import com.intelix.digihdmi.app.views.RoomSelectionView;
 import com.intelix.digihdmi.app.views.DigiHdmiAppMainView;
 import com.intelix.digihdmi.app.views.ButtonListView;
+import com.intelix.digihdmi.app.views.DeviceConnectionDlg;
+import com.intelix.digihdmi.app.views.DevicePrefsDlg;
 import com.intelix.digihdmi.app.views.HomePanel;
 import com.intelix.digihdmi.app.views.LockView;
 import com.intelix.digihdmi.app.views.MatrixView;
@@ -24,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
@@ -46,6 +50,9 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent lockView;
     JComponent adminView;
     JComponent passwordView;
+
+    JDialog deviceOptionsDlg;
+    JDialog deviceConnectionDlg;
     
     FrameView mainFrame;
     Device device;
@@ -155,11 +162,23 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((PasswordChangePanel)passwordView).setBtnUnlockPsswdAction(
                 getContext().getActionMap(aa).get("setUnlockPassword"));
 
+        // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
+        ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("showOptionsDlg"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
         ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
-        
+
+        // Set up dialogs
+        deviceOptionsDlg = new DevicePrefsDlg(mainFrame.getFrame());
+        ((DevicePrefsDlg)deviceOptionsDlg).setBtnConnectionAction(getContext().getActionMap().get("showConnectionDlg"));
+        //((DevicePrefsDlg)deviceOptionsDlg).setBtnOkAction(optionsActionMap.get("onOk"));
+        ((DevicePrefsDlg)deviceOptionsDlg).setBtnCancelAction(getContext().getActionMap().get("hideOptionsDlg"));
+
+        deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
+        //((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(null);
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(getContext().getActionMap().get("hideConnectionDlg"));
+
     }
 
     @org.jdesktop.application.Action
@@ -236,6 +255,30 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showPasswdView() {
         showPanel(passwordView, "Change Passwords");
+    }
+
+    @org.jdesktop.application.Action
+    public void showOptionsDlg()
+    {
+        deviceOptionsDlg.setVisible(true);
+    }
+
+    @org.jdesktop.application.Action
+    public void hideOptionsDlg()
+    {
+        deviceOptionsDlg.setVisible(false);
+    }
+
+    @org.jdesktop.application.Action
+    public void showConnectionDlg()
+    {
+        deviceConnectionDlg.setVisible(true);
+    }
+
+    @org.jdesktop.application.Action
+    public void hideConnectionDlg()
+    {
+        deviceConnectionDlg.setVisible(false);
     }
 
     public class BusyInputBlocker extends InputBlocker

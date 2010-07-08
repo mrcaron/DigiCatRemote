@@ -4,6 +4,7 @@
 
 package com.intelix.digihdmi.app.views;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -30,9 +31,22 @@ public class DevicePrefsDlg extends JDialog {
     private JButton btnOk;
     private JButton btnCancel;
 
+    public DevicePrefsDlg() {
+        super();
+        init();
+    }
+
+    public DevicePrefsDlg(JDialog f) {
+        super(f);
+        init();
+    }
+
     public DevicePrefsDlg(JFrame f) {
         super(f);
-
+        init();
+    }
+    
+    public void init() {
         setModal(true);
         setTitle("Device Preferences");
         initializeComponents();
@@ -44,27 +58,27 @@ public class DevicePrefsDlg extends JDialog {
         p.setLayout(new MigLayout((System.getProperty("DEBUG_UI") == null ? "" : "debug,")));
 
         p.add(new JLabel("Number of Inputs:"));
-        fldNumInputs = new JTextField(2);
+        fldNumInputs = new JTextField(4);
         p.add(fldNumInputs);
 
         p.add(new JLabel("Preset Name Length:"));
-        fldPresetNameLength = new JTextField(2);
+        fldPresetNameLength = new JTextField(4);
         p.add(fldPresetNameLength, "wrap");
 
         p.add(new JLabel("Number of Outputs:"));
-        fldNumOutputs = new JTextField(2);
+        fldNumOutputs = new JTextField(4);
         p.add(fldNumOutputs);
 
         p.add(new JLabel("Max Admin Password Length:"));
-        fldAdminPassLength = new JTextField(2);
+        fldAdminPassLength = new JTextField(4);
         p.add(fldAdminPassLength, "wrap");
 
         p.add(new JLabel("Number of Presets:"));
-        fldNumPresets = new JTextField(2);
+        fldNumPresets = new JTextField(4);
         p.add(fldNumPresets);
 
         p.add(new JLabel("Max Lock Password Length:"));
-        fldLockPassLength = new JTextField(2);
+        fldLockPassLength = new JTextField(4);
         p.add(fldLockPassLength, "wrap");
 
         btnConnection = new JButton("Connection...");
@@ -76,6 +90,21 @@ public class DevicePrefsDlg extends JDialog {
 
         setContentPane(p);
         pack();
+    }
+
+    public void setBtnCancelAction(Action action)
+    {
+        btnCancel.setAction(action);
+    }
+
+    public void setBtnOkAction(Action action)
+    {
+        btnOk.setAction(action);
+    }
+
+    public void setBtnConnectionAction(Action action)
+    {
+        btnConnection.setAction(action);
     }
 
     public int getAdminPassLength() {
@@ -127,7 +156,7 @@ public class DevicePrefsDlg extends JDialog {
             @Override
             public void run() {
                 //System.setProperty("DEBUG_UI", "true");
-                final DevicePrefsDlg d = new DevicePrefsDlg(null);
+                final DevicePrefsDlg d = new DevicePrefsDlg();
                 d.setVisible(true);
                 d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             }
