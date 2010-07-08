@@ -162,6 +162,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
         ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnTestAction(deviceCxnMap.get("onTest"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
 
@@ -276,7 +277,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         if (c instanceof IPConnection)
         {
             dlg.setIpAddr(((IPConnection)c).getIpAddr());
-            dlg.setPort(""+((IPConnection)c).getPort());
+            dlg.setPort(((IPConnection)c).getPort());
         }
 
         deviceConnectionDlg.setVisible(true);

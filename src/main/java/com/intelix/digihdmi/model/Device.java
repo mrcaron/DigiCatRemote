@@ -506,6 +506,11 @@ public class Device {
     public void setPresetNameLength(int pnl) {
         MAX_PRESET_NAME_LENGTH = pnl;
     }
+    public void setConnection(Connection cxn) throws IOException {
+        if (isConnected())
+            disconnect();
+        connection = (IPConnection) cxn;
+    }
     public Connection getConnection() {
         return connection;
     }

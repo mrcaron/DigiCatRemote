@@ -74,14 +74,14 @@ public class DeviceConnectionDlg extends JDialog {
         pack();
     }
 
-    public String getPort()
+    public int getPort()
     {
-        return fldPort.getText();
+        return Integer.parseInt(fldPort.getText());
     }
 
-    public void setPort(String port)
+    public void setPort(int port)
     {
-        fldPort.setText(port);
+        fldPort.setText(""+port);
     }
 
     public String getIpAddr()
