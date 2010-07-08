@@ -20,6 +20,8 @@ import com.intelix.net.payload.PairSequencePayload;
 import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
 import com.intelix.net.payload.SequencePayload;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -44,30 +46,45 @@ import java.util.logging.Logger;
  */
 public class Device {
 
+    @XStreamOmitField
     private int selectedOutput;
+
+    @XStreamOmitField
     private int selectedInput;
     private ArrayList<Connector> inputs = new ArrayList();
     private ArrayList<Connector> outputs = new ArrayList();
     private ArrayList<Preset> presets = new ArrayList();
     private HashMap<Integer, Integer> cxnMatrix = new HashMap();  /* KEY=Output,VALUE=Input */
+    
+    @XStreamOmitField
     private static ResourceBundle config;
+    
+    @XStreamOmitField
     private boolean connected;
     private IPConnection connection;
-    private static int MAX_INPUTS = 0;
-    private static int MAX_OUTPUTS = 0;
-    private static int MAX_PRESETS = 0;
+    private int numInputs = 0;
+    private int numOutputs = 0;
+    private int numPresets = 0;
+    private int maxPresetNameLength = 0;
+    private int maxAdminPassLength = 0;
+    private int maxLockPassLength = 0;
 
     private static int MAX_TRIES = 3;
 
+    @XStreamOmitField
     private boolean locked = false;
 
     private String unlockPassword = "abcd";
     private String adminPassword = "abcd";
 
     // flag used to determine if we need to visit the device for input/output information
+    @XStreamOmitField
     private boolean resetInput = true;
+    @XStreamOmitField
     private boolean resetOutput = true;
+    @XStreamOmitField
     private boolean resetPresets = true;
+    @XStreamOmitField
     private boolean resetXP = true;
 
     // DEBUG PROPERTIES
@@ -80,9 +97,6 @@ public class Device {
         }
         return config;
     }
-    private int MAX_PRESET_NAME_LENGTH = 0;
-    private int MAX_ADMIN_PASS_LENGTH = 0;
-    private int MAX_LOCK_PASS_LENGTH = 0;
 
     //------------------------------------------------------------------------
     /* Initialize the Device */
@@ -99,11 +113,11 @@ public class Device {
         }
 
         try {
-            MAX_PRESET_NAME_LENGTH = Integer.parseInt(
+            maxPresetNameLength = Integer.parseInt(
                 getConfiguration().getString("MAX_PRESET_NAME_LENGTH"));
-            MAX_ADMIN_PASS_LENGTH = Integer.parseInt(
+            maxAdminPassLength = Integer.parseInt(
                 getConfiguration().getString("MAX_ADMIN_PASS_LENGTH"));
-            MAX_LOCK_PASS_LENGTH = Integer.parseInt(
+            maxLockPassLength = Integer.parseInt(
                 getConfiguration().getString("MAX_LOCK_PASS_LENGTH"));
         } catch (Exception e)
         {
@@ -114,9 +128,9 @@ public class Device {
             connection.setIpAddr(getConfiguration().getString("ipAddr"));
             connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
 
-            MAX_INPUTS = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
-            MAX_OUTPUTS = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
-            MAX_PRESETS = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
+            numInputs = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
+            numOutputs = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
+            numPresets = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
 
         } catch (NullPointerException ex) {
             connection = null;
@@ -128,17 +142,17 @@ public class Device {
         outputs = new ArrayList();
 
         // MRC - This initialization assumes that # inputs == # outputs
-        for (int i = 0; i < MAX_INPUTS; ++i) {
+        for (int i = 0; i < numInputs; ++i) {
             inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
             outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));          
             cxnMatrix.put(i,0);
         }
 
-        for (int i = 0; i < MAX_PRESETS; i++) {
+        for (int i = 0; i < numPresets; i++) {
             Preset p = new Preset((i + 1) + " - Test", i + 1);
-            for(int j=0; j < MAX_INPUTS; ++j)
+            for(int j=0; j < numInputs; ++j)
             {
-                p.makeConnection((j * i) % MAX_INPUTS, (j + i) % MAX_INPUTS);
+                p.makeConnection((j * i) % numInputs, (j + i) % numInputs);
             }
             presets.add(p);
         }
@@ -242,7 +256,7 @@ public class Device {
             public boolean hasMoreElements() {
                 if (connected && resetPresets)
                 {
-                    boolean r = index < MAX_PRESETS;
+                    boolean r = index < numPresets;
                     if (!r) { 
                         resetPresets = false;
                     }
@@ -309,7 +323,7 @@ public class Device {
 
             @Override
             public int getMax() {
-                return MAX_INPUTS;
+                return numInputs;
             }
         };
     }
@@ -338,7 +352,7 @@ public class Device {
 
             @Override
             public int getMax() {
-                return MAX_OUTPUTS;
+                return numOutputs;
             }
 
         };
@@ -458,7 +472,7 @@ public class Device {
         Command c = connection.readOne();
         if (c.getPayload() instanceof PresetReportPayload) {
             PresetReportPayload pld = (PresetReportPayload) c.getPayload();
-            for (int i = 1; i <= MAX_OUTPUTS; i++) {
+            for (int i = 1; i <= numOutputs; i++) {
                 p.makeConnection(pld.getInputForOutput(i), i);
             }
         }
@@ -467,44 +481,44 @@ public class Device {
 
     //------------------------------------------------------------------------
     public int getNumOutputs() {
-        return MAX_OUTPUTS;
+        return numOutputs;
     }
     public void setNumOutputs(int no) {
-        MAX_OUTPUTS = no;
+        numOutputs = no;
         resetOutput = true;
     }
     public int getNumInputs() {
-        return MAX_INPUTS;
+        return numInputs;
     }
     public void setNumInputs(int ni) {
-        MAX_INPUTS = ni;
+        numInputs = ni;
         resetInput = true;
     }
     public int getNumPresets() {
-        return MAX_PRESETS;
+        return numPresets;
     }
     public void setNumPresets(int np) {
-        MAX_PRESETS = np;
+        numPresets = np;
         resetPresets = true;
     }
     public int getAdminPassLength() {
-        return MAX_ADMIN_PASS_LENGTH;
+        return maxAdminPassLength;
     }
     public void setAdminPassLength(int apl)
     {
-        MAX_ADMIN_PASS_LENGTH = apl;
+        maxAdminPassLength = apl;
     }
     public int getLockPassLength() {
-        return MAX_LOCK_PASS_LENGTH;
+        return maxLockPassLength;
     }
     public void setLockPassLength(int lpl) {
-        MAX_LOCK_PASS_LENGTH = lpl;
+        maxLockPassLength = lpl;
     }
     public int getPresetNameLength() {
-        return MAX_PRESET_NAME_LENGTH;
+        return maxPresetNameLength;
     }
     public void setPresetNameLength(int pnl) {
-        MAX_PRESET_NAME_LENGTH = pnl;
+        maxPresetNameLength = pnl;
     }
     public void setConnection(Connection cxn) throws IOException {
         if (isConnected())

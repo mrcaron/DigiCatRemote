@@ -2,10 +2,18 @@ package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Device;
+import com.thoughtworks.xstream.XStream;
 import java.awt.event.ActionEvent;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import javax.swing.ActionMap;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
@@ -36,14 +44,18 @@ public class MenuActions {
 
     @Action
     public void onDeviceSettings() {
-        ((DigiHdmiApp)Application.getInstance()).showOptionsDlg();
+        ((DigiHdmiApp) Application.getInstance()).showOptionsDlg();
     }
 
     private class ResetCacheTask extends Task {
-        ResetCacheTask(Application app) {super(app);}
+
+        ResetCacheTask(Application app) {
+            super(app);
+        }
+
         @Override
         protected Object doInBackground() throws Exception {
-            ((DigiHdmiApp)getApplication()).getDevice().setFullReset(true);
+            ((DigiHdmiApp) getApplication()).getDevice().setFullReset(true);
             setMessage("Cache Reset.");
             return null;
         }
@@ -90,14 +102,60 @@ public class MenuActions {
     }
 
     @Action
-    public void onFileSave()
-    {
-        JOptionPane.showMessageDialog(null, "File::Save");
+    public void onFileSave() {
+        // Get a file location from the user
+        JFileChooser fc = new JFileChooser();
+        int result = fc.showSaveDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fc.getSelectedFile();
+
+            // Create the serializer
+            XStream xstream = new XStream();
+            xstream.autodetectAnnotations(true);
+
+            // setup aliases
+            //...
+
+            // get the xml string
+            String xml = xstream.toXML(((DigiHdmiApp) Application.getInstance()).getDevice());
+
+            try {
+                if (!file.exists()) {
+                    file.createNewFile();
+                }
+                if (file.canWrite()) {
+                    Writer w = new BufferedWriter(
+                            new FileWriter(file));
+                    w.write(xml);
+                    w.close();
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame(),
+                        "Can't save " + file.getAbsolutePath() + " to disk.\n\nDetails:\n" + ex.getMessage(),
+                        "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
+
+        }
     }
 
     @Action
-    public void onFileLoad()
-    {
-        JOptionPane.showMessageDialog(null, "File::Load");
+    public void onFileLoad() {
+        JFileChooser fc = new JFileChooser();
+        int result = fc.showOpenDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame());
+        if (result == JFileChooser.APPROVE_OPTION) {
+            XStream xstream = new XStream();
+            xstream.autodetectAnnotations(true);
+            
+            File f = fc.getSelectedFile();
+            try {
+                Reader r = new FileReader(f);
+                Device d = (Device) xstream.fromXML(r);
+                ((DigiHdmiApp) Application.getInstance()).setDevice(d);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame(),
+                        "Can't load " + f.getAbsolutePath() + " from disk.\n\nDetails:\n" + ex.getMessage(),
+                        "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }

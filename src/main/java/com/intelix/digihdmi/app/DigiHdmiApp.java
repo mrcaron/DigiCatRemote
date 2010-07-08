@@ -55,6 +55,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
         return device;
     }
 
+    public void setDevice(Device d) {
+        device = d;
+    }
+
     /**
      * At startup create and show the main frame of the application.
      */
