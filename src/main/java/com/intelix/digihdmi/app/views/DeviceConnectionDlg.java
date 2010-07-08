@@ -23,6 +23,8 @@ public class DeviceConnectionDlg extends JDialog {
     private JTextField fldPort;
     private JButton btnOk;
     private JButton btnCancel;
+    private JButton btnTest;
+    private JButton btnConnect;
 
     public DeviceConnectionDlg() {
         super();
@@ -63,6 +65,10 @@ public class DeviceConnectionDlg extends JDialog {
         p.add(btnOk, "tag ok, span, split");
         btnCancel = new JButton("Cancel");
         p.add(btnCancel, "tag cancel");
+        btnTest = new JButton("Test");
+        p.add(btnTest, "tag other");
+        btnConnect = new JButton("Connect");
+        p.add(btnConnect, "tag other");
 
         setContentPane(p);
         pack();
@@ -96,6 +102,16 @@ public class DeviceConnectionDlg extends JDialog {
     public void setBtnOkAction(Action action)
     {
         btnOk.setAction(action);
+    }
+
+    public void setBtnTestAction(Action action)
+    {
+        btnTest.setAction(action);
+    }
+
+    public void setBtnConnectAction(Action action)
+    {
+        btnConnect.setAction(action);
     }
 
     /**
