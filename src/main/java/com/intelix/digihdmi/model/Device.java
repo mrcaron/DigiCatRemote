@@ -469,20 +469,42 @@ public class Device {
     public int getNumOutputs() {
         return MAX_OUTPUTS;
     }
+    public void setNumOutputs(int no) {
+        MAX_OUTPUTS = no;
+        resetOutput = true;
+    }
     public int getNumInputs() {
         return MAX_INPUTS;
+    }
+    public void setNumInputs(int ni) {
+        MAX_INPUTS = ni;
+        resetInput = true;
     }
     public int getNumPresets() {
         return MAX_PRESETS;
     }
+    public void setNumPresets(int np) {
+        MAX_PRESETS = np;
+        resetPresets = true;
+    }
     public int getAdminPassLength() {
         return MAX_ADMIN_PASS_LENGTH;
+    }
+    public void setAdminPassLength(int apl)
+    {
+        MAX_ADMIN_PASS_LENGTH = apl;
     }
     public int getLockPassLength() {
         return MAX_LOCK_PASS_LENGTH;
     }
+    public void setLockPassLength(int lpl) {
+        MAX_LOCK_PASS_LENGTH = lpl;
+    }
     public int getPresetNameLength() {
         return MAX_PRESET_NAME_LENGTH;
+    }
+    public void setPresetNameLength(int pnl) {
+        MAX_PRESET_NAME_LENGTH = pnl;
     }
     public Connection getConnection() {
         return connection;

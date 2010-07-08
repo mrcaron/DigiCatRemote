@@ -3,24 +3,8 @@
  */
 package com.intelix.digihdmi.app;
 
-import com.intelix.digihdmi.app.actions.AdminActions;
-import com.intelix.digihdmi.app.actions.ConnectorActions;
-import com.intelix.digihdmi.app.actions.LockActions;
-import com.intelix.digihdmi.app.actions.MatrixActions;
-import com.intelix.digihdmi.app.actions.MenuActions;
-import com.intelix.digihdmi.app.actions.PresetActions;
-import com.intelix.digihdmi.app.views.AdminPanel;
-import com.intelix.digihdmi.app.views.PresetLoadListView;
-import com.intelix.digihdmi.app.views.RoomSelectionView;
-import com.intelix.digihdmi.app.views.DigiHdmiAppMainView;
-import com.intelix.digihdmi.app.views.ButtonListView;
-import com.intelix.digihdmi.app.views.DeviceConnectionDlg;
-import com.intelix.digihdmi.app.views.DevicePrefsDlg;
-import com.intelix.digihdmi.app.views.HomePanel;
-import com.intelix.digihdmi.app.views.LockView;
-import com.intelix.digihdmi.app.views.MatrixView;
-import com.intelix.digihdmi.app.views.PasswordChangePanel;
-import com.intelix.digihdmi.app.views.RoomView;
+import com.intelix.digihdmi.app.actions.*;
+import com.intelix.digihdmi.app.views.*;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
@@ -165,19 +149,21 @@ public class DigiHdmiApp extends SingleFrameApplication {
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
-        ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("showOptionsDlg"));
+        ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("onDeviceSettings"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
         ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
 
         // Set up dialogs
         deviceOptionsDlg = new DevicePrefsDlg(mainFrame.getFrame());
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnConnectionAction(getContext().getActionMap().get("showConnectionDlg"));
-        //((DevicePrefsDlg)deviceOptionsDlg).setBtnOkAction(optionsActionMap.get("onOk"));
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnCancelAction(getContext().getActionMap().get("hideOptionsDlg"));
+        ActionMap devicePrefsMap = getContext().getActionMap(new OptionsDialogActions());
+        ((DevicePrefsDlg)deviceOptionsDlg).setBtnConnectionAction(devicePrefsMap.get("onConnectProps"));
+        ((DevicePrefsDlg)deviceOptionsDlg).setBtnOkAction(devicePrefsMap.get("onOk"));
+        ((DevicePrefsDlg)deviceOptionsDlg).setBtnCancelAction(devicePrefsMap.get("onCancel"));
 
         deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
-        //((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(null);
-        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(getContext().getActionMap().get("hideConnectionDlg"));
+        ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
 
     }
 
@@ -276,6 +262,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
     {
         deviceOptionsDlg.setVisible(false);
     }
+    
+    public DevicePrefsDlg getOptionsDlg() {
+        return (DevicePrefsDlg)deviceOptionsDlg;
+    }
 
     @org.jdesktop.application.Action
     public void showConnectionDlg()
@@ -296,6 +286,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
     public void hideConnectionDlg()
     {
         deviceConnectionDlg.setVisible(false);
+    }
+
+    public DeviceConnectionDlg getConnectionDlg() {
+        return (DeviceConnectionDlg)deviceConnectionDlg;
     }
 
     public class BusyInputBlocker extends InputBlocker
