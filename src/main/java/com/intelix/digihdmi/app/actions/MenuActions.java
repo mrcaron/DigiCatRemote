@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.swing.ActionMap;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
@@ -86,5 +87,17 @@ public class MenuActions {
             this.item.setSelected(false);
             setMessage("Failed to connect.");
         }
+    }
+
+    @Action
+    public void onFileSave()
+    {
+        JOptionPane.showMessageDialog(null, "File::Save");
+    }
+
+    @Action
+    public void onFileLoad()
+    {
+        JOptionPane.showMessageDialog(null, "File::Load");
     }
 }

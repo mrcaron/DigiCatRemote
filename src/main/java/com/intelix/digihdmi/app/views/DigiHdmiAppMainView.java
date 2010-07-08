@@ -116,6 +116,14 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemResetCache.setAction(a);
     }
 
+    public void setFileLoadMenuItemAction(javax.swing.Action a) {
+        this.menuItemFileLoad.setAction(a);
+    }
+
+    public void setFileSaveMenuItemAction(javax.swing.Action a) {
+        this.menuItemFileSave.setAction(a);
+    }
+
     public JCheckBoxMenuItem getMenuItemConnected() {
         return this.menuItemConnected;
     }
@@ -133,6 +141,8 @@ public class DigiHdmiAppMainView extends FrameView {
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         menuItemResetCache = new javax.swing.JMenuItem();
+        menuItemFileSave = new javax.swing.JMenuItem();
+        menuItemFileLoad = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
         menuItemConnected = new javax.swing.JCheckBoxMenuItem();
@@ -154,6 +164,22 @@ public class DigiHdmiAppMainView extends FrameView {
         menuItemResetCache.setText(resourceMap.getString("menuItemResetCache.text")); // NOI18N
         menuItemResetCache.setName("menuItemResetCache"); // NOI18N
         fileMenu.add(menuItemResetCache);
+
+        menuItemFileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemFileSave.setMnemonic('S');
+        menuItemFileSave.setText(resourceMap.getString("menuItemFileSave.text")); // NOI18N
+        menuItemFileSave.setToolTipText(resourceMap.getString("menuItemFileSave.toolTipText")); // NOI18N
+        menuItemFileSave.setName("menuItemFileSave"); // NOI18N
+        fileMenu.add(menuItemFileSave);
+        menuItemFileSave.getAccessibleContext().setAccessibleDescription(resourceMap.getString("menuItemFileSave.AccessibleContext.accessibleDescription")); // NOI18N
+
+        menuItemFileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        menuItemFileLoad.setMnemonic('O');
+        menuItemFileLoad.setText(resourceMap.getString("menuItemFileLoad.text")); // NOI18N
+        menuItemFileLoad.setToolTipText(resourceMap.getString("menuItemFileLoad.toolTipText")); // NOI18N
+        menuItemFileLoad.setName("menuItemFileLoad"); // NOI18N
+        fileMenu.add(menuItemFileLoad);
+        menuItemFileLoad.getAccessibleContext().setAccessibleDescription(resourceMap.getString("menuItemFileLoad.AccessibleContext.accessibleDescription")); // NOI18N
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getActionMap(DigiHdmiAppMainView.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
@@ -204,7 +230,7 @@ public class DigiHdmiAppMainView extends FrameView {
             .add(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(statusMessageLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 204, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 230, Short.MAX_VALUE)
                 .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusAnimationLabel)
@@ -230,6 +256,8 @@ public class DigiHdmiAppMainView extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
     private javax.swing.JCheckBoxMenuItem menuItemConnected;
+    private javax.swing.JMenuItem menuItemFileLoad;
+    private javax.swing.JMenuItem menuItemFileSave;
     private javax.swing.JMenuItem menuItemOptions;
     private javax.swing.JMenuItem menuItemResetCache;
     private javax.swing.JProgressBar progressBar;

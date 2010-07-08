@@ -152,6 +152,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("onDeviceSettings"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
         ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
+        ((DigiHdmiAppMainView) mainFrame).setFileLoadMenuItemAction(menuActionMap.get("onFileLoad"));
+        ((DigiHdmiAppMainView) mainFrame).setFileSaveMenuItemAction(menuActionMap.get("onFileSave"));
 
         // Set up dialogs
         deviceOptionsDlg = new DevicePrefsDlg(mainFrame.getFrame());
