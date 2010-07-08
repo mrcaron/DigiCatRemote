@@ -1,6 +1,7 @@
 package com.intelix.digihdmi.model;
 
 import com.intelix.net.Command;
+import com.intelix.net.Connection;
 import com.intelix.net.GetAllCrosspointsCommand;
 import com.intelix.net.GetCrosspointCommand;
 import com.intelix.net.GetInputNameCommand;
@@ -20,7 +21,6 @@ import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
 import com.intelix.net.payload.SequencePayload;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -80,6 +80,9 @@ public class Device {
         }
         return config;
     }
+    private int MAX_PRESET_NAME_LENGTH = 0;
+    private int MAX_ADMIN_PASS_LENGTH = 0;
+    private int MAX_LOCK_PASS_LENGTH = 0;
 
     //------------------------------------------------------------------------
     /* Initialize the Device */
@@ -93,6 +96,18 @@ public class Device {
         } catch (Exception e)
         {
             // IGNORE - We'll just have a 0 delay then, and a 4 length password
+        }
+
+        try {
+            MAX_PRESET_NAME_LENGTH = Integer.parseInt(
+                getConfiguration().getString("MAX_PRESET_NAME_LENGTH"));
+            MAX_ADMIN_PASS_LENGTH = Integer.parseInt(
+                getConfiguration().getString("MAX_ADMIN_PASS_LENGTH"));
+            MAX_LOCK_PASS_LENGTH = Integer.parseInt(
+                getConfiguration().getString("MAX_LOCK_PASS_LENGTH"));
+        } catch (Exception e)
+        {
+            // IGNORE
         }
 
         try {
@@ -453,6 +468,24 @@ public class Device {
     //------------------------------------------------------------------------
     public int getNumOutputs() {
         return MAX_OUTPUTS;
+    }
+    public int getNumInputs() {
+        return MAX_INPUTS;
+    }
+    public int getNumPresets() {
+        return MAX_PRESETS;
+    }
+    public int getAdminPassLength() {
+        return MAX_ADMIN_PASS_LENGTH;
+    }
+    public int getLockPassLength() {
+        return MAX_LOCK_PASS_LENGTH;
+    }
+    public int getPresetNameLength() {
+        return MAX_PRESET_NAME_LENGTH;
+    }
+    public Connection getConnection() {
+        return connection;
     }
 
     //------------------------------------------------------------------------

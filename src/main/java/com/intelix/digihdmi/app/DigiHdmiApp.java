@@ -8,7 +8,6 @@ import com.intelix.digihdmi.app.actions.ConnectorActions;
 import com.intelix.digihdmi.app.actions.LockActions;
 import com.intelix.digihdmi.app.actions.MatrixActions;
 import com.intelix.digihdmi.app.actions.MenuActions;
-import com.intelix.digihdmi.app.actions.OptionsDialogActions;
 import com.intelix.digihdmi.app.actions.PresetActions;
 import com.intelix.digihdmi.app.views.AdminPanel;
 import com.intelix.digihdmi.app.views.PresetLoadListView;
@@ -23,12 +22,13 @@ import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.app.views.PasswordChangePanel;
 import com.intelix.digihdmi.app.views.RoomView;
 import com.intelix.digihdmi.model.Device;
+import com.intelix.net.Connection;
+import com.intelix.net.IPConnection;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
@@ -260,6 +260,14 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showOptionsDlg()
     {
+        DevicePrefsDlg dlg = (DevicePrefsDlg)deviceOptionsDlg;
+        dlg.setNumOutputs(device.getNumOutputs());
+        dlg.setNumInputs(device.getNumInputs());
+        dlg.setNumPresets(device.getNumPresets());
+        dlg.setPresetNameLength(device.getPresetNameLength());
+        dlg.setAdminPassLength(device.getAdminPassLength());
+        dlg.setLockPassLength(device.getLockPassLength());
+        
         deviceOptionsDlg.setVisible(true);
     }
 
@@ -272,6 +280,15 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showConnectionDlg()
     {
+        DeviceConnectionDlg dlg = (DeviceConnectionDlg) deviceConnectionDlg;
+
+        Connection c = device.getConnection();
+        if (c instanceof IPConnection)
+        {
+            dlg.setIpAddr(((IPConnection)c).getIpAddr());
+            dlg.setPort(""+((IPConnection)c).getPort());
+        }
+
         deviceConnectionDlg.setVisible(true);
     }
 

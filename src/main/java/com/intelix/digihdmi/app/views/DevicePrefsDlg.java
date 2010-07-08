@@ -115,6 +115,14 @@ public class DevicePrefsDlg extends JDialog {
         fldAdminPassLength.setText(""+adminPassLength);
     }
 
+    public int getLockPassLength() {
+        return Integer.parseInt(fldLockPassLength.getText());
+    }
+
+    public void setLockPassLength(int lockPassLength) {
+        fldLockPassLength.setText(""+lockPassLength);
+    }
+
     public int getNumInputs() {
         return Integer.parseInt(fldNumInputs.getText());
     }
