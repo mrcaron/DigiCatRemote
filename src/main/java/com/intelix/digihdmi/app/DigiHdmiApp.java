@@ -37,6 +37,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
+    JDialog syncDlg;
     
     FrameView mainFrame;
     Device device;
@@ -173,6 +174,11 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
 
+        ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
+        syncDlg = new SynchronizationDlg(mainFrame.getFrame());
+        ((SynchronizationDlg)syncDlg).setBtnCancelAction(syncMap.get("onCancel"));
+        ((SynchronizationDlg)syncDlg).setBtnReadAction(syncMap.get("onPull"));
+        ((SynchronizationDlg)syncDlg).setBtnWriteAction(syncMap.get("onPush"));
     }
 
     @org.jdesktop.application.Action
@@ -276,6 +282,18 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     @org.jdesktop.application.Action
+    public void showSyncDlg()
+    {
+        syncDlg.setVisible(true);
+    }
+    
+    @org.jdesktop.application.Action
+    public void hideSyncDlg()
+    {
+        syncDlg.setVisible(false);
+    }
+
+    @org.jdesktop.application.Action
     public void showConnectionDlg()
     {
         DeviceConnectionDlg dlg = (DeviceConnectionDlg) deviceConnectionDlg;
@@ -298,6 +316,10 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     public DeviceConnectionDlg getConnectionDlg() {
         return (DeviceConnectionDlg)deviceConnectionDlg;
+    }
+
+    public SynchronizationDlg getSyncDlg() {
+        return (SynchronizationDlg)syncDlg;
     }
 
     public class BusyInputBlocker extends InputBlocker

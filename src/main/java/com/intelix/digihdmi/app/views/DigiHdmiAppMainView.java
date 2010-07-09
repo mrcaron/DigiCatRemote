@@ -8,10 +8,12 @@ import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.FrameView;
@@ -118,10 +120,16 @@ public class DigiHdmiAppMainView extends FrameView {
 
     public void setFileLoadMenuItemAction(javax.swing.Action a) {
         this.menuItemFileLoad.setAction(a);
+
+        KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
+        this.menuItemFileLoad.setAccelerator(ctrlO);
     }
 
     public void setFileSaveMenuItemAction(javax.swing.Action a) {
         this.menuItemFileSave.setAction(a);
+
+        KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK);
+        this.menuItemFileSave.setAccelerator(ctrlS);
     }
 
     public JCheckBoxMenuItem getMenuItemConnected() {

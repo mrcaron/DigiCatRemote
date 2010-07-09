@@ -106,16 +106,14 @@ public class ConnectionDialogActions {
     {
         boolean altered = alterDevice();
 
-        if (altered)
-        {
-            try {
-                device.connect();
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
-                        + "Remaining in disconnected state.\n\nDetails:\n\t"
-                        + ex.getMessage(),
-                        "Fail!", JOptionPane.ERROR_MESSAGE);
-            }
+        try {
+            device.connect();
+            app.showSyncDlg();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
+                    + "Remaining in disconnected state.\n\nDetails:\n\t"
+                    + ex.getMessage(),
+                    "Fail!", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
