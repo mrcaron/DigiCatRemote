@@ -6,6 +6,7 @@ package com.intelix.digihdmi.app.views;
 
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.util.DHCheckBoxMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,6 +31,9 @@ public class DigiHdmiAppMainView extends FrameView {
         super(app);
 
         initComponents();
+
+        menuItemConnected = new DHCheckBoxMenuItem();
+        menuDevice.insert(menuItemConnected, 0);
 
         ButtonListView v = new ButtonListView();
         setComponent(v);
@@ -153,7 +157,6 @@ public class DigiHdmiAppMainView extends FrameView {
         menuItemFileLoad = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
-        menuItemConnected = new javax.swing.JCheckBoxMenuItem();
         menuItemOptions = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
@@ -199,12 +202,7 @@ public class DigiHdmiAppMainView extends FrameView {
         menuDevice.setText(resourceMap.getString("menuDevice.text")); // NOI18N
         menuDevice.setName("menuDevice"); // NOI18N
 
-        menuItemConnected.setText(resourceMap.getString("menuItemConnected.text")); // NOI18N
-        menuItemConnected.setName("menuItemConnected"); // NOI18N
-        menuDevice.add(menuItemConnected);
-
         menuItemOptions.setText(resourceMap.getString("menuItemOptions.text")); // NOI18N
-        menuItemOptions.setActionCommand(resourceMap.getString("menuItemOptions.actionCommand")); // NOI18N
         menuItemOptions.setName("menuItemOptions"); // NOI18N
         menuDevice.add(menuItemOptions);
 
@@ -238,7 +236,7 @@ public class DigiHdmiAppMainView extends FrameView {
             .add(statusPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(statusMessageLabel)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 230, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 204, Short.MAX_VALUE)
                 .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(statusAnimationLabel)
@@ -263,7 +261,6 @@ public class DigiHdmiAppMainView extends FrameView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
-    private javax.swing.JCheckBoxMenuItem menuItemConnected;
     private javax.swing.JMenuItem menuItemFileLoad;
     private javax.swing.JMenuItem menuItemFileSave;
     private javax.swing.JMenuItem menuItemOptions;
@@ -279,6 +276,8 @@ public class DigiHdmiAppMainView extends FrameView {
     private final Icon idleIcon;
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
+
+    private DHCheckBoxMenuItem menuItemConnected;
 
     private JDialog aboutBox;
 }

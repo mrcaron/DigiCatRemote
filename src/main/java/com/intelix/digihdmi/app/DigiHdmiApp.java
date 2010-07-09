@@ -153,7 +153,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
-        ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(menuActionMap.get("toggleDeviceConnect"));
+        ActionMap deviceActionMap = getContext().getActionMap(new DeviceActions());
+        ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(deviceActionMap.get("toggleDeviceConnect"));
         ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("onDeviceSettings"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
         ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
@@ -170,7 +171,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
         ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnTestAction(deviceCxnMap.get("onTest"));
-        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceCxnMap.get("onConnect"));
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceActionMap.get("toggleDeviceConnect"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
 

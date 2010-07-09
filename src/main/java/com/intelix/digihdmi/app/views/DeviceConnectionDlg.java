@@ -4,6 +4,7 @@ package com.intelix.digihdmi.app.views;
  * Copyright 2010, Intelix, LLC. All rights reserved.
  */
 
+import com.intelix.digihdmi.util.DHToggleButton;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,7 +25,7 @@ public class DeviceConnectionDlg extends JDialog {
     private JButton btnOk;
     private JButton btnCancel;
     private JButton btnTest;
-    private JButton btnConnect;
+    private DHToggleButton btnConnect;
 
     public DeviceConnectionDlg() {
         super();
@@ -67,11 +68,16 @@ public class DeviceConnectionDlg extends JDialog {
         p.add(btnCancel, "tag cancel");
         btnTest = new JButton("Test");
         p.add(btnTest, "tag other");
-        btnConnect = new JButton("Connect");
+        btnConnect = new DHToggleButton("Connect");
         p.add(btnConnect, "tag other");
 
         setContentPane(p);
         pack();
+    }
+
+    public void toggleConnectButton(boolean on)
+    {
+        btnConnect.setSelected(on);
     }
 
     public int getPort()

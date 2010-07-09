@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7">
   <NonVisualComponents>
@@ -75,16 +75,9 @@
             <Property name="name" type="java.lang.String" value="menuDevice" noResource="true"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="menuItemConnected">
-              <Properties>
-                <Property name="text" type="java.lang.String" resourceKey="menuItemConnected.text"/>
-                <Property name="name" type="java.lang.String" value="menuItemConnected" noResource="true"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemOptions">
               <Properties>
                 <Property name="text" type="java.lang.String" resourceKey="menuItemOptions.text"/>
-                <Property name="actionCommand" type="java.lang.String" resourceKey="menuItemOptions.actionCommand"/>
                 <Property name="name" type="java.lang.String" value="menuItemOptions" noResource="true"/>
               </Properties>
             </MenuItem>
@@ -128,7 +121,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusMessageLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="230" max="32767" attributes="0"/>
+                  <EmptySpace pref="204" max="32767" attributes="0"/>
                   <Component id="progressBar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="statusAnimationLabel" min="-2" max="-2" attributes="0"/>
