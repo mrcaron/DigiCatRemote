@@ -15,21 +15,22 @@ import com.intelix.net.SetPresetCommand;
 import com.intelix.net.SetPresetNameCommand;
 import com.intelix.net.SetUnlockPasswordCommand;
 import com.intelix.net.ToggleLockCommand;
-import com.intelix.net.payload.ConnectorPayload;
+import com.intelix.net.payload.IdNamePayload;
 import com.intelix.net.payload.PairSequencePayload;
-import com.intelix.net.payload.PresetNamePayload;
 import com.intelix.net.payload.PresetReportPayload;
 import com.intelix.net.payload.SequencePayload;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,7 +45,8 @@ import java.util.logging.Logger;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class Device {
+public class Device extends Observable
+{
 
     @XStreamOmitField
     private int selectedOutput;
@@ -143,13 +145,13 @@ public class Device {
 
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < numInputs; ++i) {
-            inputs.add(new Connector("INPUT_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
-            outputs.add(new Connector("OUTPUT_" + (i + 1), "", i + 1));          
+            inputs.add(new Connector("I_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
+            outputs.add(new Connector("O_" + (i + 1), "", i + 1));          
             cxnMatrix.put(i,0);
         }
 
         for (int i = 0; i < numPresets; i++) {
-            Preset p = new Preset((i + 1) + " - Test", i + 1);
+            Preset p = new Preset("PS_" + (i + 1), i + 1);
             for(int j=0; j < numInputs; ++j)
             {
                 p.makeConnection((j * i) % numInputs, (j + i) % numInputs);
@@ -238,6 +240,10 @@ public class Device {
                     selectedInput = p.get(selectedOutput + 1) - 1;
                     //cxnMatrix.put(selectedOutput, selectedInput);
                 }
+            } catch (SocketTimeoutException ex)
+            {
+                Logger.getLogger(Device.class.getName()).log(Level.WARNING,
+                        "Device read timeout occurred", ex);
             } catch (Exception ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 return false;
@@ -277,9 +283,9 @@ public class Device {
                             connection.write(new GetPresetNameCommand(index + 1));
                             //Thread.sleep(1000);
                             Command c = connection.readOne();
-                            if (c.getPayload() instanceof PresetNamePayload) {
-                                PresetNamePayload p = (PresetNamePayload) c.getPayload();
-                                String name = p.getData();
+                            if (c.getPayload() instanceof IdNamePayload) {
+                                IdNamePayload p = (IdNamePayload) c.getPayload();
+                                String name = p.getStrData();
                                 presets.set(index, new Preset(name, index + 1));
                             }
                             obtained = true;
@@ -654,6 +660,27 @@ public class Device {
         return locked;
     }
 
+    public void push() {
+        if (!isConnected())
+            // throw exception
+            return;
+
+        else
+            return;
+
+        /*
+        Iterator i = inputs.iterator();
+        while(i.hasNext())
+        {
+            Connector c = (Connector)i.next();
+            Command cmd = new Command();
+
+
+            //connection.write();
+
+        }*/
+    }
+
     //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
@@ -695,9 +722,9 @@ public class Device {
                     connection.write(getNameLookupCommand(index + 1));
 
                     Command c = connection.readOne();
-                    if (c.getPayload() instanceof ConnectorPayload) {
-                        ConnectorPayload p = (ConnectorPayload) c.getPayload();
-                        String name = p.getData();
+                    if (c.getPayload() instanceof IdNamePayload) {
+                        IdNamePayload p = (IdNamePayload) c.getPayload();
+                        String name = p.getStrData();
 
                         Connector ctr = new Connector(name, "", index + 1);
                         /*try {*/

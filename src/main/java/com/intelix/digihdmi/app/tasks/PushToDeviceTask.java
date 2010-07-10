@@ -20,8 +20,12 @@ public class PushToDeviceTask extends Task {
     }
 
     @Override
+    /**
+     * Assumes we're connected to the device
+     */
     protected Object doInBackground() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet.");
+        device.push();
+        return null;
     }
 
 

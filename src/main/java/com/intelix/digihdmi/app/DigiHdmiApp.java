@@ -175,8 +175,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
 
-        ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
         syncDlg = new SynchronizationDlg(mainFrame.getFrame());
+        ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
         ((SynchronizationDlg)syncDlg).setBtnCancelAction(syncMap.get("onCancel"));
         ((SynchronizationDlg)syncDlg).setBtnReadAction(syncMap.get("onPull"));
         ((SynchronizationDlg)syncDlg).setBtnWriteAction(syncMap.get("onPush"));
@@ -304,6 +304,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         {
             dlg.setIpAddr(((IPConnection)c).getIpAddr());
             dlg.setPort(((IPConnection)c).getPort());
+            dlg.toggleConnectButton(c.isConnected());
         }
 
         deviceConnectionDlg.setVisible(true);

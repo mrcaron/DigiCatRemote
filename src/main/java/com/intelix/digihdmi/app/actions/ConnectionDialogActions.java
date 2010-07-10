@@ -75,13 +75,18 @@ public class ConnectionDialogActions {
         boolean prevConnected = oldC.isConnected();
         boolean fail = true;
         try {
+            if (prevConnected) { device.disconnect(); }
             device.setConnection(newC);
+            Thread.sleep(10);
             device.connect();
             device.disconnect();
             fail = false;
         } catch (IOException ex)
         {
             JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
+        } catch (InterruptedException ex)
+        {
+            // Ignore
         }
 
         if (! fail)

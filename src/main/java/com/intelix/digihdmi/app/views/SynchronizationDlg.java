@@ -28,6 +28,7 @@ public class SynchronizationDlg extends JDialog {
         setModal(true);
         setTitle("Device Synchronization");
         initializeComponents();
+        setLocationRelativeTo(null);
     }
 
     private void initializeComponents() {
