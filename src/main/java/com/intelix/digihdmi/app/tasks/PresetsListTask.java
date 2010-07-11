@@ -47,6 +47,7 @@ public abstract class PresetsListTask extends Task {
             for (int i = 0; presetList.hasMoreElements(); i++) {
                 message("loadingPresetD", i);
                 Preset c = (Preset) presetList.nextElement();
+                setProgress(i,0,device.getNumPresets());
                 message("loadedPresetDS", i, c.getName());
                 this.panel.addButton(c.getName(), null, map.get(getActionName()));
             }

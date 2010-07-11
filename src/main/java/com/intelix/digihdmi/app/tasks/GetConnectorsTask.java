@@ -18,6 +18,7 @@ public class GetConnectorsTask extends Task {
 
     protected final ButtonContainerPanel panel;
     protected final Device device;
+    protected int numConnectors;
 
     public GetConnectorsTask(Application app) {
         super(app);
@@ -54,6 +55,7 @@ public class GetConnectorsTask extends Task {
             for (int i=0; connectorList.hasMoreElements(); i++) {
                 message("loadingConnectionD",i);
                 Connector c = (Connector) connectorList.nextElement();
+                setProgress(i, 0, numConnectors);
                 message("loadedConnectionDS",i,c.getName());
                 panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
             }

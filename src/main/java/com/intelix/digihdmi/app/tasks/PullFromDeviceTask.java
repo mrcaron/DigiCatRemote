@@ -21,7 +21,7 @@ public class PullFromDeviceTask extends Task {
 
     @Override
     protected Object doInBackground() throws Exception {
-        //throw new UnsupportedOperationException("Not supported yet.");
+        device.pull();
         return null;
     }
 

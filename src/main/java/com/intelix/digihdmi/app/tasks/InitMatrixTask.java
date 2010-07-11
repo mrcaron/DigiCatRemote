@@ -42,14 +42,20 @@ public class InitMatrixTask extends Task {
         MatrixView view = (MatrixView) dApp.getCurrentView();
         MatrixPanel panel = view.getMatrixPanel();
 
+        int numCrossPoints = device.getCrossPoints().size();
+        int numOutputs = device.getNumOutputs();
+        int numInputs = device.getNumInputs();
+        int totalTasks = numCrossPoints + numInputs + numOutputs;
+
         // Get the connections
         message("loadingConnections");
         HashMap<Integer,Integer> xp = device.getCrossPoints();
         Iterator<Entry<Integer,Integer>> xpIterator = xp.entrySet().iterator();
-        while(xpIterator.hasNext())
+        for(int i=0;xpIterator.hasNext();i++)
         {
             Entry<Integer,Integer> e = xpIterator.next();
             panel.select(e.getKey() /* Output */, e.getValue() /* Input */, true /*INIT*/);
+            setProgress(i, 0, totalTasks);
         }
 
         if (loadNames)
@@ -61,6 +67,7 @@ public class InitMatrixTask extends Task {
             {
                 message("loadingInputNameX",i);
                 panel.setInputName(i,inputs.nextElement().getName());
+                setProgress(i+numCrossPoints, 0, totalTasks);
             }
             // Set the output names
             Enumeration<Connector> outputs = device.getOutputs();
@@ -69,6 +76,7 @@ public class InitMatrixTask extends Task {
             {
                 message("loadingOutputNameX",i);
                 panel.setOutputName(i,outputs.nextElement().getName());
+                setProgress(i+numCrossPoints+numInputs, 0, totalTasks);
             }
         }
         

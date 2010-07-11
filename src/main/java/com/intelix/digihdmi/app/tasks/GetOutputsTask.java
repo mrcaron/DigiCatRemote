@@ -11,6 +11,7 @@ public class GetOutputsTask extends GetConnectorsTask {
 
     public GetOutputsTask(Application app) {
         super(app);
+        numConnectors = device.getNumOutputs();
     }
 
     @Override

@@ -1,37 +1,13 @@
 package com.intelix.digihdmi.model;
 
-import com.intelix.net.Command;
-import com.intelix.net.Connection;
-import com.intelix.net.GetAllCrosspointsCommand;
-import com.intelix.net.GetCrosspointCommand;
-import com.intelix.net.GetInputNameCommand;
-import com.intelix.net.GetOutputNameCommand;
-import com.intelix.net.GetPresetCommand;
-import com.intelix.net.GetPresetNameCommand;
-import com.intelix.net.IPConnection;
-import com.intelix.net.SetAdminPasswordCommand;
-import com.intelix.net.SetCrosspointCommand;
-import com.intelix.net.SetPresetCommand;
-import com.intelix.net.SetPresetNameCommand;
-import com.intelix.net.SetUnlockPasswordCommand;
-import com.intelix.net.ToggleLockCommand;
-import com.intelix.net.payload.IdNamePayload;
-import com.intelix.net.payload.PairSequencePayload;
-import com.intelix.net.payload.PresetReportPayload;
-import com.intelix.net.payload.SequencePayload;
+import com.intelix.net.*;
+import com.intelix.net.payload.*;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Observable;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -679,6 +655,14 @@ public class Device extends Observable
             //connection.write();
 
         }*/
+    }
+
+    public void pull() {
+        if (!isConnected())
+            // throw exception
+            return;
+        else
+            return;
     }
 
     //------------------------------------------------------------------------

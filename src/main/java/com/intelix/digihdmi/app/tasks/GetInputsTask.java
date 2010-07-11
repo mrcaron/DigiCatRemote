@@ -13,6 +13,7 @@ public class GetInputsTask extends GetConnectorsTask {
 
     public GetInputsTask(Application app) {
         super(app);
+        numConnectors = device.getNumInputs();
     }
 
     @Override
