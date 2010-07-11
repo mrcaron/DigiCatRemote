@@ -3,6 +3,8 @@ package com.intelix.digihdmi.model;
 import com.intelix.net.*;
 import com.intelix.net.payload.*;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.security.MessageDigest;
@@ -23,6 +25,8 @@ import java.util.logging.Logger;
  */
 public class Device extends Observable
 {
+
+    PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
 
     @XStreamOmitField
     private int selectedOutput;
@@ -47,6 +51,9 @@ public class Device extends Observable
     private int maxAdminPassLength = 0;
     private int maxLockPassLength = 0;
 
+    // PropertyChangeListeners will get reports about this one
+    private float progress = 0f;
+
     private static int MAX_TRIES = 3;
 
     @XStreamOmitField
@@ -66,7 +73,7 @@ public class Device extends Observable
     private boolean resetXP = true;
 
     // DEBUG PROPERTIES
-    private static int DELAY = 0;
+    private static int DELAY = 100;
 
     //------------------------------------------------------------------------
     private static ResourceBundle getConfiguration() {
@@ -277,6 +284,7 @@ public class Device extends Observable
                         Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                setProgress((float)index / presets.size());
                 return (Preset) presets.get(index++);
             }
         };
@@ -511,6 +519,22 @@ public class Device extends Observable
         return connection;
     }
 
+    /* For property change listener support */
+    private void setProgress(float progress) {
+        pcsupport.firePropertyChange("progress",this.progress,progress);
+        this.progress = progress;
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener)
+    {
+        pcsupport.addPropertyChangeListener(listener);
+    }
+    
+    public void removePropertyChangeListener(PropertyChangeListener listener)
+    {
+        pcsupport.removePropertyChangeListener(listener);
+    }
+
     //------------------------------------------------------------------------
     public byte[] getPasswordHash(String pwd) {
         MessageDigest md;
@@ -641,28 +665,7 @@ public class Device extends Observable
             // throw exception
             return;
 
-        else
-            return;
-
-        /*
-        Iterator i = inputs.iterator();
-        while(i.hasNext())
-        {
-            Connector c = (Connector)i.next();
-            Command cmd = new Command();
-
-
-            //connection.write();
-
-        }*/
-    }
-
-    public void pull() {
-        if (!isConnected())
-            // throw exception
-            return;
-        else
-            return;
+        return;
     }
 
     //------------------------------------------------------------------------
@@ -729,6 +732,7 @@ public class Device extends Observable
                     Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+            setProgress((float)index / list.size());
             return (Connector) list.get(index++);
         }
 

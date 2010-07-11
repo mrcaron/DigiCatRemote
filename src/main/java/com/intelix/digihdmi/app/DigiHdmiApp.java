@@ -177,9 +177,9 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         syncDlg = new SynchronizationDlg(mainFrame.getFrame());
         ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
-        ((SynchronizationDlg)syncDlg).setBtnCancelAction(syncMap.get("onCancel"));
-        ((SynchronizationDlg)syncDlg).setBtnReadAction(syncMap.get("onPull"));
-        ((SynchronizationDlg)syncDlg).setBtnWriteAction(syncMap.get("onPush"));
+        ((SynchronizationDlg)syncDlg).setBtnDisconnectAction(syncMap.get("onCancel"));
+        ((SynchronizationDlg)syncDlg).setBtnNoAction(syncMap.get("onPull"));
+        ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
     }
 
     @org.jdesktop.application.Action

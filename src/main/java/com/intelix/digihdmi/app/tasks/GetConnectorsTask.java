@@ -7,6 +7,8 @@ import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.BasicAction;
 import java.awt.event.ActionEvent;
+//import java.beans.PropertyChangeEvent;
+//import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -14,7 +16,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
-public class GetConnectorsTask extends Task {
+public class GetConnectorsTask extends Task /*implements PropertyChangeListener*/ {
 
     protected final ButtonContainerPanel panel;
     protected final Device device;
@@ -24,6 +26,7 @@ public class GetConnectorsTask extends Task {
         super(app);
 
         device = ((DigiHdmiApp) app).getDevice();
+        //device.addPropertyChangeListener(this);
 
         JComponent c = ((DigiHdmiApp) app).getCurrentView();
         if (c instanceof ButtonListView) {
@@ -55,9 +58,9 @@ public class GetConnectorsTask extends Task {
             for (int i=0; connectorList.hasMoreElements(); i++) {
                 message("loadingConnectionD",i);
                 Connector c = (Connector) connectorList.nextElement();
-                setProgress(i, 0, numConnectors);
                 message("loadedConnectionDS",i,c.getName());
-                panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
+                setProgress(i,0,numConnectors);
+                postProcessConnector(c);
             }
         }
         return null;
@@ -67,4 +70,17 @@ public class GetConnectorsTask extends Task {
     protected void succeeded(Object result) {
         message("finished");
     }
+
+    protected void postProcessConnector(Connector c) {
+        panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
+    }
+
+    /*
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("progress"))
+        {
+            setProgress((Float)evt.getNewValue());
+        }
+    }*/
 }

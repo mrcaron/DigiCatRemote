@@ -2,6 +2,8 @@ package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Device;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
@@ -9,7 +11,7 @@ import org.jdesktop.application.Task;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class PushToDeviceTask extends Task {
+public class PushToDeviceTask extends Task  implements PropertyChangeListener {
 
     DigiHdmiApp app;
     Device device;
@@ -28,5 +30,13 @@ public class PushToDeviceTask extends Task {
         return null;
     }
 
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (! evt.getPropertyName().equals("progress"))
+            return;
+
+        setProgress((Float)evt.getNewValue());
+    }
 
 }

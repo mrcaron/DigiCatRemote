@@ -11,6 +11,8 @@ import com.intelix.digihdmi.app.views.ButtonContainerPanel;
 import com.intelix.digihdmi.app.views.ButtonListView;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.model.Preset;
+//import java.beans.PropertyChangeEvent;
+//import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
@@ -21,7 +23,7 @@ import org.jdesktop.application.Task;
  *
  * @author mcaron
  */
-public abstract class PresetsListTask extends Task {
+public abstract class PresetsListTask extends Task /*implements PropertyChangeListener*/ {
 
     protected final Device device;
     protected final ButtonContainerPanel panel;
@@ -30,6 +32,7 @@ public abstract class PresetsListTask extends Task {
         super(app);
 
         this.device = ((DigiHdmiApp) app).getDevice();
+        //device.addPropertyChangeListener(this);
 
         JComponent c = ((DigiHdmiApp) app).getCurrentView();
         if (c instanceof ButtonListView) {
@@ -47,8 +50,8 @@ public abstract class PresetsListTask extends Task {
             for (int i = 0; presetList.hasMoreElements(); i++) {
                 message("loadingPresetD", i);
                 Preset c = (Preset) presetList.nextElement();
-                setProgress(i,0,device.getNumPresets());
                 message("loadedPresetDS", i, c.getName());
+                setProgress(i,0,device.getNumPresets());
                 this.panel.addButton(c.getName(), null, map.get(getActionName()));
             }
         }
@@ -56,4 +59,14 @@ public abstract class PresetsListTask extends Task {
     }
 
     protected abstract String getActionName();
+
+    /* for property change listener
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("progress"))
+        {
+            setProgress((Float)evt.getNewValue());
+        }
+    }*/
+
 }

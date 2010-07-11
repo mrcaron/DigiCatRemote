@@ -18,9 +18,9 @@ import net.miginfocom.swing.MigLayout;
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
 public class SynchronizationDlg extends JDialog {
-    private JButton btnRead;
-    private JButton btnWrite;
-    private JButton btnCancel;
+    private JButton btnNo;
+    private JButton btnYes;
+    private JButton btnDisconnect;
 
     public SynchronizationDlg(JFrame f) {
         super(f);
@@ -36,33 +36,35 @@ public class SynchronizationDlg extends JDialog {
         p.setLayout(new MigLayout((System.getProperty("DEBUG_UI") == null ? "" : "debug,"),"","[]20[]"));
 
         // Use HTML tags to create a line break in the JLabel text
-        JLabel l = new JLabel("<html>Choose either to pull configuration from device<br/> "
-                + "or push current configuration to device:</html>");
+        JLabel l = new JLabel("<html>Push current configuration to device"
+                + "?<br/>(all data will be <i>live</i> otherwise)?"
+                + "</html>");
 
         p.add(l,"wrap");
 
-        btnRead = new JButton("Read");
-        p.add(btnRead, "tag other, span, split");
-        btnWrite = new JButton("Write");
-        p.add(btnWrite, "tag other");
-        btnCancel = new JButton("Cancel");
-        p.add(btnCancel, "tag cancel");
+        btnYes = new JButton("Yes");
+        p.add(btnYes, "tag other, span, split");
+        btnNo = new JButton("No");
+        p.add(btnNo, "tag other, span, split");
+
+        btnDisconnect = new JButton("Cancel");
+        p.add(btnDisconnect, "tag cancel");
 
         setContentPane(p);
         pack();
     }
 
-    public void setBtnReadAction(Action a)
+    public void setBtnNoAction(Action a)
     {
-        btnRead.setAction(a);
+        btnNo.setAction(a);
     }
-    public void setBtnWriteAction(Action a)
+    public void setBtnYesAction(Action a)
     {
-        btnWrite.setAction(a);
+        btnYes.setAction(a);
     }
-    public void setBtnCancelAction(Action a)
+    public void setBtnDisconnectAction(Action a)
     {
-        btnCancel.setAction(a);
+        btnDisconnect.setAction(a);
     }
 
     /**
