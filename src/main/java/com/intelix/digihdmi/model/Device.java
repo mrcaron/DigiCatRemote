@@ -610,9 +610,17 @@ public class Device extends Observable implements PropertyChangeListener {
     }
 
     private void pushInputName(Input i) {
+        if (connected)
+        {
+            resetInput = true;
+        }
     }
 
     private void pushOutputName(Output o) {
+        if (connected)
+        {
+            resetOutput = true;
+        }
     }
 
     /// WARNING!!! MUTATES cmdOut!!!

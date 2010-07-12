@@ -37,11 +37,7 @@ public class SynchronizationActions {
     public void onPull() {
         dlg.setVisible(false);
         // then we just close the dialog because the default operation is to
-        // pull lazily from the device.
-
-        //Task t = new PullFromDeviceTask(app);
-        //t.setInputBlocker(app.new BusyInputBlocker(t));
-        //return t;
+        // pull lazily from the device
     }
 
     @Action
