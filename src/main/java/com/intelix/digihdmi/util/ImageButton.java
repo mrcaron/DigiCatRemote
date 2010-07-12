@@ -23,20 +23,28 @@ import javax.swing.JButton;
  */
 public abstract class ImageButton extends JButton {
 
+    Dimension minSize = new Dimension(72,72);
+
     public ImageButton() {
         this("");
     }
 
     public ImageButton(String imageName)
     {
-        super();
+        this(imageName,null);
+
+    }
+    public ImageButton(String imageName, Dimension minSize)
+    {
         this.imageName = imageName;
+        
+        if (minSize != null)
+            this.minSize = minSize;
+
         init();
     }
 
-    protected abstract Dimension getMinSize();
-
-    protected void init() {
+    private void init() {
         URL rUrl;
         //InputStream fontStream;
         try {
@@ -50,7 +58,7 @@ public abstract class ImageButton extends JButton {
                 Font f = java.awt.Font.createFont(Font.TRUETYPE_FONT, fontStream);
                 buttonFont = f.deriveFont(Font.PLAIN, 72);
                  */
-                Dimension d = getMinSize();
+                Dimension d = minSize;
                 setSize(d);
                 setMinimumSize(d);
                 setPreferredSize(d);
