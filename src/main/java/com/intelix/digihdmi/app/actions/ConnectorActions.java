@@ -1,17 +1,22 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.app.tasks.GetConnectorsTask;
 import com.intelix.digihdmi.app.tasks.GetInputsForSelectionTask;
 import com.intelix.digihdmi.app.tasks.GetInputsForCustomizationTask;
 import com.intelix.digihdmi.app.tasks.GetOutputsForCustomizationTask;
 import com.intelix.digihdmi.app.tasks.GetOutputsForSelectionTask;
 import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
+import com.intelix.digihdmi.app.tasks.SetConnectorNameTask;
+import com.intelix.digihdmi.model.Connector;
+import com.intelix.digihdmi.util.TaskListenerAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
+import org.jdesktop.application.TaskEvent;
 
 public class ConnectorActions {
 
@@ -59,6 +64,7 @@ public class ConnectorActions {
     {
         int index = getSelectedConnector((AbstractButton) ev.getSource());
         appInstance.getDevice().setSelectedInput(index);
+        appInstance.getDevice().setSelectedOutput(-1);
         appInstance.showInputChangeView();
     }
 
@@ -67,6 +73,7 @@ public class ConnectorActions {
     {
         int index = getSelectedConnector((AbstractButton) ev.getSource());
         appInstance.getDevice().setSelectedOutput(index);
+        appInstance.getDevice().setSelectedInput(-1);
         appInstance.showOutputChangeView();
     }
 
@@ -90,11 +97,47 @@ public class ConnectorActions {
         return t;
     }
 
-    @Action 
-    public void assignNewName(ActionEvent ev)
+    @Action
+    public Task assignNewName()
     {
         // show a dialog to capture a name and use the selected button to
         // assign new name to device's input
-        JOptionPane.showMessageDialog(null, "Assign New Name!");
+        
+        Connector sI = appInstance.getDevice().getSelectedInput();
+        Connector sO = appInstance.getDevice().getSelectedOutput();
+        Connector selected = null;
+        final Task onFinishTask;
+
+        String insertText;
+        if (sI != null)
+        {
+            insertText = "input " + sI.getIndex();
+            selected = sI;
+        } else
+        {
+            insertText = "output " + sO.getIndex();
+            selected = sO;
+        }
+
+        String newName = JOptionPane.showInputDialog("Type a new name for " + insertText);
+
+        if (sI != null) {
+            showInputListForCustomization();
+            onFinishTask = new GetInputsForCustomizationTask(appInstance);
+        }
+        else {
+            showOutputListForCustomization();
+            onFinishTask = new GetOutputsForCustomizationTask(appInstance);
+        }
+
+        Task t = new SetConnectorNameTask(appInstance, newName, selected);
+        t.addTaskListener(new TaskListenerAdapter() {
+            @Override
+            public void finished(TaskEvent event) {
+                onFinishTask.setInputBlocker(appInstance.new BusyInputBlocker(onFinishTask));
+                appInstance.getContext().getTaskService().execute(onFinishTask);
+            }
+        });
+        return t;
     }
 }

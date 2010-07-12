@@ -3,6 +3,7 @@ package com.intelix.digihdmi.model;
 import com.intelix.net.*;
 import com.intelix.net.payload.*;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class Device extends Observable
+public class Device extends Observable implements PropertyChangeListener
 {
 
     PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
@@ -128,8 +129,15 @@ public class Device extends Observable
 
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < numInputs; ++i) {
-            inputs.add(new Connector("I_" + (i + 1), "", i + 1));            // Connectors are 1-based for their index
-            outputs.add(new Connector("O_" + (i + 1), "", i + 1));          
+            
+            Input inpt = new Input("I_" + (i + 1), "", i + 1);
+            inpt.addPropertyChangeListener(this);
+            
+            Output otpt = new Output("O_" + (i + 1), "", i + 1);
+            otpt.addPropertyChangeListener(this);
+            
+            inputs.add(inpt);            // Connectors are 1-based for their index
+            outputs.add(otpt);
             cxnMatrix.put(i,0);
         }
 
@@ -315,6 +323,11 @@ public class Device extends Observable
             public int getMax() {
                 return numInputs;
             }
+
+            @Override
+            protected Connector makeNewConnector(String name, String string, int i) {
+                return new Input(name, string, i);
+            }
         };
     }
 
@@ -343,6 +356,11 @@ public class Device extends Observable
             @Override
             public int getMax() {
                 return numOutputs;
+            }
+
+            @Override
+            protected Connector makeNewConnector(String name, String string, int i) {
+                return new Output(name,string,i);
             }
 
         };
@@ -387,7 +405,11 @@ public class Device extends Observable
 
     //------------------------------------------------------------------------
     public Connector getSelectedOutput() {
-        return (Connector) outputs.get(selectedOutput);
+        try {
+            return (Connector) outputs.get(selectedOutput);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return null;
+        }
     }
 
     //------------------------------------------------------------------------
@@ -397,7 +419,12 @@ public class Device extends Observable
 
     //------------------------------------------------------------------------
     public Connector getSelectedInput() {
-        return (Connector) inputs.get(selectedInput);
+        try {
+            return (Connector) inputs.get(selectedInput);
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            return null;
+        }
+
     }
 
     //------------------------------------------------------------------------
@@ -668,6 +695,30 @@ public class Device extends Observable
         return;
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        Object src = evt.getSource();
+        if (src instanceof Connector)
+        {
+            if ("name".equals(evt.getPropertyName()))
+            {
+                if (src instanceof Input)
+                {
+                    Input i = (Input)src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected name change on input #" + i.getIndex());
+                } else
+                {
+                    Output o = (Output)src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected name change on output #" + o.getIndex());
+                }
+            }
+            if ("icon".equals(evt.getPropertyName()))
+            {
+
+            }
+        }
+    }
+
     //------------------------------------------------------------------------
     abstract class ConnectorEnumeration
             implements Enumeration<Connector> {
@@ -713,7 +764,7 @@ public class Device extends Observable
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
 
-                        Connector ctr = new Connector(name, "", index + 1);
+                        Connector ctr = makeNewConnector(name, "", index + 1);
                         /*try {*/
                             list.set(index, ctr);
                         /*}
@@ -740,5 +791,6 @@ public class Device extends Observable
         public abstract void setReset(boolean r);
         public abstract Command getNameLookupCommand(int paramInt);
         public abstract int getMax();
+        protected abstract Connector makeNewConnector(String name, String string, int i);
     }
 }
