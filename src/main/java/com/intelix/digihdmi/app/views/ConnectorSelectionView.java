@@ -9,6 +9,6 @@ public class ConnectorSelectionView extends ButtonListView {
 
     @Override
     protected ButtonContainerPanel createButtonsPanel() {
-        return new InputButtonContainerPanel();
+        return new ToggleButtonContainerPanel();
     }
 }

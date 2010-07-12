@@ -1,5 +1,6 @@
 package com.intelix.digihdmi.app.views;
 
+import java.awt.LayoutManager;
 import java.util.ArrayList;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -18,7 +19,30 @@ public class ButtonContainerPanel extends JPanel {
 
     private void initComponents() {
         setName("Form");
-        setLayout(new MigLayout("wrap 2", "[grow,fill]15[grow,fill]"));
+        setLayout(createLayout());
+    }
+
+    protected LayoutManager createLayout()
+    {
+        return new MigLayout(
+                System.getProperty("DEBUG") != null ?
+                    "debug," : "" +
+                    (useGrid() ? "wrap " + getNoColumns() : "nogrid"),
+                    (useGrid() ? getRowLayoutString() : ""));
+    }
+
+    protected boolean useGrid() { return true; }
+    protected int getNoColumns() { return 2; }
+    protected String getColumnLayoutString() { return "[grow,fill]"; }
+    protected int getColPadding() { return 15; }
+    private String getRowLayoutString() {
+        StringBuilder b = new StringBuilder();
+        for (int i=0; i<getNoColumns(); i++)
+        {
+            b.append(getColumnLayoutString());
+            b.append(getColPadding());
+        }
+        return b.toString();
     }
 
     public final void addButton(String name, Action action) {
@@ -34,7 +58,8 @@ public class ButtonContainerPanel extends JPanel {
         b.setOpaque(false);
         add(b);
         validate();
-        getParent().validate();
+        if (getParent() != null)
+            getParent().validate();
     }
 
     protected AbstractButton createButton(String name, String iconName) {

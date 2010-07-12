@@ -39,6 +39,8 @@ public class ButtonListView extends ApplicationView {
             @Override
             public void run() {
                 JFrame f = new JFrame();
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
                 final ButtonListView m = new ButtonListView();
                 f.setSize(new Dimension(600, 400));
                 f.getContentPane().add(m);
@@ -56,7 +58,7 @@ public class ButtonListView extends ApplicationView {
                     @Override
                     protected Object doInBackground() throws Exception {
                         for (int i = 0; i < 4; ++i) {
-                            Thread.sleep(1000L);
+                            Thread.sleep(500L);
                             m.getButtonsPanel().addButton("Do Me.", new BasicAction() {
 
                                 @Override

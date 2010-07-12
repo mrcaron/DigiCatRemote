@@ -5,12 +5,12 @@ import java.awt.event.ItemListener;
 import javax.swing.AbstractButton;
 import javax.swing.JToggleButton;
 
-public class InputButtonContainerPanel extends ButtonContainerPanel
+public class ToggleButtonContainerPanel extends ButtonContainerPanel
         implements ItemListener {
 
     protected AbstractButton selectedButton;
 
-    public InputButtonContainerPanel() {
+    public ToggleButtonContainerPanel() {
         this.selectedButton = null;
     }
 

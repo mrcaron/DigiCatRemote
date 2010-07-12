@@ -6,6 +6,8 @@ import com.intelix.digihdmi.app.tasks.GetInputsForSelectionTask;
 import com.intelix.digihdmi.app.tasks.GetInputsForCustomizationTask;
 import com.intelix.digihdmi.app.tasks.GetOutputsForCustomizationTask;
 import com.intelix.digihdmi.app.tasks.GetOutputsForSelectionTask;
+import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
+import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
 import com.intelix.digihdmi.app.tasks.SetConnectorNameTask;
 import com.intelix.digihdmi.model.Connector;
@@ -138,6 +140,26 @@ public class ConnectorActions {
                 appInstance.getContext().getTaskService().execute(onFinishTask);
             }
         });
+        return t;
+    }
+
+    @Action
+    public Task assignNewIcon()
+    {
+        Connector sI = appInstance.getDevice().getSelectedInput();
+        Connector sO = appInstance.getDevice().getSelectedOutput();
+        Task t;
+
+        if (sI != null)
+        {
+            appInstance.showInputIconChoicePanel();
+            t = new LoadIconsForInputTask(appInstance,sI);
+        } else
+        {
+            appInstance.showOutputIconChoicePanel();
+            t = new LoadIconsForOutputTask(appInstance,sO);
+        }
+
         return t;
     }
 }

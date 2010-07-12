@@ -21,8 +21,9 @@ import javax.swing.JButton;
  *
  * @author mcaron
  */
-public abstract class ImageButton extends JButton {
+public class ImageButton extends JButton {
 
+    boolean stretch = true;
     Dimension minSize = new Dimension(72,72);
 
     public ImageButton() {
@@ -42,6 +43,10 @@ public abstract class ImageButton extends JButton {
             this.minSize = minSize;
 
         init();
+    }
+
+    public void setStretch(boolean stretch) {
+        this.stretch = stretch;
     }
 
     private void init() {
@@ -81,7 +86,10 @@ public abstract class ImageButton extends JButton {
     @Override
     protected void paintComponent(Graphics g) {
         //super.paintComponent(g);
-        Image i = bgImage.getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
+        Image i = bgImage.getScaledInstance(
+                stretch ? getWidth() : minSize.width,
+                stretch ? getHeight(): minSize.height,
+                Image.SCALE_SMOOTH);
         g.drawImage(i, 0, 0, null);
         /*
         Graphics2D g2d = (Graphics2D)g;

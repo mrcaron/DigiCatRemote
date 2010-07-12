@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
@@ -36,6 +35,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent adminView;
     JComponent passwordView;
     JComponent connectorChangeView;
+    JComponent iconSelectionView;
 
     JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
@@ -157,9 +157,11 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         connectorChangeView = new CustomizeConnectorPanel();
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefIconAction(
-                getContext().getActionMap().get("showIconChoicePanel"));
+                connectorMap.get("assignNewIcon"));
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
                 connectorMap.get("assignNewName"));
+
+        iconSelectionView = new IconListView();
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -248,19 +250,27 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showInputChangeView()
     {
-        showPanel(connectorChangeView, "Define Inputs");
+        showPanel(connectorChangeView, "Define Input");
     }
 
     @org.jdesktop.application.Action
     public void showOutputChangeView()
     {
-        showPanel(connectorChangeView, "Define Outputs");
+        showPanel(connectorChangeView, "Define Output");
     }
 
     @org.jdesktop.application.Action
-    public void showIconChoicePanel()
+    public void showInputIconChoicePanel()
     {
-        JOptionPane.showMessageDialog(null, "Show Icon Choice Panel");
+        ((ButtonListView)iconSelectionView).getButtonsPanel().clear();
+        showPanel(iconSelectionView, "Choose Input Icon");
+    }
+
+    @org.jdesktop.application.Action
+    public void showOutputIconChoicePanel()
+    {
+        ((ButtonListView)iconSelectionView).getButtonsPanel().clear();
+        showPanel(iconSelectionView, "Choose Output Icon");
     }
 
     private void showPanel(JComponent panel, String title) {
