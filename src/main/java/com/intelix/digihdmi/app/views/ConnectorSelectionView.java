@@ -1,6 +1,6 @@
 package com.intelix.digihdmi.app.views;
 
-public class RoomSelectionView extends ButtonListView {
+public class ConnectorSelectionView extends ButtonListView {
 
     @Override
     protected void initializeBottomPanel() {

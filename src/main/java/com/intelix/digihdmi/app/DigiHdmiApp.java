@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
@@ -27,13 +28,14 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
     JComponent currentView;
     JComponent homeView;
-    JComponent roomView;
-    JComponent roomSelectionView;
+    JComponent connectorView;
+    JComponent connectorSelectionView;
     JComponent presetView;
     JComponent matrixView;
     JComponent lockView;
     JComponent adminView;
     JComponent passwordView;
+    JComponent connectorChangeView;
 
     JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
@@ -119,15 +121,17 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     private void initializeComponents() {
-        roomView = new RoomView();
-        roomSelectionView = new RoomSelectionView();
+        connectorView = new ButtonListView();
+        connectorSelectionView = new ConnectorSelectionView();
         presetView = new PresetLoadListView();
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
 
+        ActionMap connectorMap = getContext().getActionMap(new ConnectorActions());
+
         ((HomePanel)homeView).setLockAction(getContext().getActionMap(new LockActions()).get("lock"));
         ((HomePanel)homeView).setPresetViewAction(getContext().getActionMap().get("showPresetListView"));
-        ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showRoomView"));
+        ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showOutputListView"));
         ((HomePanel)homeView).setAdminAction(getContext().getActionMap().get("showUtilView"));
         ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showAndLoadMatrixView"));
 
@@ -142,14 +146,20 @@ public class DigiHdmiApp extends SingleFrameApplication {
         adminView = new AdminPanel();
         AdminActions aa = new AdminActions();
         ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap().get("showPasswdView"));
-        ((AdminPanel)adminView).setBtnDefineInputsAction(getContext().getActionMap(aa).get("defineInputs"));
-        ((AdminPanel)adminView).setBtnDefineOutputsAction(getContext().getActionMap(aa).get("defineOutputs"));
+        ((AdminPanel)adminView).setBtnDefineInputsAction(connectorMap.get("showInputListForCustomization"));
+        ((AdminPanel)adminView).setBtnDefineOutputsAction(connectorMap.get("showOutputListForCustomization"));
 
         passwordView = new PasswordChangePanel();
         ((PasswordChangePanel)passwordView).setBtnAdminPsswdAction(
                 getContext().getActionMap(aa).get("setAdminPassword"));
         ((PasswordChangePanel)passwordView).setBtnUnlockPsswdAction(
                 getContext().getActionMap(aa).get("setUnlockPassword"));
+
+        connectorChangeView = new CustomizeConnectorPanel();
+        ((CustomizeConnectorPanel)connectorChangeView).setBtnDefIconAction(
+                getContext().getActionMap().get("showIconChoicePanel"));
+        ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
+                connectorMap.get("assignNewName"));
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -188,15 +198,27 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     @org.jdesktop.application.Action
-    public void showRoomView() {
-        ((ButtonListView) roomView).getButtonsPanel().clear();
-        showPanel(roomView, "Room View", new ConnectorActions(), "showOutputList");
+    public void showOutputListView() {
+        ((ButtonListView) connectorView).getButtonsPanel().clear();
+        showPanel(connectorView, "Room View", new ConnectorActions(), "showOutputList");
     }
 
     @org.jdesktop.application.Action
-    public void showRoomSelectionView() {
-        ((ButtonListView) roomSelectionView).getButtonsPanel().clear();
-        showPanel(roomSelectionView, "Inputs View");
+    public void showInputSelectionView() {
+        ((ButtonListView) connectorSelectionView).getButtonsPanel().clear();
+        showPanel(connectorSelectionView, "Inputs View");
+    }
+
+    @org.jdesktop.application.Action
+    public void showInputCustomizationView() {
+        ((ButtonListView) connectorView).getButtonsPanel().clear();
+        showPanel(connectorView, "Define Inputs");
+    }
+
+    @org.jdesktop.application.Action
+    public void showOutputCustomizationView() {
+        ((ButtonListView) connectorView).getButtonsPanel().clear();
+        showPanel(connectorView, "Define Outputs");
     }
 
     @org.jdesktop.application.Action
@@ -221,6 +243,24 @@ public class DigiHdmiApp extends SingleFrameApplication {
     public void showPresetSaveView() {
         ((ButtonListView) presetView).getButtonsPanel().clear();
         showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForSave");
+    }
+
+    @org.jdesktop.application.Action
+    public void showInputChangeView()
+    {
+        showPanel(connectorChangeView, "Define Inputs");
+    }
+
+    @org.jdesktop.application.Action
+    public void showOutputChangeView()
+    {
+        showPanel(connectorChangeView, "Define Outputs");
+    }
+
+    @org.jdesktop.application.Action
+    public void showIconChoicePanel()
+    {
+        JOptionPane.showMessageDialog(null, "Show Icon Choice Panel");
     }
 
     private void showPanel(JComponent panel, String title) {

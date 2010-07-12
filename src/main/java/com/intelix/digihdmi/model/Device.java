@@ -73,7 +73,7 @@ public class Device extends Observable
     private boolean resetXP = true;
 
     // DEBUG PROPERTIES
-    private static int DELAY = 100;
+    private static int DELAY = 0;
 
     //------------------------------------------------------------------------
     private static ResourceBundle getConfiguration() {

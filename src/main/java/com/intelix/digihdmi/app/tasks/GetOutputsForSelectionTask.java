@@ -7,9 +7,9 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import org.jdesktop.application.Application;
 
-public class GetOutputsTask extends GetConnectorsTask {
+public class GetOutputsForSelectionTask extends GetConnectorsTask {
 
-    public GetOutputsTask(Application app) {
+    public GetOutputsForSelectionTask(Application app) {
         super(app);
         numConnectors = device.getNumOutputs();
     }
