@@ -21,7 +21,7 @@ public class LoadIconsForInputTask extends LoadIconsTask {
         List<String> l = new ArrayList<String>();
 
         for (int i=0; i<10; i++)
-            l.add("ps_playstation_logo");
+            l.add("input_01");
 
         return l;
     }

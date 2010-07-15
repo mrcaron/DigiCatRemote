@@ -21,7 +21,7 @@ public class LoadIconsForOutputTask extends LoadIconsTask {
         List<String> l = new ArrayList<String>();
 
         for (int i=9; i>=0; i--)
-            l.add("brown-couch");
+            l.add("output_01");
 
         return l;
     }
