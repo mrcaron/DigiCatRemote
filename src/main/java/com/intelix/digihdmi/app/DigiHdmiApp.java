@@ -62,6 +62,16 @@ public class DigiHdmiApp extends SingleFrameApplication {
         device = d;
     }
 
+    public int getNumInputIcons()
+    {
+        return 36;
+    }
+
+    public int getNumOutputIcons()
+    {
+        return 36;
+    }
+
     /**
      * At startup create and show the main frame of the application.
      */

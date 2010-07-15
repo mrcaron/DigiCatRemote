@@ -1,6 +1,8 @@
 package com.intelix.digihdmi.app.tasks;
 
+import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Connector;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Action;
@@ -20,8 +22,12 @@ public class LoadIconsForOutputTask extends LoadIconsTask {
     protected List<String> getIconList() {
         List<String> l = new ArrayList<String>();
 
-        for (int i=9; i>=0; i--)
-            l.add("output_01");
+        int numIcons = ((DigiHdmiApp)getApplication()).getNumOutputIcons();
+
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(2);
+        for (int i=1; i<=numIcons; i++)
+            l.add("output_" + nf.format(i));
 
         return l;
     }
