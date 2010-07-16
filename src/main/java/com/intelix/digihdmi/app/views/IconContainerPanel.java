@@ -40,6 +40,7 @@ public abstract class IconContainerPanel extends ButtonContainerPanel {
             b.setStretch(false);
         }
 
+        b.setName(name);
         return b;
     }
 

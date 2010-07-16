@@ -4,6 +4,8 @@
 package com.intelix.digihdmi.app;
 
 import com.intelix.digihdmi.app.actions.*;
+import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
+import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.views.*;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
@@ -35,7 +37,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent adminView;
     JComponent passwordView;
     JComponent connectorChangeView;
-    JComponent iconSelectionView;
+    JComponent inputIconSelectionView;
+    JComponent outputIconSelectionView;
 
     JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
@@ -61,17 +64,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     public void setDevice(Device d) {
         device = d;
     }
-
-    public int getNumInputIcons()
-    {
-        return 36;
-    }
-
-    public int getNumOutputIcons()
-    {
-        return 36;
-    }
-
+    
     /**
      * At startup create and show the main frame of the application.
      */
@@ -171,7 +164,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
                 connectorMap.get("assignNewName"));
 
-        iconSelectionView = new InputIconListView();
+        inputIconSelectionView = new InputIconListView();
+        getContext().getTaskService().execute(new LoadIconsForInputTask(this,
+                (IconContainerPanel)((ButtonListView)inputIconSelectionView).getButtonsPanel()));
+        outputIconSelectionView = new OutputIconListView();
+        getContext().getTaskService().execute(new LoadIconsForOutputTask(this,
+                (IconContainerPanel)((ButtonListView)outputIconSelectionView).getButtonsPanel()));
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -272,13 +270,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showInputIconChoicePanel()
     {
-        showPanel(iconSelectionView, "Choose Input Icon");
+        showPanel(inputIconSelectionView, "Choose Input Icon");
     }
 
     @org.jdesktop.application.Action
     public void showOutputIconChoicePanel()
     {
-        showPanel(iconSelectionView, "Choose Output Icon");
+        showPanel(outputIconSelectionView, "Choose Output Icon");
     }
 
     private void showPanel(JComponent panel, String title) {

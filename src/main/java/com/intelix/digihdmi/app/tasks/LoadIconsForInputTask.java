@@ -1,10 +1,8 @@
 package com.intelix.digihdmi.app.tasks;
 
-import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.model.Connector;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.Action;
 import org.jdesktop.application.Application;
 
@@ -14,28 +12,26 @@ import org.jdesktop.application.Application;
  */
 public class LoadIconsForInputTask extends LoadIconsTask {
 
+    NumberFormat nf = NumberFormat.getInstance();
+
+    public LoadIconsForInputTask(Application app, IconContainerPanel p)
+    {
+        super(app,p);
+        nf.setMinimumIntegerDigits(2);
+    }
+
     public LoadIconsForInputTask(Application app, Connector c) {
         super(app,c);
     }
 
     @Override
-    protected List<String> getIconList() {
-        List<String> l = new ArrayList<String>();
-
-        int numIcons = ((DigiHdmiApp)getApplication()).getNumInputIcons();
-
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMinimumIntegerDigits(2);
-
-        for (int i=1; i<=numIcons; i++)
-            l.add("input_" + nf.format(i));
-
-        return l;
+    protected Action getButtonAction() {
+        return null;
     }
 
     @Override
-    protected Action getButtonAction() {
-        return null;
+    protected String getIconResourceString(int index) {
+        return "input_" + nf.format(index);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.model.Connector;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -14,27 +15,26 @@ import org.jdesktop.application.Application;
  */
 public class LoadIconsForOutputTask extends LoadIconsTask {
 
+    NumberFormat nf = NumberFormat.getInstance();
+
+    public LoadIconsForOutputTask(Application app, IconContainerPanel p)
+    {
+        super(app,p);
+        nf.setMinimumIntegerDigits(2);
+    }
+
     public LoadIconsForOutputTask(Application app, Connector c) {
         super(app,c);
     }
 
     @Override
-    protected List<String> getIconList() {
-        List<String> l = new ArrayList<String>();
-
-        int numIcons = ((DigiHdmiApp)getApplication()).getNumOutputIcons();
-
-        NumberFormat nf = NumberFormat.getInstance();
-        nf.setMinimumIntegerDigits(2);
-        for (int i=1; i<=numIcons; i++)
-            l.add("output_" + nf.format(i));
-
-        return l;
+    protected Action getButtonAction() {
+        return null;
     }
 
     @Override
-    protected Action getButtonAction() {
-        return null;
+    protected String getIconResourceString(int index) {
+        return "output_" + nf.format(index);
     }
 
 }
