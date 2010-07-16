@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -22,6 +23,8 @@ import javax.swing.JButton;
  * @author mcaron
  */
 public class ImageButton extends JButton {
+
+    HashMap<String, Image> cache = new HashMap<String, Image>();
 
     boolean stretch = true;
     Dimension minSize = new Dimension(72,72);
@@ -101,10 +104,18 @@ public class ImageButton extends JButton {
     @Override
     protected void paintComponent(Graphics g) {
         //super.paintComponent(g);
-        Image i = bgImage.getScaledInstance(
-                stretch ? getWidth() : minSize.width,
-                stretch ? getHeight(): minSize.height,
-                Image.SCALE_SMOOTH);
+
+        String key = getWidth() + "x" + getHeight();
+        Image i = cache.get(key);
+        if (null == i)
+        {
+            i = bgImage.getScaledInstance(
+                    stretch ? getWidth() : minSize.width,
+                    stretch ? getHeight(): minSize.height,
+                    Image.SCALE_SMOOTH);
+            cache.put(key,i);
+        }
+
         g.drawImage(i, 0, 0, null);
         /*
         Graphics2D g2d = (Graphics2D)g;
