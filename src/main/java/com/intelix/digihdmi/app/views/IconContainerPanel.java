@@ -55,19 +55,19 @@ public class IconContainerPanel extends ButtonContainerPanel {
                 
                 f.setSize(400,400);
 
-                SwingWorker w = new SwingWorker() {
-
-                    @Override
-                    protected Object doInBackground() throws Exception {
-                        for (int i=0; i<10; i++)
-                            lv.addButton("Button_1", "ps_apple_tv", null);
-
-                        return null;
-                    }
-                };
                 f.setVisible(true);
-                w.execute();
-
+                
+                for (int i=0; i<10; i++)
+                {
+                    SwingWorker w = new SwingWorker() {
+                        @Override
+                        protected Object doInBackground() throws Exception {
+                            lv.addButton("Button_1", "input_01", null);
+                            return null;
+                        }
+                    };
+                    w.execute();
+                }
             }
         });
     }

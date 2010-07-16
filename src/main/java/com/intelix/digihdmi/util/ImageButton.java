@@ -25,6 +25,7 @@ public class ImageButton extends JButton {
 
     boolean stretch = true;
     Dimension minSize = new Dimension(72,72);
+    String resourcePrefix = "resources/";     // default resource location
 
     public ImageButton() {
         this("");
@@ -32,13 +33,23 @@ public class ImageButton extends JButton {
 
     public ImageButton(String imageName)
     {
-        this(imageName,null);
-
+        this(imageName, "resources/", null);
     }
     public ImageButton(String imageName, Dimension minSize)
     {
+        this(imageName, "resources/", minSize);
+    }
+    public ImageButton(String imageName, String resourcePrefix)
+    {
+        this(imageName, resourcePrefix, null);
+    }
+    public ImageButton(String imageName, String resourcePrefix, Dimension minSize)
+    {
         this.imageName = imageName;
-        
+
+        if (resourcePrefix != null)
+            this.resourcePrefix = resourcePrefix;
+
         if (minSize != null)
             this.minSize = minSize;
 
@@ -49,11 +60,15 @@ public class ImageButton extends JButton {
         this.stretch = stretch;
     }
 
+    private String getResourcePrefix() {
+        return resourcePrefix;
+    }
+
     private void init() {
         URL rUrl;
         //InputStream fontStream;
         try {
-            rUrl = getClass().getResource("resources/" + imageName + ".png");
+            rUrl = getClass().getResource(getResourcePrefix() + imageName + ".png");
             //fontStream = getClass().getResourceAsStream(fontName);
             if (rUrl != null) {
                 BufferedImage img = ImageIO.read(rUrl);
