@@ -15,7 +15,7 @@ public class ToggleButtonContainerPanel extends ButtonContainerPanel
     }
 
     @Override
-    protected AbstractButton createButton(String name, String iconName) {
+    public AbstractButton createButton(String name, String iconName) {
         JToggleButton b = new JToggleButton(name);
         b.addItemListener(this);
         return b;

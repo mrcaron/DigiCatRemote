@@ -2,6 +2,10 @@ package com.intelix.digihdmi.app.views;
 
 import com.intelix.digihdmi.util.ImageButton;
 import java.awt.Dimension;
+import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.AbstractButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
@@ -12,21 +16,41 @@ import javax.swing.SwingWorker;
  *
  * @author mcaron
  */
-public class IconContainerPanel extends ButtonContainerPanel {
+public abstract class IconContainerPanel extends ButtonContainerPanel {
 
     Dimension iconSize = new Dimension(72, 72);
+    // cache for image buttons so they aren't created new all the time
+    HashMap<String, ImageButton> iconButtons = new HashMap<String, ImageButton>();
+    int numIcons;
+
+    public IconContainerPanel() {
+        super();
+        ResourceBundle props = ResourceBundle.getBundle(getClass().getPackage().getName() + ".resources." + getClass().getSimpleName());
+        numIcons = Integer.parseInt(props.getString("numInputIcons"));
+    }
 
     @Override
-    protected AbstractButton createButton(String name, String iconName) {
-        ImageButton b = new ImageButton(iconName, iconSize);
-        b.setStretch(false);
-        
+    public AbstractButton createButton(String name, String iconName) {
+
+        ImageButton b = iconButtons.get(iconName);
+        if (null == b)
+        {
+            b = new ImageButton(iconName, iconSize);
+            iconButtons.put(iconName, b);
+            b.setStretch(false);
+        }
+
         return b;
     }
 
     @Override
     protected int getNoColumns() {
         return 4;
+    }
+
+    public int getNumIcons()
+    {
+        return numIcons;
     }
 
     @Override
@@ -44,7 +68,7 @@ public class IconContainerPanel extends ButtonContainerPanel {
                 JFrame f = new JFrame("Icon List Panel");
                 f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
-                final IconContainerPanel lv = new IconContainerPanel();
+                final IconContainerPanel lv = new InputIconContainerPanel();
 
                 lv.setOpaque(false);
                 JScrollPane scrollPane = new JScrollPane(lv);
@@ -56,18 +80,27 @@ public class IconContainerPanel extends ButtonContainerPanel {
                 f.setSize(400,400);
 
                 f.setVisible(true);
-                
-                for (int i=0; i<10; i++)
-                {
-                    //SwingWorker w = new SwingWorker() {
-                        //@Override
-                        //protected Object doInBackground() throws Exception {
-                            lv.addButton("Button_1", "input_01", null);
-                        //    return null;
-                        //}
-                    //};
-                    //w.execute();
-                }
+
+                SwingWorker<Void,AbstractButton> w = new SwingWorker() {
+                    @Override
+                    protected Void doInBackground() throws Exception {
+                        NumberFormat nf = NumberFormat.getInstance();
+                        nf.setMinimumIntegerDigits(2);
+
+                        for (int i=1; i<=lv.getNumIcons(); i++)
+                        {
+                            publish(lv.createButton("Button_" + i, "input_" + nf.format(i)));
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void process(List chunks) {
+                        for (ImageButton b : (List<ImageButton>)chunks)
+                            lv.addButton(b);
+                    }
+                };
+                w.execute();
             }
         });
     }

@@ -45,16 +45,9 @@ public class ButtonContainerPanel extends JPanel {
         return b.toString();
     }
 
-    public final void addButton(String name, Action action) {
-        addButton(name, null, action);
-    }
-
-    public final void addButton(String name, String iconName, Action action) {
-        AbstractButton b = createButton(name, iconName);
+    public final void addButton(AbstractButton b)
+    {
         this.buttonList.add(b);
-        b.setAction(action);
-        b.setText(name);
-        b.setName(name.replace(' ', '_') + "_" + this.buttonList.size());
         b.setOpaque(false);
         add(b);
         validate();
@@ -62,7 +55,19 @@ public class ButtonContainerPanel extends JPanel {
             getParent().validate();
     }
 
-    protected AbstractButton createButton(String name, String iconName) {
+    public final void addButton(String name, Action action) {
+        addButton(name, null, action);
+    }
+
+    public final void addButton(String name, String iconName, Action action) {
+        AbstractButton b = createButton(name, iconName);
+        b.setAction(action);
+        b.setText(name);
+        b.setName(name.replace(' ', '_') + "_" + this.buttonList.size());
+        addButton(b);
+    }
+
+    public AbstractButton createButton(String name, String iconName) {
         return new JButton(name);
     }
 

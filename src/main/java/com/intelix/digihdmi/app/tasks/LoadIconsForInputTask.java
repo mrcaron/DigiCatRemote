@@ -5,7 +5,6 @@ import com.intelix.digihdmi.model.Connector;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.swing.Action;
 import org.jdesktop.application.Application;
 

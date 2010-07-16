@@ -171,7 +171,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
                 connectorMap.get("assignNewName"));
 
-        iconSelectionView = new IconListView();
+        iconSelectionView = new InputIconListView();
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -272,14 +272,12 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showInputIconChoicePanel()
     {
-        ((ButtonListView)iconSelectionView).getButtonsPanel().clear();
         showPanel(iconSelectionView, "Choose Input Icon");
     }
 
     @org.jdesktop.application.Action
     public void showOutputIconChoicePanel()
     {
-        ((ButtonListView)iconSelectionView).getButtonsPanel().clear();
         showPanel(iconSelectionView, "Choose Output Icon");
     }
 

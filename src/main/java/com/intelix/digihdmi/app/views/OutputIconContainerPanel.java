@@ -2,13 +2,12 @@ package com.intelix.digihdmi.app.views;
 
 /**
  *
- * @author mcaron
+ * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class IconListView extends ButtonListView {
+public class OutputIconContainerPanel extends IconContainerPanel {
 
-    @Override
-    protected ButtonContainerPanel createButtonsPanel() {
-        return new IconContainerPanel();
+    public OutputIconContainerPanel() {
+        super();
     }
 
     /**
@@ -17,4 +16,5 @@ public class IconListView extends ButtonListView {
     public static void main(String[] args) {
         // TODO code application logic here
     }
+
 }
