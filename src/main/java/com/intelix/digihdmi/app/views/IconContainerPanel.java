@@ -59,14 +59,14 @@ public class IconContainerPanel extends ButtonContainerPanel {
                 
                 for (int i=0; i<10; i++)
                 {
-                    SwingWorker w = new SwingWorker() {
-                        @Override
-                        protected Object doInBackground() throws Exception {
+                    //SwingWorker w = new SwingWorker() {
+                        //@Override
+                        //protected Object doInBackground() throws Exception {
                             lv.addButton("Button_1", "input_01", null);
-                            return null;
-                        }
-                    };
-                    w.execute();
+                        //    return null;
+                        //}
+                    //};
+                    //w.execute();
                 }
             }
         });
