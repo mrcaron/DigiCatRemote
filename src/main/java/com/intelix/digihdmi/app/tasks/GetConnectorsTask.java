@@ -56,7 +56,7 @@ public class GetConnectorsTask extends Task /*implements PropertyChangeListener*
         if ((panel != null) && (device != null)) {
             Enumeration connectorList = getConnectors();
             for (int i=0; connectorList.hasMoreElements(); i++) {
-                message("loadingConnectionD",i);
+                message("loadingConnectionD",i+1);
                 Connector c = (Connector) connectorList.nextElement();
                 message("loadedConnectionDS",i,c.getName());
                 setProgress(i,0,numConnectors);

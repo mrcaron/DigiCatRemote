@@ -332,11 +332,11 @@ public class Device extends Observable implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     public HashMap<Integer, Integer> getCrossPoints() {
-        return getCrossPoints(false);
+        return getCrossPoints(true);
     }
 
     public HashMap<Integer, Integer> getCrossPoints(boolean live) {
-        if (connected && resetXP) {
+        if (connected && (resetXP || live)) {
             Command c = new GetAllCrosspointsCommand();
             if (deviceWriteRead(c, SequencePayload.class)) {
                 SequencePayload p = (SequencePayload) c.getPayload();
@@ -356,7 +356,7 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
 
     public void setSelectedOutput(int selectedOutput) {
-        this.selectedOutput = selectedOutput - 1;
+        this.selectedOutput = selectedOutput;
     }
 
     //------------------------------------------------------------------------
@@ -370,7 +370,7 @@ public class Device extends Observable implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     public void setSelectedInput(int selectedInput) {
-        this.selectedInput = selectedInput - 1;
+        this.selectedInput = selectedInput;
     }
 
     //------------------------------------------------------------------------
@@ -642,6 +642,8 @@ public class Device extends Observable implements PropertyChangeListener {
         int i = 0;
         while (!obtained && i < MAX_TRIES) {
             try {
+                // 'clear' the input stream before a write
+                connection.getInStream().skip(connection.getInStream().available());
                 connection.write(cmdOut);
                 if (sleepTime > 0) {
                     Thread.sleep(sleepTime);

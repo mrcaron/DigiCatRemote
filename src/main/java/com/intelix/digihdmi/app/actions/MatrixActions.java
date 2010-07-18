@@ -42,7 +42,7 @@ public class MatrixActions {
         String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
         String[] parts = toggleInfo.split("_");
 
-        Task t = new MakeConnectionTask(appInstance, Integer.parseInt(parts[2])+1, Integer.parseInt(parts[1])+1);
+        Task t = new MakeConnectionTask(appInstance, Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
         t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
     }

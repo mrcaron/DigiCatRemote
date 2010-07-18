@@ -37,7 +37,7 @@ public class ConnectorActions {
     @Action (block=Task.BlockingScope.WINDOW)
     public Task showInputListForSelection(ActionEvent ev) {
         int outputNumber = getSelectedConnector((AbstractButton) ev.getSource());
-        appInstance.getDevice().setSelectedOutput(outputNumber+1);
+        appInstance.getDevice().setSelectedOutput(outputNumber);
         appInstance.showInputSelectionView();
 
         Task t = new GetInputsForSelectionTask(appInstance);
@@ -65,7 +65,7 @@ public class ConnectorActions {
     public void changeInput(ActionEvent ev)
     {
         int index = getSelectedConnector((AbstractButton) ev.getSource());
-        appInstance.getDevice().setSelectedInput(index+1);
+        appInstance.getDevice().setSelectedInput(index);
         appInstance.getDevice().setSelectedOutput(-1);
         appInstance.showInputChangeView();
     }
@@ -74,7 +74,7 @@ public class ConnectorActions {
     public void changeOutput(ActionEvent ev)
     {
         int index = getSelectedConnector((AbstractButton) ev.getSource());
-        appInstance.getDevice().setSelectedOutput(index+1);
+        appInstance.getDevice().setSelectedOutput(index);
         appInstance.getDevice().setSelectedInput(-1);
         appInstance.showOutputChangeView();
     }
