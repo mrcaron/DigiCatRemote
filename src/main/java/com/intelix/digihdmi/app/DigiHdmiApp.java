@@ -12,6 +12,8 @@ import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -124,6 +126,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     private void initializeComponents() {
+
         connectorView = new ButtonListView();
         connectorSelectionView = new ConnectorSelectionView();
         presetView = new PresetLoadListView();
@@ -194,12 +197,31 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceActionMap.get("toggleDeviceConnect"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
+        
 
         syncDlg = new SynchronizationDlg(mainFrame.getFrame());
         ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
         ((SynchronizationDlg)syncDlg).setBtnDisconnectAction(syncMap.get("onCancel"));
         ((SynchronizationDlg)syncDlg).setBtnNoAction(syncMap.get("onPull"));
         ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
+
+        // Listen to the device for connection change information
+        device.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("connected"))
+                {
+                    boolean connected = (Boolean) evt.getNewValue();
+                    ((DigiHdmiAppMainView)mainFrame).getMenuItemConnected().setText(
+                            connected ? "Disconnect" : "Connect");
+
+                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setText(
+                            connected ? "Disconnect" : "Connect");
+                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
+                            connected);
+                }
+            }
+        });
     }
 
     @org.jdesktop.application.Action
@@ -360,7 +382,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         {
             dlg.setIpAddr(((IPConnection)c).getIpAddr());
             dlg.setPort(((IPConnection)c).getPort());
-            dlg.toggleConnectButton(c.isConnected());
+            //dlg.toggleConnectButton(c.isConnected());
         }
 
         deviceConnectionDlg.setVisible(true);

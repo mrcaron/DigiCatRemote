@@ -14,6 +14,7 @@ import org.jdesktop.application.Task;
 public class DeviceActions {
     @Action
     public Task toggleDeviceConnect(ActionEvent av) {
-        return new ToggleDeviceConnectTask(Application.getInstance(), (Selectable)av.getSource());
+        return new ToggleDeviceConnectTask(Application.getInstance(),
+                av.getSource() instanceof Selectable ? (Selectable)av.getSource() : null);
     }
 }

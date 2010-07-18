@@ -22,18 +22,24 @@ public class ToggleDeviceConnectTask extends Task<Object, Void> {
         this.device = ((DigiHdmiApp) Application.getInstance()).getDevice();
     }
 
+    public ToggleDeviceConnectTask(Application app) {
+        this(app,null);
+    }
+
     @Override
     protected Object doInBackground() {
         try {
-            if (this.item.isSelected()) {
+            if (this.device.isConnected())
+                this.device.disconnect();
+            else
+            {
                 this.device.connect();
                 ((DigiHdmiApp)getApplication()).showSyncDlg();
-            } else {
-                this.device.disconnect();
             }
-            return (this.item.isSelected()) ? "Connected!" : "Disconnected!";
+            return this.device.isConnected() ? "Connected!" : "Disconnected!";
         } catch (IOException ex) {
-            item.setSelected(false);
+            if (item != null)
+                item.setSelected(false);
             System.err.println("Error with connection: " + ex.getMessage());
             return "Error: " + ex.getMessage();
         }
@@ -47,7 +53,7 @@ public class ToggleDeviceConnectTask extends Task<Object, Void> {
     @Override
     protected void failed(Throwable cause) {
         super.failed(cause);
-        this.item.setSelected(false);
+        //this.item.setSelected(false);
         setMessage("Failed to connect.");
     }
 }

@@ -13,6 +13,7 @@ import javax.swing.Icon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import org.jdesktop.application.Action;
@@ -30,9 +31,6 @@ public class DigiHdmiAppMainView extends FrameView {
         super(app);
 
         initComponents();
-
-        menuItemConnected = new DHCheckBoxMenuItem();
-        menuDevice.insert(menuItemConnected, 0);
 
         ButtonListView v = new ButtonListView();
         setComponent(v);
@@ -135,10 +133,9 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemFileSave.setAccelerator(ctrlS);
     }
 
-    public JCheckBoxMenuItem getMenuItemConnected() {
+    public JMenuItem getMenuItemConnected() {
         return this.menuItemConnected;
     }
-
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -156,6 +153,7 @@ public class DigiHdmiAppMainView extends FrameView {
         menuItemFileLoad = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
+        menuItemConnected = new javax.swing.JMenuItem();
         menuItemOptions = new javax.swing.JMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
@@ -200,6 +198,10 @@ public class DigiHdmiAppMainView extends FrameView {
 
         menuDevice.setText(resourceMap.getString("menuDevice.text")); // NOI18N
         menuDevice.setName("menuDevice"); // NOI18N
+
+        menuItemConnected.setText(resourceMap.getString("menuItemConnected.text")); // NOI18N
+        menuItemConnected.setName("menuItemConnected"); // NOI18N
+        menuDevice.add(menuItemConnected);
 
         menuItemOptions.setText(resourceMap.getString("menuItemOptions.text")); // NOI18N
         menuItemOptions.setName("menuItemOptions"); // NOI18N
@@ -260,6 +262,7 @@ public class DigiHdmiAppMainView extends FrameView {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
+    private javax.swing.JMenuItem menuItemConnected;
     private javax.swing.JMenuItem menuItemFileLoad;
     private javax.swing.JMenuItem menuItemFileSave;
     private javax.swing.JMenuItem menuItemOptions;
@@ -276,7 +279,7 @@ public class DigiHdmiAppMainView extends FrameView {
     private final Icon[] busyIcons = new Icon[15];
     private int busyIconIndex = 0;
 
-    private DHCheckBoxMenuItem menuItemConnected;
+    //private DHCheckBoxMenuItem menuItemConnected;
 
     private JDialog aboutBox;
 }

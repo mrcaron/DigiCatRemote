@@ -151,9 +151,13 @@ public class Device extends Observable implements PropertyChangeListener {
     /* connect to the actual HDMI devine if we can. */
     public void connect()
             throws IOException {
-        if (connection != null) {
+        if (connection != null && !connection.isConnected()) {
             connection.connect();
-            connected = true;
+
+            boolean connectedNew = connection.isConnected();
+            pcsupport.firePropertyChange("connected", connected, connectedNew);
+            connected = connectedNew;
+            
             setFullReset(true);
         } else {
             throw new IOException("Device can't be found. Check your device's configuration.");
@@ -163,15 +167,19 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     /* Disconnect from the device */
     public void disconnect() throws IOException {
-        if (connection != null) {
+        if (connection != null && connection.isConnected()) {
             connection.disconnect();
-            connected = false;
+
+            boolean connectedNew = connection.isConnected();
+            pcsupport.firePropertyChange("connected", connected, connectedNew);
+            connected = connectedNew;
+
         }
     }
 
     //------------------------------------------------------------------------
     public boolean isConnected() {
-        return connected;
+        return connection.isConnected();
     }
 
     //------------------------------------------------------------------------
