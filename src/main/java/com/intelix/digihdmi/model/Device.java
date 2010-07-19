@@ -386,17 +386,26 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public void loadPreset(int number) {
         // get the preset from the array
-        Preset p = presets.get(number - 1);
+        Preset preset = presets.get(number);
 
         if (connected) {
-            Command cmd = new GetPresetCommand(number);
-            if (deviceWriteRead(cmd, PresetReportPayload.class)) {
-                p = readPresetReport(p.getName(), number, (PresetReportPayload) cmd.getPayload());
+            Command cmd = new TriggerPresetCommand(preset.getIndex());
+            if (deviceWriteRead(cmd, SequencePayload.class,2000)) {
+                SequencePayload p = (SequencePayload) cmd.getPayload();
+                for (int i = 0; i < p.size(); i++) {
+                    cxnMatrix.put(i/*Output*/, p.get(i) - 1/*Input*/);
+                }
+                resetXP = false;
             }
+
+            //if (deviceWriteRead(cmd, PresetReportPayload.class))
+            //    preset = readPresetReport(preset.getName(),
+            //                              preset.getIndex(),
+            //                              (PresetReportPayload) cmd.getPayload());
         }
 
         // set the connection matrix from this
-        cxnMatrix = p.getConnections();
+        cxnMatrix = preset.getConnections();
     }
 
     //------------------------------------------------------------------------
@@ -643,7 +652,7 @@ public class Device extends Observable implements PropertyChangeListener {
         while (!obtained && i < MAX_TRIES) {
             try {
                 // 'clear' the input stream before a write
-                connection.getInStream().skip(connection.getInStream().available());
+                //connection.getInStream().skip(connection.getInStream().available());
                 connection.write(cmdOut);
                 if (sleepTime > 0) {
                     Thread.sleep(sleepTime);

@@ -37,6 +37,14 @@ public class MatrixActions {
     }
 
     @Action (block=Task.BlockingScope.WINDOW)
+    public Task loadMatrixConnections()
+    {
+        Task t = new InitMatrixTask(appInstance, false /* Don't load the names */);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
+    }
+
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task setConnection(ActionEvent e) {
         AbstractButton b = (AbstractButton) e.getSource();
         String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
