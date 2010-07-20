@@ -1,10 +1,12 @@
 package com.intelix.digihdmi.model;
 
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class Connector {
 
+    @XStreamOmitField
     PropertyChangeSupport pcSupport;
 
     private String name;

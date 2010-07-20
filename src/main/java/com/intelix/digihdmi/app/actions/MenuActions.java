@@ -78,6 +78,7 @@ public class MenuActions {
                 if (file.canWrite()) {
                     Writer w = new BufferedWriter(
                             new FileWriter(file));
+                    w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n");
                     w.write(xml);
                     w.close();
                 }

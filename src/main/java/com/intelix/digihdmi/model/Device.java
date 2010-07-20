@@ -23,13 +23,17 @@ import java.util.logging.Logger;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class Device extends Observable implements PropertyChangeListener {
+public class Device implements PropertyChangeListener {
 
+    @XStreamOmitField
     private Logger logger;
 
+    @XStreamOmitField
     PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
+
     @XStreamOmitField
     private int selectedOutput;
+
     @XStreamOmitField
     private int selectedInput;
     private ArrayList<Connector> inputs = new ArrayList();
@@ -39,18 +43,28 @@ public class Device extends Observable implements PropertyChangeListener {
 
     @XStreamOmitField
     private static ResourceBundle config;
+
     @XStreamOmitField
     private boolean connected;
     private IPConnection connection;
     private int numInputs = 0;
     private int numOutputs = 0;
     private int numPresets = 0;
+
+    @XStreamOmitField
     private int maxPresetNameLength = 0;
+
+    @XStreamOmitField
     private int maxAdminPassLength = 0;
+
+    @XStreamOmitField
     private int maxLockPassLength = 0;
     // PropertyChangeListeners will get reports about this one
+
+    @XStreamOmitField
     private float progress = 0f;
     private static int MAX_TRIES = 3;
+
     @XStreamOmitField
     private boolean locked = false;
     private String unlockPassword = "abcd";
@@ -58,10 +72,13 @@ public class Device extends Observable implements PropertyChangeListener {
     // flag used to determine if we need to visit the device for input/output information
     @XStreamOmitField
     private boolean resetInput = true;
+
     @XStreamOmitField
     private boolean resetOutput = true;
+
     @XStreamOmitField
     private boolean resetPresets = true;
+
     @XStreamOmitField
     private boolean resetXP = true;
     // DEBUG PROPERTIES
