@@ -395,6 +395,9 @@ public class Device extends Observable implements PropertyChangeListener {
 
         if (connected) {
             Command cmd = new TriggerPresetCommand(preset.getIndex());
+            deviceWriteAndSkip(cmd);
+
+            cmd = new GetAllCrosspointsCommand();
             if (deviceWriteRead(cmd, SequencePayload.class,2000)) {
                 SequencePayload p = (SequencePayload) cmd.getPayload();
                 for (int i = 0; i < p.size(); i++) {
@@ -642,6 +645,16 @@ public class Device extends Observable implements PropertyChangeListener {
         if (connected)
         {
             resetOutput = true;
+        }
+    }
+
+    private void deviceWriteAndSkip(Command cmdOut)
+    {
+        try {
+            connection.write(cmdOut);
+            connection.clearInput(500);
+        } catch (IOException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

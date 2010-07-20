@@ -1,15 +1,7 @@
 package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.actions.MatrixActions;
-import com.intelix.digihdmi.app.views.MatrixPanel;
-import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.model.Device;
-import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import javax.swing.ActionMap;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
