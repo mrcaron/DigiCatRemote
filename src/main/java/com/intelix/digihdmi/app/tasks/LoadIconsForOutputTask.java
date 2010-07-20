@@ -1,11 +1,8 @@
 package com.intelix.digihdmi.app.tasks;
 
-import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.model.Connector;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.Action;
 import org.jdesktop.application.Application;
 
