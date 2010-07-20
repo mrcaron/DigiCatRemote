@@ -25,6 +25,8 @@ import java.util.logging.Logger;
  */
 public class Device extends Observable implements PropertyChangeListener {
 
+    private Logger logger;
+
     PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
     @XStreamOmitField
     private int selectedOutput;
@@ -76,6 +78,8 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     /* Initialize the Device */
     public Device() {
+        logger = Logger.getLogger(getClass().getCanonicalName());
+
         connected = false;
         connection = new IPConnection();
 
@@ -197,7 +201,7 @@ public class Device extends Observable implements PropertyChangeListener {
                     cxnMatrix.put(selectedOutput, selectedInput);
                 }
             } catch (Exception ex) {
-                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                logger.log(Level.SEVERE, null, ex);
             }
         }
         return (Connector) inputs.get(cxnMatrix.get(selectedOutput));
@@ -206,6 +210,7 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public boolean makeConnection() {
         if (connected) {
+            logger.info("input: " + selectedInput + ", output: " + selectedOutput);
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
@@ -251,7 +256,7 @@ public class Device extends Observable implements PropertyChangeListener {
                     try {
                         Thread.sleep(DELAY);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.log(Level.SEVERE, null, ex);
                     }
                 }
                 setProgress((float) index / presets.size());
@@ -528,7 +533,7 @@ public class Device extends Observable implements PropertyChangeListener {
             md.update(pwd.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
 
         return digested;
@@ -660,9 +665,9 @@ public class Device extends Observable implements PropertyChangeListener {
                 cmdIn = connection.readOne();
                 obtained = payloadClass.isInstance(cmdIn.getPayload());
             } catch (IOException ex) {
-                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
+                logger.log(Level.WARNING, null, ex);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
+                logger.log(Level.WARNING, null, ex);
             }
         }
         if (obtained) {
@@ -740,7 +745,7 @@ public class Device extends Observable implements PropertyChangeListener {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.log(Level.SEVERE, null, ex);
                 }
             }
             setProgress((float) index / list.size());

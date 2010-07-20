@@ -2,11 +2,14 @@ package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.actions.ConnectorActions;
+import com.intelix.digihdmi.app.views.ButtonContainerPanel;
 import com.intelix.digihdmi.model.Connector;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.jdesktop.application.Application;
 
 /**
@@ -34,17 +37,26 @@ public class GetInputsForSelectionTask extends GetConnectorsTask {
     }
 
     @Override
-    protected Object doInBackground() throws Exception {
-        Object obj = super.doInBackground();
+    protected Void doInBackground() throws Exception {
+        super.doInBackground();
 
         Connector c = ((DigiHdmiApp) Application.getInstance()).getDevice().getInputForSelectedOutput();
         if (c != null) {
-            int buttonNumber = c.getIndex() - 1;   // buttons are zero - based, connectors are 1-based
-            AbstractButton b = panel.getButton(buttonNumber);
-            b.setSelected(true);
-            device.setSelectedInput(c.getIndex());
+            final ButtonContainerPanel panel = this.panel;
+            final int buttonNumber = c.getIndex() - 1;   // buttons are zero - based, connectors are 1-based
+
+            SwingUtilities.invokeAndWait(new Runnable() {
+                @Override
+                public void run() {
+                    AbstractButton b = panel.getButton(buttonNumber);
+                    b.setSelected(true);
+                }
+            });
+
+            device.setSelectedInput(c.getIndex() - 1);
+
         }
 
-        return obj;
+        return null;
     }
 }
