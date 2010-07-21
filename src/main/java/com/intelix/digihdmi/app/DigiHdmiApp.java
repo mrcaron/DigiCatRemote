@@ -177,7 +177,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         deviceConnectionDlg = new DeviceConnectionDlg(mainFrame.getFrame());
         ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnTestAction(deviceCxnMap.get("onTest"));
-        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceActionMap.get("toggleDeviceConnect"));
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceCxnMap.get("onConnect"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
         

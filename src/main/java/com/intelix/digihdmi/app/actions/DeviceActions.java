@@ -12,6 +12,8 @@ import org.jdesktop.application.Task;
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
 public class DeviceActions {
+
+    // This code is virtually duplicated in ConnectionDialogActions.onConnect
     @Action
     public Task toggleDeviceConnect(ActionEvent av) {
         return new ToggleDeviceConnectTask(Application.getInstance(),

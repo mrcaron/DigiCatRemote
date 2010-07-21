@@ -5,6 +5,8 @@ package com.intelix.digihdmi.app.views.dialogs;
  */
 
 import com.intelix.digihdmi.util.DHToggleButton;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -20,7 +22,7 @@ import net.miginfocom.swing.MigLayout;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class DeviceConnectionDlg extends JDialog {
+public class DeviceConnectionDlg extends JDialog implements ItemListener {
     private JTextField fldIpAddr;
     private JTextField fldPort;
     private JButton btnOk;
@@ -71,6 +73,8 @@ public class DeviceConnectionDlg extends JDialog {
         p.add(btnTest, "tag other");
         btnConnect = new DHToggleButton("Connect");
         p.add(btnConnect, "tag other");
+
+        btnConnect.addItemListener(this);
 
         setContentPane(p);
         pack();
@@ -139,6 +143,14 @@ public class DeviceConnectionDlg extends JDialog {
                 d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             }
         });
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED)
+            btnTest.setEnabled(false);
+        else
+            btnTest.setEnabled(true);
     }
 }
 

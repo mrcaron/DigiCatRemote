@@ -3,8 +3,10 @@ package com.intelix.digihdmi.app.actions;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.views.dialogs.DeviceConnectionDlg;
 import com.intelix.digihdmi.model.Device;
+import com.intelix.digihdmi.util.Selectable;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
@@ -32,30 +34,18 @@ public class ConnectionDialogActions {
         dlg.setVisible(false);
     }
 
-    protected boolean alterDevice() {
-        String dlgIA = dlg.getIpAddr();
-        int dlgPt = dlg.getPort();
-
-        boolean altered = false;
-
-        Connection c = device.getConnection();
-        if (c instanceof IPConnection)
+    protected Connection[] alterDevice() {
+        Connection oldC = device.getConnection();
+        IPConnection newC = new IPConnection();
+        newC.setIpAddr(dlg.getIpAddr());
+        newC.setPort(dlg.getPort());
+        try {
+            device.setConnection(newC);
+        } catch (IOException ex)
         {
-            IPConnection ipc = (IPConnection) c;
-
-            if (! ipc.getIpAddr().equals(dlgIA))
-            {
-                ipc.setIpAddr(dlgIA);
-                altered = true;
-            }
-            if (ipc.getPort() != dlgPt)
-            {
-                ipc.setPort(dlgPt);
-                altered = true;
-            }
+            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
         }
-
-        return altered;
+        return new Connection[] {oldC,newC};
     }
 
     @Action
@@ -68,15 +58,12 @@ public class ConnectionDialogActions {
     public void onTest()
     {
         // connect to the device & show a glass pane
-        Connection oldC = device.getConnection();
-        IPConnection newC = new IPConnection();
-        newC.setIpAddr(dlg.getIpAddr());
-        newC.setPort(dlg.getPort());
-        boolean prevConnected = oldC.isConnected();
+        Connection[] cxns = alterDevice();
+        boolean prevConnected = cxns[0].isConnected();
         boolean fail = true;
         try {
-            if (prevConnected) { device.disconnect(); }
-            device.setConnection(newC);
+            if (prevConnected) { device.disconnect(); Thread.sleep(10);}
+            //device.setConnection(cxns[1]);
             Thread.sleep(10);
             device.connect();
             device.disconnect();
@@ -94,7 +81,7 @@ public class ConnectionDialogActions {
                     "Win!", JOptionPane.INFORMATION_MESSAGE);
 
         try {
-            device.setConnection(oldC);
+            device.setConnection(cxns[0]);
             if (prevConnected)
                 device.connect();
         } catch (Exception ex) {
@@ -107,18 +94,31 @@ public class ConnectionDialogActions {
     }
 
     @Action
-    public void onConnect()
+    public void onConnect(ActionEvent e)
     {
-        boolean altered = alterDevice();
-
-        try {
-            device.connect();
-            app.showSyncDlg();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
+        // This code is virtually duplicated in DeviceActions.toggleConnect
+        if (device.isConnected())
+            try {
+                device.disconnect();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dlg, "Error disconnecting!\n\nDetails:\n\t"
+                    + ex.getMessage(),
+                    "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
+        else
+        {
+            alterDevice();
+            try {
+                device.connect();
+                app.showSyncDlg();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
                     + "Remaining in disconnected state.\n\nDetails:\n\t"
                     + ex.getMessage(),
                     "Fail!", JOptionPane.ERROR_MESSAGE);
+                if (e.getSource() instanceof Selectable)
+                    ((Selectable)e.getSource()).setSelected(false);
+            }
         }
     }
 }
