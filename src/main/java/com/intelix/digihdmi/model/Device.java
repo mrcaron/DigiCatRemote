@@ -55,10 +55,10 @@ public class Device implements PropertyChangeListener {
     private int maxPresetNameLength = 0;
 
     @XStreamOmitField
-    private int maxAdminPassLength = 0;
+    private int maxIONameLength = 0;
 
     @XStreamOmitField
-    private int maxLockPassLength = 0;
+    private int maxPassLength = 0;
     // PropertyChangeListeners will get reports about this one
 
     @XStreamOmitField
@@ -110,10 +110,10 @@ public class Device implements PropertyChangeListener {
         try {
             maxPresetNameLength = Integer.parseInt(
                     getConfiguration().getString("MAX_PRESET_NAME_LENGTH"));
-            maxAdminPassLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_ADMIN_PASS_LENGTH"));
-            maxLockPassLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_LOCK_PASS_LENGTH"));
+            maxPassLength = Integer.parseInt(
+                    getConfiguration().getString("MAX_PASS_LENGTH"));
+            maxIONameLength = Integer.parseInt(
+                    getConfiguration().getString("MAX_IO_NAME_LENGTH"));
         } catch (Exception e) {
             // IGNORE
         }
@@ -495,22 +495,18 @@ public class Device implements PropertyChangeListener {
         resetPresets = true;
     }
 
-    public int getAdminPassLength() {
-        return maxAdminPassLength;
-    }
 
-    public void setAdminPassLength(int apl) {
-        maxAdminPassLength = apl;
+    public int getPassLength() {
+        return maxPassLength;
     }
-
-    public int getLockPassLength() {
-        return maxLockPassLength;
+    public void setPassLength(int length) {
+        maxPassLength = length;
     }
-
-    public void setLockPassLength(int lpl) {
-        maxLockPassLength = lpl;
+    
+    public int getIONameLength() {
+        return maxIONameLength;
     }
-
+    
     public int getPresetNameLength() {
         return maxPresetNameLength;
     }

@@ -10,6 +10,7 @@ import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
 import com.intelix.digihdmi.app.tasks.SetConnectorNameTask;
+import com.intelix.digihdmi.app.views.dialogs.NameChangeDlg;
 import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.util.TaskListenerAdapter;
 import java.awt.event.ActionEvent;
@@ -121,7 +122,12 @@ public class ConnectorActions {
             selected = sO;
         }
 
-        String newName = JOptionPane.showInputDialog("Type a new name for " + insertText);
+        NameChangeDlg dlg = new NameChangeDlg(appInstance.getMainFrame(),
+                                            insertText, 
+                                            appInstance.getDevice().getIONameLength()
+                                            );
+        dlg.setVisible(true);
+        String newName = dlg.getTheName();
 
         if (sI != null) {
             showInputListForCustomization();

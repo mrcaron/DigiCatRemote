@@ -32,7 +32,9 @@ public class AdminActions {
 
     private Task setPassword(SetPasswordTask t) {
 
-        SetPasswordDialog d = new SetPasswordDialog(((DigiHdmiApp)Application.getInstance()).getMainFrame());
+        DigiHdmiApp appInstance = ((DigiHdmiApp)Application.getInstance());
+        SetPasswordDialog d = new SetPasswordDialog(appInstance.getMainFrame(),
+                appInstance.getDevice().getPassLength());
         d.setLocationRelativeTo(null);
         d.setVisible(true);
 

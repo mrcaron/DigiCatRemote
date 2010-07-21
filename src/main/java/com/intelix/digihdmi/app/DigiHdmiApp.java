@@ -347,8 +347,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
         dlg.setNumInputs(device.getNumInputs());
         dlg.setNumPresets(device.getNumPresets());
         dlg.setPresetNameLength(device.getPresetNameLength());
-        dlg.setAdminPassLength(device.getAdminPassLength());
-        dlg.setLockPassLength(device.getLockPassLength());
+        dlg.setAdminPassLength(device.getPassLength());
+        dlg.setLockPassLength(device.getPassLength());
         
         deviceOptionsDlg.setVisible(true);
     }

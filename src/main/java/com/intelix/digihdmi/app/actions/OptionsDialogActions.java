@@ -60,11 +60,11 @@ public class OptionsDialogActions {
         if (device.getNumPresets() != dlgNP)
             device.setNumPresets(dlgNP);
 
-        if (device.getLockPassLength() != dlgLPL)
-            device.setLockPassLength(dlgLPL);
+        if (device.getPassLength() != dlgLPL)
+            device.setPassLength(dlgLPL);
 
-        if (device.getAdminPassLength() != dlgAPL)
-            device.setAdminPassLength(dlgAPL);
+        if (device.getPassLength() != dlgAPL)
+            device.setPassLength(dlgAPL);
 
         if (device.getPresetNameLength() != dlgPNL)
             device.setPresetNameLength(dlgPNL);
