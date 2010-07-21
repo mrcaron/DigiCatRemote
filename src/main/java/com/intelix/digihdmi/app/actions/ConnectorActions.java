@@ -134,8 +134,10 @@ public class ConnectorActions {
         else 
             onFinishTask = showOutputListForCustomization();
 
-        if (! dlg.isCancelled() && newName.length() > 0)
+        if (! dlg.isCancelled())
         {
+            if (newName.isEmpty())
+                newName = " ";
             Task t = new SetConnectorNameTask(appInstance, newName, selected);
             t.addTaskListener(new TaskListenerAdapter() {
                 @Override
