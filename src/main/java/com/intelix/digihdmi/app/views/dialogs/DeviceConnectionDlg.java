@@ -1,4 +1,4 @@
-package com.intelix.digihdmi.app.views;
+package com.intelix.digihdmi.app.views.dialogs;
 
 /*
  * Copyright 2010, Intelix, LLC. All rights reserved.

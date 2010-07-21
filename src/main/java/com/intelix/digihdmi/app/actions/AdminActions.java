@@ -9,7 +9,7 @@ import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.tasks.SetAdminPasswordTask;
 import com.intelix.digihdmi.app.tasks.SetPasswordTask;
 import com.intelix.digihdmi.app.tasks.SetUnlockPasswordTask;
-import com.intelix.digihdmi.app.views.SetPasswordDialog;
+import com.intelix.digihdmi.app.views.dialogs.SetPasswordDialog;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;

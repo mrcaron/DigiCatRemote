@@ -1,7 +1,7 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.views.DeviceConnectionDlg;
+import com.intelix.digihdmi.app.views.dialogs.DeviceConnectionDlg;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;

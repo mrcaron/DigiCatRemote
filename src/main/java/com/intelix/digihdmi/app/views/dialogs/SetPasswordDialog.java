@@ -1,4 +1,4 @@
-package com.intelix.digihdmi.app.views;
+package com.intelix.digihdmi.app.views.dialogs;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;

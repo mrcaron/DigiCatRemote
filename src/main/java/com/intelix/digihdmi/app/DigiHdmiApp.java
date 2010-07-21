@@ -3,6 +3,9 @@
  */
 package com.intelix.digihdmi.app;
 
+import com.intelix.digihdmi.app.views.dialogs.SynchronizationDlg;
+import com.intelix.digihdmi.app.views.dialogs.DeviceConnectionDlg;
+import com.intelix.digihdmi.app.views.dialogs.DevicePrefsDlg;
 import com.intelix.digihdmi.app.actions.*;
 import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;

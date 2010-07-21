@@ -1,7 +1,7 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.views.DevicePrefsDlg;
+import com.intelix.digihdmi.app.views.dialogs.DevicePrefsDlg;
 import com.intelix.digihdmi.model.Device;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;

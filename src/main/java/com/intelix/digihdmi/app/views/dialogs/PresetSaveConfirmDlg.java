@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package com.intelix.digihdmi.app.views;
+package com.intelix.digihdmi.app.views.dialogs;
 
 import javax.swing.JDialog;
 
