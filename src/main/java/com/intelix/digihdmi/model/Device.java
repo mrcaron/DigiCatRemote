@@ -495,7 +495,6 @@ public class Device implements PropertyChangeListener {
         resetPresets = true;
     }
 
-
     public int getPassLength() {
         return maxPassLength;
     }

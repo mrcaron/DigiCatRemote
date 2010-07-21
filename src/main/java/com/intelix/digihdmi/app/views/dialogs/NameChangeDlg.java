@@ -27,13 +27,14 @@ public class NameChangeDlg extends JDialog implements PropertyChangeListener, Ac
 
     JOptionPane optionPane;
     JTextField tfName;
-    String identifier;
+    String question;
     int maxChars;
     String theName;
+    boolean cancelled = false;
 
-    public NameChangeDlg(Frame f, String identifier, int maxChars) {
+    public NameChangeDlg(Frame f, String question, int maxChars) {
         super(f, true);
-        this.identifier = identifier;
+        this.question = question;
         this.maxChars = maxChars;
         initializeComponents();
 
@@ -62,7 +63,7 @@ public class NameChangeDlg extends JDialog implements PropertyChangeListener, Ac
         tfName = new JTextField();
 
         optionPane = new JOptionPane(
-                new Object[] {"Type a new name for " + identifier, tfName },
+                new Object[] {question /*"Type a new name for " + identifier*/, tfName },
                 JOptionPane.QUESTION_MESSAGE,
                 JOptionPane.OK_CANCEL_OPTION,
                 null);
@@ -89,17 +90,26 @@ public class NameChangeDlg extends JDialog implements PropertyChangeListener, Ac
 
     @Override
     public void propertyChange(PropertyChangeEvent e) {
-        String prop = e.getPropertyName();
 
-        theName = tfName.getText();
-
-        optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);
+        if (e.getNewValue() instanceof Integer &&
+                (Integer)e.getNewValue() == JOptionPane.OK_OPTION)
+        {
+            theName = tfName.getText();
+            cancelled = false;
+        } else {
+            cancelled = true;
+        }
+        
         tfName.setText(null);
         setVisible(false);
     }
 
     public String getTheName() {
         return theName;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
     }
 
     /**

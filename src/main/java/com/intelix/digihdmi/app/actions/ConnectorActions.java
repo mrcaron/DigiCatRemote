@@ -129,24 +129,26 @@ public class ConnectorActions {
         dlg.setVisible(true);
         String newName = dlg.getTheName();
 
-        if (sI != null) {
-            showInputListForCustomization();
-            onFinishTask = new GetInputsForCustomizationTask(appInstance);
-        }
-        else {
-            showOutputListForCustomization();
-            onFinishTask = new GetOutputsForCustomizationTask(appInstance);
+        if (sI != null) 
+            onFinishTask = showInputListForCustomization();
+        else 
+            onFinishTask = showOutputListForCustomization();
+
+        if (! dlg.isCancelled() && newName.length() > 0)
+        {
+            Task t = new SetConnectorNameTask(appInstance, newName, selected);
+            t.addTaskListener(new TaskListenerAdapter() {
+                @Override
+                public void finished(TaskEvent event) {
+                    onFinishTask.setInputBlocker(appInstance.new BusyInputBlocker(onFinishTask));
+                    appInstance.getContext().getTaskService().execute(onFinishTask);
+                }
+            });
+            return t;
         }
 
-        Task t = new SetConnectorNameTask(appInstance, newName, selected);
-        t.addTaskListener(new TaskListenerAdapter() {
-            @Override
-            public void finished(TaskEvent event) {
-                onFinishTask.setInputBlocker(appInstance.new BusyInputBlocker(onFinishTask));
-                appInstance.getContext().getTaskService().execute(onFinishTask);
-            }
-        });
-        return t;
+        onFinishTask.setInputBlocker(appInstance.new BusyInputBlocker(onFinishTask));
+        return onFinishTask;
     }
 
     @Action
