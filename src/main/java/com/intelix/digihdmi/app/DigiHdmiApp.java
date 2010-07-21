@@ -136,12 +136,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
 
+        ActionMap aa = getContext().getActionMap(new AdminActions());
         ActionMap connectorMap = getContext().getActionMap(new ConnectorActions());
 
         ((HomePanel)homeView).setLockAction(getContext().getActionMap(new LockActions()).get("lock"));
         ((HomePanel)homeView).setPresetViewAction(getContext().getActionMap().get("showPresetListView"));
         ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showOutputListView"));
-        ((HomePanel)homeView).setAdminAction(getContext().getActionMap().get("showUtilView"));
+        ((HomePanel)homeView).setAdminAction(aa.get("unlockUtilView"));
         ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showAndLoadMatrixView"));
 
         lockView = new LockView();
@@ -153,7 +154,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
         );
 
         adminView = new AdminPanel();
-        AdminActions aa = new AdminActions();
         ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap().get("showPasswdView"));
         ((AdminPanel)adminView).setBtnDefineInputsAction(connectorMap.get("showInputListForCustomization"));
         ((AdminPanel)adminView).setBtnDefineOutputsAction(connectorMap.get("showOutputListForCustomization"));
@@ -328,7 +328,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         // TODO: add a confirmation dialog
         showPanel(lockView, "Lock View");
     }
-
+    
     @org.jdesktop.application.Action
     public void showUtilView() {
         showPanel(adminView, "Utilities");

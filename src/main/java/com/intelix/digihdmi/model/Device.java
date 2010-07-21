@@ -80,7 +80,15 @@ public class Device implements PropertyChangeListener {
     private boolean resetPresets = true;
 
     @XStreamOmitField
+    private String activeAdminPassword = "";
+
+    @XStreamOmitField
     private boolean resetXP = true;
+
+    @XStreamOmitField
+    private boolean adminUnlocked;
+
+
     // DEBUG PROPERTIES
     private static int DELAY = 0;
 
@@ -719,6 +727,42 @@ public class Device implements PropertyChangeListener {
             if ("icon".equals(evt.getPropertyName())) {
             }
         }
+    }
+
+    public void lockAdmin()
+    {
+        Command cmd = new ToggleUtilityLockCommand();
+        if (deviceWriteRead(cmd, SequencePayload.class))
+        {
+            if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+            {
+                adminUnlocked = false;
+            } else {
+                activeAdminPassword = "";
+                adminUnlocked = true;
+            }
+        }
+    }
+
+    public void unlockAdmin(String password)
+    {
+        Command cmd = new ToggleUtilityLockCommand(password);
+        if (deviceWriteRead(cmd, SequencePayload.class))
+        {
+            if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+            {
+                activeAdminPassword = password;
+                adminUnlocked = true;
+            } else {
+                activeAdminPassword = "";
+                adminUnlocked = false;
+            }
+        }
+
+    }
+
+    public boolean isAdminLocked() {
+        return ! adminUnlocked;
     }
 
     //------------------------------------------------------------------------

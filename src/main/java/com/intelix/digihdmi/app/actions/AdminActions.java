@@ -9,16 +9,61 @@ import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.tasks.SetAdminPasswordTask;
 import com.intelix.digihdmi.app.tasks.SetPasswordTask;
 import com.intelix.digihdmi.app.tasks.SetUnlockPasswordTask;
+import com.intelix.digihdmi.app.tasks.ToggleAdminLockTask;
+import com.intelix.digihdmi.app.views.dialogs.PasswordSubmissionDlg;
 import com.intelix.digihdmi.app.views.dialogs.SetPasswordDialog;
+import com.intelix.digihdmi.model.Device;
+import com.intelix.digihdmi.util.TaskListenerAdapter;
+import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
+import org.jdesktop.application.TaskEvent;
 
 /**
  *
  * @author developer
  */
 public class AdminActions {
+
+    DigiHdmiApp app;
+    Device device;
+
+    public AdminActions() {
+        app = (DigiHdmiApp)Application.getInstance();
+        device = app.getDevice();
+    }
+
+    @Action (block=Task.BlockingScope.WINDOW)
+    public Task unlockUtilView() {
+        PasswordSubmissionDlg dlg = new PasswordSubmissionDlg(
+                app.getMainFrame(), device.getPassLength());
+        dlg.setVisible(true);
+
+        String password = dlg.getPassword();
+        if (!dlg.isCancelled())
+        {
+            Task t = new ToggleAdminLockTask(app,password);
+            t.setInputBlocker(((DigiHdmiApp)Application.getInstance()).new BusyInputBlocker(t));
+
+            t.addTaskListener(new TaskListenerAdapter() {
+                @Override
+                public void succeeded(TaskEvent event) {
+                    if ((Boolean)event.getValue())
+                    {
+                        // means we're locked
+                        JOptionPane.showMessageDialog(null, "Error!","Device is still locked.",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else
+                    {
+                        app.showUtilView();
+                    }
+                }
+            });
+            return t;
+        }
+        return null;
+    }
 
     @Action
     public Task setAdminPassword() {
