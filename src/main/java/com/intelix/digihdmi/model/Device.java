@@ -197,6 +197,10 @@ public class Device implements PropertyChangeListener {
     /* Disconnect from the device */
     public void disconnect() throws IOException {
         if (connection != null && connection.isConnected()) {
+
+            if (adminUnlocked)
+                lockAdmin();
+
             connection.disconnect();
 
             boolean connectedNew = connection.isConnected();
