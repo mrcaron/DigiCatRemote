@@ -13,7 +13,7 @@ public class PresetLoadListView extends ButtonListView {
         IconImageButton matrixView = new IconImageButton("MatrixIconBtn");
 
         matrixView.setAction(
-            Application.getInstance().getContext().getActionMap().get("showMatrixView")
+            Application.getInstance().getContext().getActionMap().get("showAndLoadMatrixView")
         );
         this.homePanel.add(matrixView);
     }
