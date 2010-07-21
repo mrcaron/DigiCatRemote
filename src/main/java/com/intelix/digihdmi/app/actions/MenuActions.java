@@ -36,7 +36,7 @@ public class MenuActions {
 
     @Action
     public void onDeviceSettings() {
-        ((DigiHdmiApp) Application.getInstance()).showOptionsDlg();
+        ((DigiHdmiApp) Application.getInstance()).showConnectionDlg();
     }
 
     private class ResetCacheTask extends Task {

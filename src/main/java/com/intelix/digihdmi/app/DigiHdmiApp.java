@@ -5,7 +5,6 @@ package com.intelix.digihdmi.app;
 
 import com.intelix.digihdmi.app.views.dialogs.SynchronizationDlg;
 import com.intelix.digihdmi.app.views.dialogs.DeviceConnectionDlg;
-import com.intelix.digihdmi.app.views.dialogs.DevicePrefsDlg;
 import com.intelix.digihdmi.app.actions.*;
 import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
@@ -45,7 +44,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent inputIconSelectionView;
     JComponent outputIconSelectionView;
 
-    JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
     JDialog syncDlg;
     
@@ -76,18 +74,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @Override
     protected void startup() {
         device = new Device();
-
-        /*if (!getContext().getResourceMap().getString("connectOnStart", new Object[0]).isEmpty()) {
-            try {
-                device.connect();
-            } catch (IOException ex) {
-                int choice = JOptionPane.showConfirmDialog(null, "An error occured during startup, would you like to continue in off-line mode?\nError: " + ex.getMessage(), "Error during startup", 0);
-
-                if (choice == 1) {
-                    System.exit(1);
-                }
-            }
-        }*/
 
         mainFrame = new DigiHdmiAppMainView(this);
         initializeComponents();
@@ -188,13 +174,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DigiHdmiAppMainView) mainFrame).setFileSaveMenuItemAction(menuActionMap.get("onFileSave"));
 
         // Set up dialogs
-        deviceOptionsDlg = new DevicePrefsDlg(mainFrame.getFrame());
-        ActionMap devicePrefsMap = getContext().getActionMap(new OptionsDialogActions());
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnConnectionAction(devicePrefsMap.get("onConnectProps"));
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnOkAction(devicePrefsMap.get("onOk"));
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnCancelAction(devicePrefsMap.get("onCancel"));
-
-        deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
+        deviceConnectionDlg = new DeviceConnectionDlg(mainFrame.getFrame());
         ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnTestAction(deviceCxnMap.get("onTest"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceActionMap.get("toggleDeviceConnect"));
@@ -337,30 +317,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showPasswdView() {
         showPanel(passwordView, "Change Passwords");
-    }
-
-    @org.jdesktop.application.Action
-    public void showOptionsDlg()
-    {
-        DevicePrefsDlg dlg = (DevicePrefsDlg)deviceOptionsDlg;
-        dlg.setNumOutputs(device.getNumOutputs());
-        dlg.setNumInputs(device.getNumInputs());
-        dlg.setNumPresets(device.getNumPresets());
-        dlg.setPresetNameLength(device.getPresetNameLength());
-        dlg.setAdminPassLength(device.getPassLength());
-        dlg.setLockPassLength(device.getPassLength());
-        
-        deviceOptionsDlg.setVisible(true);
-    }
-
-    @org.jdesktop.application.Action
-    public void hideOptionsDlg()
-    {
-        deviceOptionsDlg.setVisible(false);
-    }
-    
-    public DevicePrefsDlg getOptionsDlg() {
-        return (DevicePrefsDlg)deviceOptionsDlg;
     }
 
     @org.jdesktop.application.Action
