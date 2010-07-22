@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ActionMap;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.jdesktop.application.Application;
 
@@ -58,5 +57,10 @@ public class GetInputsForSelectionTask extends GetConnectorsTask {
         }
 
         return null;
+    }
+
+    @Override
+    protected String getIconNameHead() {
+        return "input";
     }
 }

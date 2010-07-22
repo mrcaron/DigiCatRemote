@@ -150,10 +150,10 @@ public class Device implements PropertyChangeListener {
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < numInputs; ++i) {
 
-            Input inpt = new Input("I_" + (i + 1), "", i + 1);
+            Input inpt = new Input("I_" + (i + 1), 1, i + 1);
             inpt.addPropertyChangeListener(this);
 
-            Output otpt = new Output("O_" + (i + 1), "", i + 1);
+            Output otpt = new Output("O_" + (i + 1), 1, i + 1);
             otpt.addPropertyChangeListener(this);
 
             inputs.add(inpt);            // Connectors are 1-based for their index
@@ -367,8 +367,8 @@ public class Device implements PropertyChangeListener {
             }
 
             @Override
-            protected Connector makeNewConnector(String name, String string, int i) {
-                return new Input(name, string, i);
+            protected Connector makeNewConnector(String name, int icon, int index) {
+                return new Input(name, icon, index);
             }
         };
     }
@@ -402,8 +402,8 @@ public class Device implements PropertyChangeListener {
             }
 
             @Override
-            protected Connector makeNewConnector(String name, String string, int i) {
-                return new Output(name, string, i);
+            protected Connector makeNewConnector(String name, int icon, int index) {
+                return new Output(name, icon, index);
             }
         };
     }
@@ -882,7 +882,7 @@ public class Device implements PropertyChangeListener {
                     IdNamePayload p = (IdNamePayload) c.getPayload();
                     String name = p.getStrData();
 
-                    Connector ctr = makeNewConnector(name, "", index + 1);
+                    Connector ctr = makeNewConnector(name, 1, index + 1);
                     list.set(index, ctr);
                 }
             }
@@ -905,6 +905,6 @@ public class Device implements PropertyChangeListener {
 
         public abstract int getMax();
 
-        protected abstract Connector makeNewConnector(String name, String string, int i);
+        protected abstract Connector makeNewConnector(String name, int icon, int index);
     }
 }

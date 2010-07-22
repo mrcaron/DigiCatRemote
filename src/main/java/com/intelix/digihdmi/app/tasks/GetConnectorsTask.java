@@ -7,8 +7,11 @@ import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.BasicAction;
 import java.awt.event.ActionEvent;
+import java.text.NumberFormat;
 import java.util.Enumeration;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -16,7 +19,7 @@ import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
-public class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*implements PropertyChangeListener*/ {
+public abstract class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*implements PropertyChangeListener*/ {
 
     protected final ButtonContainerPanel panel;
     protected final Device device;
@@ -80,11 +83,22 @@ public class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*impl
         publish(new Chunk( c.getName(), c.getIcon() , getConnectorAction(c) ));
     }
 
+    private static NumberFormat f = null;
+
     @Override
     protected void process(List<Chunk> values) {
+        if (f == null)
+        {
+            f = NumberFormat.getInstance();
+            f.setMinimumIntegerDigits(2);
+        }
         for(Chunk c : values)
-            panel.addButton(c.getName(), c.getIcon(), c.getAction());
+            panel.addButton(c.getName(), c.getIcon() > 0 ? 
+                    (getIconNameHead() + "_" + f.format(c.getIcon()))
+                  : "", c.getAction());
     }
+
+    protected abstract String getIconNameHead();
 
     /*
     @Override
@@ -97,9 +111,9 @@ public class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*impl
 
     protected class Chunk {
         String name;
-        String icon;
+        int icon;
         Action action;
-        public Chunk(String name, String icon, Action action) {
+        public Chunk(String name, int icon, Action action) {
             this.name = name;
             this.icon = icon;
             this.action = action;
@@ -113,7 +127,7 @@ public class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*impl
             return action;
         }
 
-        public String getIcon() {
+        public int getIcon() {
             return icon;
         }
     }

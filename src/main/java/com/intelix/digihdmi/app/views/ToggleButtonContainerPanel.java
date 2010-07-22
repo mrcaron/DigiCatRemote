@@ -18,6 +18,7 @@ public class ToggleButtonContainerPanel extends ButtonContainerPanel
     public AbstractButton createButton(String name, String iconName) {
         JToggleButton b = new JToggleButton(name);
         b.addItemListener(this);
+        b.setIcon(getIconImage(iconName));
         return b;
     }
 

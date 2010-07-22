@@ -88,12 +88,7 @@ public class ButtonContainerPanel extends JPanel {
         if (iconName != null && !iconName.isEmpty())
         {
             String key = iconName;
-            Icon i = cache.get(key);
-            if (null == i)
-            {
-                i = loadIconImage(iconName);
-                cache.put(key,i);
-            }
+            Icon i = getIconImage(iconName);
             b = new JButton(name, i);
         } else
         {
@@ -103,7 +98,18 @@ public class ButtonContainerPanel extends JPanel {
         return b;
     }
 
-    public Icon loadIconImage(String iconName)
+    protected Icon getIconImage(String iconName)
+    {
+        Icon i = cache.get(iconName);
+        if (null == i)
+        {
+            i = loadIconImage(iconName);
+            cache.put(iconName,i);
+        }
+        return i;
+    }
+
+    protected Icon loadIconImage(String iconName)
     {
         URL imageURL = getClass().getResource(GET_ICONS_HERE + "/" + iconName + ".png");
         BufferedImage img = null;

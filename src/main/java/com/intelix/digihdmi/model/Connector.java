@@ -10,14 +10,14 @@ public class Connector {
     PropertyChangeSupport pcSupport = new PropertyChangeSupport(this);
 
     private String name;
-    private String icon;
+    private int icon;
     private int index;     // 1-based
 
     public Connector() {
-        this("","",-1);
+        this("",0,-1);
     }
 
-    public Connector(String name, String icon, int index) {
+    public Connector(String name, int icon, int index) {
         this.name = name;
         this.index = index;
         this.icon = icon;
@@ -46,7 +46,7 @@ public class Connector {
         pcSupport.removePropertyChangeListener(l);
     }
 
-    public String getIcon() {
+    public int getIcon() {
         return this.icon;
     }
 
@@ -59,7 +59,7 @@ public class Connector {
         this.name = name;
     }
 
-    public void setIcon(String icon) {
+    public void setIcon(int icon) {
         pcSupport.firePropertyChange("icon", this.icon, icon);
         this.icon = icon;
     }

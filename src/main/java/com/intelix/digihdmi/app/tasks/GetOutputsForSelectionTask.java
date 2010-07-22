@@ -26,4 +26,9 @@ public class GetOutputsForSelectionTask extends GetConnectorsTask {
 
         return getInputs;
     }
+
+    @Override
+    protected String getIconNameHead() {
+        return "output";
+    }
 }
