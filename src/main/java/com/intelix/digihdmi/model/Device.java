@@ -370,6 +370,11 @@ public class Device implements PropertyChangeListener {
             protected Connector makeNewConnector(String name, int icon, int index) {
                 return new Input(name, icon, index);
             }
+
+            @Override
+            public Command getIconLookupCommand(int index) {
+                return new GetInputIconCommand(index);
+            }
         };
     }
 
@@ -404,6 +409,11 @@ public class Device implements PropertyChangeListener {
             @Override
             protected Connector makeNewConnector(String name, int icon, int index) {
                 return new Output(name, icon, index);
+            }
+
+            @Override
+            public Command getIconLookupCommand(int index) {
+                return new GetOutputIconCommand(index);
             }
         };
     }
@@ -878,13 +888,20 @@ public class Device implements PropertyChangeListener {
         public Connector nextElement() {
             if (connected && (live || isReset())) {
                 Command c = getNameLookupCommand(index + 1);
+                String name = null;
+                int icon = 0;
                 if (deviceWriteRead(c, IdNamePayload.class)) {
                     IdNamePayload p = (IdNamePayload) c.getPayload();
-                    String name = p.getStrData();
-
-                    Connector ctr = makeNewConnector(name, 1, index + 1);
-                    list.set(index, ctr);
+                    name = p.getStrData();
                 }
+                c = getIconLookupCommand(index + 1);
+                if (deviceWriteRead(c, SequencePayload.class)) {
+                    SequencePayload p = (SequencePayload) c.getPayload();
+                    icon = p.get(0);
+                }
+
+                Connector ctr = makeNewConnector(name, icon, index + 1);
+                list.set(index, ctr);
             }
             if (DELAY > 0) {
                 try {
@@ -902,9 +919,11 @@ public class Device implements PropertyChangeListener {
         public abstract void setReset(boolean r);
 
         public abstract Command getNameLookupCommand(int paramInt);
+        public abstract Command getIconLookupCommand(int i);
 
         public abstract int getMax();
 
         protected abstract Connector makeNewConnector(String name, int icon, int index);
+
     }
 }

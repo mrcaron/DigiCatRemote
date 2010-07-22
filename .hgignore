@@ -1,2 +1,5 @@
 target/
 src/main/java/com/intelix/digihdmi/util/.DS_Store
+src/main/resources/com/intelix/digihdmi/util/resources/.DS_Store
+src/main/resources/Button.png
+src/main/resources/MyriadPro-Regular.otf
