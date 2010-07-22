@@ -477,10 +477,10 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public void savePreset(int number, String name) {
         // Get current preset
-        Preset newPreset = new Preset(name, number);
+        Preset newPreset = new Preset(name, number+1);
 
         // Setup the set preset command while filling up new preset
-        SetPresetCommand saveCmd = new SetPresetCommand(number);
+        SetPresetCommand saveCmd = new SetPresetCommand(number+1);
         for (int i = 0; i < cxnMatrix.size(); i++) {
             // add the input to the payload in the correct slot
             SequencePayload p = (SequencePayload) saveCmd.getPayload();
@@ -491,12 +491,13 @@ public class Device implements PropertyChangeListener {
         }
 
         if (connected) {
-            if (deviceWriteRead(saveCmd, PresetReportPayload.class)) {
-                newPreset = readPresetReport(name, number, (PresetReportPayload) saveCmd.getPayload());
+            if (deviceWriteRead(saveCmd, PresetReportPayload.class, 2000)) {
+                newPreset = readPresetReport(name, number+1, (PresetReportPayload) saveCmd.getPayload());
             }
         }
 
-        presets.set(number - 1, newPreset);
+        presets.set(number, newPreset);
+        resetPresets = true;
     }
 
     //------------------------------------------------------------------------
