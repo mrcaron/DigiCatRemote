@@ -39,11 +39,15 @@ public class ConnectionDialogActions {
         IPConnection newC = new IPConnection();
         newC.setIpAddr(dlg.getIpAddr());
         newC.setPort(dlg.getPort());
-        try {
-            device.setConnection(newC);
-        } catch (IOException ex)
+        if ( !((IPConnection)oldC).getIpAddr().equals(dlg.getIpAddr()) ||
+             ! (((IPConnection)oldC).getPort() == newC.getPort()))
         {
-            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
+            try {
+                device.setConnection(newC);
+            } catch (IOException ex)
+            {
+                JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
+            }
         }
         return new Connection[] {oldC,newC};
     }
