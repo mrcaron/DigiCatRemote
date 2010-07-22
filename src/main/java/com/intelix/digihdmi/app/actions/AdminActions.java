@@ -37,11 +37,15 @@ public class AdminActions {
     @Action (block=Task.BlockingScope.WINDOW)
     public Task unlockUtilView() {
         PasswordSubmissionDlg dlg = new PasswordSubmissionDlg(
-                app.getMainFrame(), device.getPassLength());
-        dlg.setVisible(true);
-
-        String password = dlg.getPassword();
-        if (!dlg.isCancelled())
+                    app.getMainFrame(), device.getPassLength());
+        String password = "";
+        final boolean skip = ! device.isConnected();
+        if (!skip)
+        {
+            dlg.setVisible(true);
+            password = dlg.getPassword();
+        }
+        if (skip || !dlg.isCancelled())
         {
             Task t = new ToggleAdminLockTask(app,password);
             t.setInputBlocker(((DigiHdmiApp)Application.getInstance()).new BusyInputBlocker(t));
@@ -49,11 +53,14 @@ public class AdminActions {
             t.addTaskListener(new TaskListenerAdapter() {
                 @Override
                 public void succeeded(TaskEvent event) {
-                    if ((Boolean)event.getValue())
+                    if (!skip)
                     {
-                        // means we're locked
-                        JOptionPane.showMessageDialog(null, "Error!","Device is still locked.",
+                        if ((Boolean)event.getValue())
+                        {
+                            // means we're locked
+                            JOptionPane.showMessageDialog(null, "Error!","Device is still locked.",
                                 JOptionPane.ERROR_MESSAGE);
+                        }
                     } else
                     {
                         app.showUtilView();

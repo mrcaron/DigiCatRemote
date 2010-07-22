@@ -6,9 +6,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -774,34 +772,39 @@ public class Device implements PropertyChangeListener {
 
     public void lockAdmin()
     {
-        Command cmd = new ToggleUtilityLockCommand();
-        if (deviceWriteRead(cmd, SequencePayload.class))
+        if (isConnected())
         {
-            if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+            Command cmd = new ToggleUtilityLockCommand();
+            if (deviceWriteRead(cmd, SequencePayload.class))
             {
-                adminUnlocked = false;
-            } else {
-                activeAdminPassword = "";
-                adminUnlocked = true;
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    adminUnlocked = false;
+                } else {
+                    activeAdminPassword = "";
+                    adminUnlocked = true;
+                }
             }
         }
     }
 
     public void unlockAdmin(String password)
     {
-        Command cmd = new ToggleUtilityLockCommand(password);
-        if (deviceWriteRead(cmd, SequencePayload.class))
+        if (isConnected())
         {
-            if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+            Command cmd = new ToggleUtilityLockCommand(password);
+            if (deviceWriteRead(cmd, SequencePayload.class))
             {
-                activeAdminPassword = password;
-                adminUnlocked = true;
-            } else {
-                activeAdminPassword = "";
-                adminUnlocked = false;
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    activeAdminPassword = password;
+                    adminUnlocked = true;
+                } else {
+                    activeAdminPassword = "";
+                    adminUnlocked = false;
+                }
             }
         }
-
     }
 
     public boolean isAdminLocked() {
