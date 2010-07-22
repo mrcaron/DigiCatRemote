@@ -138,6 +138,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((MatrixView)matrixView).getMatrixPanel().setDefaultButtonAction(
             getContext().getActionMap(new MatrixActions()).get("setConnection")
         );
+        ((MatrixView)matrixView).getMatrixPanel().setBtnRefreshAction(
+                getContext().getActionMap().get("showAndLoadMatrixView"));
 
         adminView = new AdminPanel();
         ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap().get("showPasswdView"));
