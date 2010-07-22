@@ -7,7 +7,7 @@ import java.beans.PropertyChangeSupport;
 public class Connector {
 
     @XStreamOmitField
-    PropertyChangeSupport pcSupport;
+    PropertyChangeSupport pcSupport = new PropertyChangeSupport(this);
 
     private String name;
     private String icon;
@@ -21,7 +21,11 @@ public class Connector {
         this.name = name;
         this.index = index;
         this.icon = icon;
+        init();
+    }
 
+    public void init()
+    {
         pcSupport = new PropertyChangeSupport(this);
     }
 

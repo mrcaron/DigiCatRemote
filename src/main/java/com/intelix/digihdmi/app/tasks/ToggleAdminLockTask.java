@@ -29,7 +29,7 @@ public class ToggleAdminLockTask extends Task<Boolean,Void> {
             d.lockAdmin() ;
         else
         {
-            if (d.isAdminLocked())
+            if (! d.isAdminLocked())
                 d.lockAdmin();
             d.unlockAdmin(password);
         }

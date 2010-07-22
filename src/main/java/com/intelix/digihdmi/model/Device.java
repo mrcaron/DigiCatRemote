@@ -33,7 +33,7 @@ public class Device implements PropertyChangeListener {
     private Logger logger;
 
     @XStreamOmitField
-    PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
+    PropertyChangeSupport pcsupport;
 
     @XStreamOmitField
     private int selectedOutput;
@@ -134,6 +134,8 @@ public class Device implements PropertyChangeListener {
     public Device() {
         logger = Logger.getLogger(getClass().getCanonicalName());
 
+        init();
+
         connected = false;
         connection = new IPConnection();
 
@@ -192,6 +194,11 @@ public class Device implements PropertyChangeListener {
             }
             presets.add(p);
         }
+    }
+
+    public void init()
+    {
+        pcsupport = new PropertyChangeSupport(this);
     }
 
     //------------------------------------------------------------------------
@@ -809,7 +816,20 @@ public class Device implements PropertyChangeListener {
     }
 
     public boolean isAdminLocked() {
-        return ! adminUnlocked;
+        if (isConnected())
+        {
+            Command cmd = new GetAdminLockStatusCommand();
+            if (deviceWriteRead(cmd,SequencePayload.class))
+            {
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    adminUnlocked = true;
+                } else {
+                    adminUnlocked = false;
+                }
+            }
+        }
+        return false;
     }
 
     //------------------------------------------------------------------------

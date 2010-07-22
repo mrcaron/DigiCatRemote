@@ -188,8 +188,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((SynchronizationDlg)syncDlg).setBtnNoAction(syncMap.get("onPull"));
         ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
 
+        addDeviceListener(device);
+    }
+
+    public void addDeviceListener(Device d)
+    {
         // Listen to the device for connection change information
-        device.addPropertyChangeListener(new PropertyChangeListener() {
+        d.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getPropertyName().equals("connected"))
