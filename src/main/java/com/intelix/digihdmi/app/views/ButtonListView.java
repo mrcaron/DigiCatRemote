@@ -59,7 +59,7 @@ public class ButtonListView extends ApplicationView {
                     protected Object doInBackground() throws Exception {
                         for (int i = 0; i < 4; ++i) {
                             Thread.sleep(500L);
-                            m.getButtonsPanel().addButton("Do Me.", new BasicAction() {
+                            m.getButtonsPanel().addButton("Do Me.", "input_01", new BasicAction() {
 
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
