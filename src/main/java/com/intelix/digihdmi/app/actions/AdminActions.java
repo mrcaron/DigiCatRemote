@@ -61,9 +61,11 @@ public class AdminActions {
                         {
                             JOptionPane.showMessageDialog(null, "Error!","Device is still locked.",
                                 JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
-                    app.showUtilView();
+                        } else
+                            app.showUtilView();
+
+                    } else
+                        app.showUtilView();
                 }
             });
             return t;
