@@ -25,15 +25,15 @@ public class ToggleAdminLockTask extends Task<Boolean,Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         Device d = ((DigiHdmiApp)getApplication()).getDevice();
+
         if (password == null)
             d.lockAdmin() ;
         else
         {
-            if (! d.isAdminLocked())
-                d.lockAdmin();
             d.unlockAdmin(password);
         }
 
-        return d.isAdminLocked();
+        // Spec says to return 0 (false) if Locked and 1 (true) if unlocked.
+        return ! d.isAdminLocked();
     }
 }

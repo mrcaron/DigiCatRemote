@@ -87,7 +87,7 @@ public class Device implements PropertyChangeListener {
     private boolean resetXP = true;
 
     @XStreamOmitField
-    private boolean adminUnlocked;
+    private boolean adminUnlocked = true;
 
     @XStreamOmitField
     private static URL propertiesFile;
@@ -246,6 +246,10 @@ public class Device implements PropertyChangeListener {
             boolean connectedNew = connection.isConnected();
             pcsupport.firePropertyChange("connected", connected, connectedNew);
             connected = connectedNew;
+
+            // when we're disconnected, there should be no password to lock
+            // or unlock the admin screens. Makes no sense.
+            adminUnlocked = true;
 
         }
     }
@@ -824,7 +828,7 @@ public class Device implements PropertyChangeListener {
         if (isConnected())
         {
             Command cmd = new GetAdminLockStatusCommand();
-            if (deviceWriteRead(cmd,SequencePayload.class))
+            if (deviceWriteRead(cmd,SequencePayload.class,500))
             {
                 if (((SequencePayload)cmd.getPayload()).get(0) > 0)
                 {
@@ -834,7 +838,7 @@ public class Device implements PropertyChangeListener {
                 }
             }
         }
-        return false;
+        return ! adminUnlocked;
     }
 
     //------------------------------------------------------------------------
