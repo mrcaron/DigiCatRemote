@@ -23,12 +23,14 @@ public abstract class LoadIconsTask extends Task {
 
     Connector selected;
     List<String> iconList;
+    DigiHdmiApp app;
     private final IconContainerPanel panel;
 
     public LoadIconsTask(Application app, IconContainerPanel p)
     {
         super(app);
         panel = p;
+        this.app = (DigiHdmiApp)app;
     }
 
     public LoadIconsTask(Application app, Connector ctr) {
@@ -51,6 +53,7 @@ public abstract class LoadIconsTask extends Task {
         {
             for (AbstractButton b: (List<AbstractButton>)values)
             {
+                b.setAction(getButtonAction());
                 panel.addButton(b);
                 ((DigiHdmiApp) getApplication()).getCurrentView().validate();
             }
