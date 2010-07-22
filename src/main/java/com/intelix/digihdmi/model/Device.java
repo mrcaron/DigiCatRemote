@@ -6,7 +6,13 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -42,7 +48,7 @@ public class Device implements PropertyChangeListener {
     private HashMap<Integer, Integer> cxnMatrix = new HashMap();  /* KEY=Output,VALUE=Input */
 
     @XStreamOmitField
-    private static ResourceBundle config;
+    private static Properties config;
 
     @XStreamOmitField
     private boolean connected;
@@ -88,16 +94,40 @@ public class Device implements PropertyChangeListener {
     @XStreamOmitField
     private boolean adminUnlocked;
 
+    @XStreamOmitField
+    private static URL propertiesFile;
 
     // DEBUG PROPERTIES
     private static int DELAY = 0;
 
     //------------------------------------------------------------------------
-    private static ResourceBundle getConfiguration() {
+    private static Properties getConfiguration() {
         if (config == null) {
-            config = ResourceBundle.getBundle("Device");
+            //config = PropertyResourceBundle.getBundle("Device");
+            propertiesFile = ClassLoader.getSystemResource("Device.properties");
+            config = new Properties();
+            try {
+                config.load(new FileInputStream(propertiesFile.getFile()));
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                config = null;
+            }
         }
         return config;
+    }
+
+    private static void saveConfiguration() {
+        if (config != null)
+        {
+            try {
+                OutputStream out = new FileOutputStream(propertiesFile.getFile());
+                config.store(out, "---Routine Save---");
+                out.close();
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE,
+                        "Error while saving Device properties file", ex);
+            }
+        }
     }
 
     //------------------------------------------------------------------------
@@ -109,7 +139,7 @@ public class Device implements PropertyChangeListener {
         connection = new IPConnection();
 
         try {
-            String delay = getConfiguration().getString("delay");
+            String delay = getConfiguration().getProperty("delay");
             DELAY = Integer.parseInt(delay);
         } catch (Exception e) {
             // IGNORE - We'll just have a 0 delay then, and a 4 length password
@@ -117,22 +147,21 @@ public class Device implements PropertyChangeListener {
 
         try {
             maxPresetNameLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_PRESET_NAME_LENGTH"));
+                    getConfiguration().getProperty("MAX_PRESET_NAME_LENGTH"));
             maxPassLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_PASS_LENGTH"));
+                    getConfiguration().getProperty("MAX_PASS_LENGTH"));
             maxIONameLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_IO_NAME_LENGTH"));
+                    getConfiguration().getProperty("MAX_IO_NAME_LENGTH"));
         } catch (Exception e) {
             // IGNORE
         }
 
         try {
-            connection.setIpAddr(getConfiguration().getString("ipAddr"));
-            connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
-
-            numInputs = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
-            numOutputs = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
-            numPresets = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
+            connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
+            connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
+            numInputs = Integer.parseInt(getConfiguration().getProperty("MAX_INPUTS"));
+            numOutputs = Integer.parseInt(getConfiguration().getProperty("MAX_OUTPUTS"));
+            numPresets = Integer.parseInt(getConfiguration().getProperty("MAX_PRESETS"));
 
         } catch (NullPointerException ex) {
             connection = null;
@@ -531,6 +560,9 @@ public class Device implements PropertyChangeListener {
             disconnect();
         }
         connection = (IPConnection) cxn;
+        getConfiguration().setProperty("ipAddr", ((IPConnection)cxn).getIpAddr());
+        getConfiguration().setProperty("port", ""+((IPConnection)cxn).getPort());
+        saveConfiguration();
     }
 
     public Connection getConnection() {
