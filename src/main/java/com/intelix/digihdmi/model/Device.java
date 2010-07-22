@@ -30,9 +30,6 @@ import java.util.logging.Logger;
 public class Device implements PropertyChangeListener {
 
     @XStreamOmitField
-    private Logger logger;
-
-    @XStreamOmitField
     PropertyChangeSupport pcsupport;
 
     @XStreamOmitField
@@ -51,16 +48,16 @@ public class Device implements PropertyChangeListener {
     @XStreamOmitField
     private boolean connected;
     private IPConnection connection;
+    @XStreamOmitField
     private int numInputs = 0;
+    @XStreamOmitField
     private int numOutputs = 0;
+    @XStreamOmitField
     private int numPresets = 0;
-
     @XStreamOmitField
     private int maxPresetNameLength = 0;
-
     @XStreamOmitField
     private int maxIONameLength = 0;
-
     @XStreamOmitField
     private int maxPassLength = 0;
     // PropertyChangeListeners will get reports about this one
@@ -132,42 +129,19 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     /* Initialize the Device */
     public Device() {
-        logger = Logger.getLogger(getClass().getCanonicalName());
-
         init();
 
-        connected = false;
         connection = new IPConnection();
-
-        try {
-            String delay = getConfiguration().getProperty("delay");
-            DELAY = Integer.parseInt(delay);
-        } catch (Exception e) {
-            // IGNORE - We'll just have a 0 delay then, and a 4 length password
-        }
-
-        try {
-            maxPresetNameLength = Integer.parseInt(
-                    getConfiguration().getProperty("MAX_PRESET_NAME_LENGTH"));
-            maxPassLength = Integer.parseInt(
-                    getConfiguration().getProperty("MAX_PASS_LENGTH"));
-            maxIONameLength = Integer.parseInt(
-                    getConfiguration().getProperty("MAX_IO_NAME_LENGTH"));
-        } catch (Exception e) {
-            // IGNORE
-        }
 
         try {
             connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
             connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
-            numInputs = Integer.parseInt(getConfiguration().getProperty("MAX_INPUTS"));
-            numOutputs = Integer.parseInt(getConfiguration().getProperty("MAX_OUTPUTS"));
-            numPresets = Integer.parseInt(getConfiguration().getProperty("MAX_PRESETS"));
-
         } catch (NullPointerException ex) {
             connection = null;
         } catch (MissingResourceException ex) {
             connection = null;
+            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+                    "Missing Device.properties file or information in it!", ex);
         }
 
         inputs = new ArrayList();
@@ -199,6 +173,37 @@ public class Device implements PropertyChangeListener {
     public void init()
     {
         pcsupport = new PropertyChangeSupport(this);
+        connected = false;
+        
+        if (connection != null)
+        {
+            connection.init();
+        }
+
+        try {
+            String delay = getConfiguration().getProperty("delay");
+            DELAY = Integer.parseInt(delay);
+        } catch (Exception e) {
+            // IGNORE - We'll just have a 0 delay then, and a 4 length password
+        }
+
+        try {
+            maxPresetNameLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_PRESET_NAME_LENGTH"));
+            maxPassLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_PASS_LENGTH"));
+            maxIONameLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_IO_NAME_LENGTH"));
+            numInputs = Integer.parseInt(getConfiguration().getProperty("MAX_INPUTS"));
+            numOutputs = Integer.parseInt(getConfiguration().getProperty("MAX_OUTPUTS"));
+            numPresets = Integer.parseInt(getConfiguration().getProperty("MAX_PRESETS"));
+        } catch (MissingResourceException ex) {
+            connection = null;
+            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+                    "Missing Device.properties file or information in it!", ex);
+        } catch (Exception e) {
+            // IGNORE
+        }
     }
 
     //------------------------------------------------------------------------
@@ -265,7 +270,7 @@ public class Device implements PropertyChangeListener {
                     cxnMatrix.put(selectedOutput, selectedInput);
                 }
             } catch (Exception ex) {
-                logger.log(Level.SEVERE, null, ex);
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return (Connector) inputs.get(cxnMatrix.get(selectedOutput));
@@ -274,7 +279,7 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public boolean makeConnection() {
         if (connected) {
-            logger.info("input: " + selectedInput + ", output: " + selectedOutput);
+            Logger.getLogger(Device.class.getName()).info("input: " + selectedInput + ", output: " + selectedOutput);
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
@@ -320,7 +325,7 @@ public class Device implements PropertyChangeListener {
                     try {
                         Thread.sleep(DELAY);
                     } catch (InterruptedException ex) {
-                        logger.log(Level.SEVERE, null, ex);
+                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 setProgress((float) index / presets.size());
@@ -605,7 +610,7 @@ public class Device implements PropertyChangeListener {
             md.update(pwd.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return digested;
@@ -747,9 +752,9 @@ public class Device implements PropertyChangeListener {
                 cmdIn = connection.readOne();
                 obtained = payloadClass.isInstance(cmdIn.getPayload());
             } catch (IOException ex) {
-                logger.log(Level.WARNING, null, ex);
+                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
             } catch (InterruptedException ex) {
-                logger.log(Level.WARNING, null, ex);
+                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
             }
         }
         if (obtained) {
@@ -881,7 +886,7 @@ public class Device implements PropertyChangeListener {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException ex) {
-                    logger.log(Level.SEVERE, null, ex);
+                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             setProgress((float) index / list.size());
