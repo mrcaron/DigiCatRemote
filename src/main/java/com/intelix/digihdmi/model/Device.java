@@ -491,9 +491,15 @@ public class Device implements PropertyChangeListener {
         }
 
         if (connected) {
+            setProgress(1f / 3);
             if (deviceWriteRead(saveCmd, PresetReportPayload.class, 2000)) {
                 newPreset = readPresetReport(name, number+1, (PresetReportPayload) saveCmd.getPayload());
             }
+            setProgress(2f / 3);
+            SetPresetNameCommand nameCmd = new SetPresetNameCommand(number+1, name);
+            if (deviceWriteRead(nameCmd, IdNamePayload.class))
+                newPreset.setName( ((IdNamePayload)nameCmd.getPayload()).getStrData() );
+            setProgress(3f / 3);
         }
 
         presets.set(number, newPreset);
