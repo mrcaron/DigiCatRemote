@@ -1,6 +1,6 @@
 package com.intelix.digihdmi.app.tasks;
 
-import com.intelix.digihdmi.app.actions.AdminActions;
+import com.intelix.digihdmi.app.actions.ConnectorActions;
 import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.model.Connector;
 import java.text.NumberFormat;
@@ -27,7 +27,7 @@ public class LoadIconsForInputTask extends LoadIconsTask {
 
     @Override
     protected Action getButtonAction() {
-        return app.getContext().getActionMap(new AdminActions()).get("assignInputIcon");
+        return app.getContext().getActionMap(new ConnectorActions()).get("assignInputIcon");
     }
 
     @Override

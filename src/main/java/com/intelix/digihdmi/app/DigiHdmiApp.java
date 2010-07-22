@@ -154,7 +154,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         connectorChangeView = new CustomizeConnectorPanel();
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefIconAction(
-                connectorMap.get("assignNewIcon"));
+                connectorMap.get("showIconChoices"));
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
                 connectorMap.get("assignNewName"));
 

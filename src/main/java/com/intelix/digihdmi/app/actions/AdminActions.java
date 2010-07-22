@@ -35,20 +35,6 @@ public class AdminActions {
         device = app.getDevice();
     }
 
-    @Action
-    public Task assignInputIcon(ActionEvent ev)
-    {
-        JOptionPane.showMessageDialog(null, "Assigning Input Icon");
-        return null;
-    }
-
-    @Action
-    public Task assignOutputIcon(ActionEvent ev)
-    {
-        JOptionPane.showMessageDialog(null, "Assigning Output Icon");
-        return null;
-    }
-
     @Action (block=Task.BlockingScope.WINDOW)
     public Task unlockUtilView() {
         PasswordSubmissionDlg dlg = new PasswordSubmissionDlg(
@@ -114,11 +100,4 @@ public class AdminActions {
 
         return null;
     }
-
-    @Action
-    public void defineInputs() {}
-
-    @Action
-    public void defineOutputs() {}
-
 }

@@ -12,6 +12,7 @@ import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
 import com.intelix.digihdmi.app.tasks.SetConnectorNameTask;
 import com.intelix.digihdmi.app.views.dialogs.NameChangeDlg;
 import com.intelix.digihdmi.model.Connector;
+import com.intelix.digihdmi.util.Indexed;
 import com.intelix.digihdmi.util.TaskListenerAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
@@ -154,7 +155,7 @@ public class ConnectorActions {
     }
 
     @Action
-    public Task assignNewIcon()
+    public Task showIconChoices()
     {
         Connector sI = appInstance.getDevice().getSelectedInput();
         Connector sO = appInstance.getDevice().getSelectedOutput();
@@ -171,5 +172,30 @@ public class ConnectorActions {
         }
 
         return t;
+    }
+
+    @Action
+    public Task assignInputIcon(ActionEvent ev)
+    {
+        Connector c = appInstance.getDevice().getSelectedInput();
+        int number = -1;
+        if (c != null)
+            number = c.getIndex();
+        JOptionPane.showMessageDialog(null, 
+                "Assigning Input #" + number + " Icon # " + ((Indexed)ev.getSource()).getIndex());
+        return null;
+    }
+
+    @Action
+    public Task assignOutputIcon(ActionEvent ev)
+    {
+        Connector c = appInstance.getDevice().getSelectedOutput();
+        int number = -1;
+        if (c != null)
+            number = c.getIndex();
+
+        JOptionPane.showMessageDialog(null,
+                "Assigning Output #" + number + " Icon # " + ((Indexed)ev.getSource()).getIndex());
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.app.views.InputIconListView;
 import com.intelix.digihdmi.app.views.OutputIconListView;
 import com.intelix.digihdmi.model.Connector;
+import com.intelix.digihdmi.util.Indexed;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ public abstract class LoadIconsTask extends Task {
     public LoadIconsTask(Application app, Connector ctr) {
         super(app);
         selected = ctr;
+        this.app = (DigiHdmiApp) app;
 
         JComponent c = ((DigiHdmiApp) app).getCurrentView();
         if (c instanceof InputIconListView) {
@@ -53,8 +55,14 @@ public abstract class LoadIconsTask extends Task {
         {
             for (AbstractButton b: (List<AbstractButton>)values)
             {
-                b.setAction(getButtonAction());
-                panel.addButton(b);
+                if (selected != null) {
+                    // this is our second trip through the icon list, we're
+                    // just adding actions to existing buttons
+                    b.setAction(getButtonAction());
+                } else {
+                    // we're initializing the icons here
+                    panel.addButton(b);
+                }
                 ((DigiHdmiApp) getApplication()).getCurrentView().validate();
             }
         }
@@ -72,10 +80,16 @@ public abstract class LoadIconsTask extends Task {
             // actually LOAD the icons from their resources
             for (int i=1; i<=numIcons; i++)
             {
-                publish(panel.createButton("Button_" + i,getIconResourceString(i)));
+                AbstractButton b = panel.createButton("Button_" + i,getIconResourceString(i));
+                ((Indexed)b).setIndex(i-1);
+                publish(b);
             }
         } else {
             // assign new actions for each button
+            for (int i=0; i<numIcons; i++)
+            {
+                publish(panel.getButton(i));
+            }
         }
 
         Logger.getLogger(this.getClass().getCanonicalName()).fine("Finished load icons task");

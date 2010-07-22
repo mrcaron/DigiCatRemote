@@ -22,7 +22,9 @@ import javax.swing.JButton;
  *
  * @author mcaron
  */
-public class ImageButton extends JButton {
+public class ImageButton extends JButton implements Indexed {
+
+    int index = -1;
 
     HashMap<String, Image> cache = new HashMap<String, Image>();
 
@@ -130,4 +132,14 @@ public class ImageButton extends JButton {
     Image bgImage;
     String buttonText;
     String imageName;
+
+    @Override
+    public int getIndex() {
+        return index;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        this.index = index;
+    }
 }
