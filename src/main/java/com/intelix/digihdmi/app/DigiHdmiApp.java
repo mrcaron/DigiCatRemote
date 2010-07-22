@@ -146,9 +146,9 @@ public class DigiHdmiApp extends SingleFrameApplication {
 
         passwordView = new PasswordChangePanel();
         ((PasswordChangePanel)passwordView).setBtnAdminPsswdAction(
-                getContext().getActionMap(aa).get("setAdminPassword"));
+                aa.get("setAdminPassword"));
         ((PasswordChangePanel)passwordView).setBtnUnlockPsswdAction(
-                getContext().getActionMap(aa).get("setUnlockPassword"));
+                aa.get("setUnlockPassword"));
 
         connectorChangeView = new CustomizeConnectorPanel();
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefIconAction(
@@ -181,7 +181,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
         
-
         syncDlg = new SynchronizationDlg(mainFrame.getFrame());
         ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
         ((SynchronizationDlg)syncDlg).setBtnDisconnectAction(syncMap.get("onCancel"));
