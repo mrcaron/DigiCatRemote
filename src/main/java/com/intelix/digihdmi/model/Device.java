@@ -96,6 +96,7 @@ public class Device implements PropertyChangeListener {
     private static URL propertiesFile;
 
     // DEBUG PROPERTIES
+    @XStreamOmitField
     private static int DELAY = 0;
 
     //------------------------------------------------------------------------
