@@ -1,13 +1,11 @@
 package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.views.ButtonContainerPanel;
 import com.intelix.digihdmi.app.views.IconContainerPanel;
 import com.intelix.digihdmi.app.views.InputIconListView;
 import com.intelix.digihdmi.app.views.OutputIconListView;
 import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.util.Indexed;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
@@ -81,7 +79,7 @@ public abstract class LoadIconsTask extends Task {
             for (int i=1; i<=numIcons; i++)
             {
                 AbstractButton b = panel.createButton("Button_" + i,getIconResourceString(i));
-                ((Indexed)b).setIndex(i-1);
+                ((Indexed)b).setIndex(i);
                 publish(b);
             }
         } else {

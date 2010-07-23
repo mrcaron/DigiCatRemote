@@ -14,7 +14,6 @@ import com.intelix.digihdmi.app.views.dialogs.PasswordSubmissionDlg;
 import com.intelix.digihdmi.app.views.dialogs.SetPasswordDialog;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.TaskListenerAdapter;
-import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;

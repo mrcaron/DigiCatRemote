@@ -9,7 +9,7 @@ import org.jdesktop.application.Task;
 /**
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class SetConnectorNameTask extends Task {
+public class SetConnectorNameTask extends Task<Void,Void> {
 
     DigiHdmiApp digiApp;
     Device device;
@@ -26,7 +26,7 @@ public class SetConnectorNameTask extends Task {
     }
 
     @Override
-    protected Object doInBackground() throws Exception {
+    protected Void doInBackground() throws Exception {
         selected.setName(newName);
         return null;
     }

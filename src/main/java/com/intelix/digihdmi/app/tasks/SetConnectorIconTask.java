@@ -9,8 +9,7 @@ import org.jdesktop.application.Task;
 /**
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class SetConnectorIconTask extends Task {
-
+public class SetConnectorIconTask extends Task<Void,Void> {
     DigiHdmiApp digiApp;
     Device device;
     int iconId;
@@ -26,7 +25,7 @@ public class SetConnectorIconTask extends Task {
     }
 
     @Override
-    protected Object doInBackground() throws Exception {
+    protected Void doInBackground() throws Exception {
         selected.setIcon(iconId);
         return null;
     }

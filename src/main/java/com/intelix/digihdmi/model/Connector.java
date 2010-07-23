@@ -54,23 +54,25 @@ public class Connector {
         return this.name;
     }
 
-    public void setName(String name) {
-        pcSupport.firePropertyChange("name", this.name, name);
-        this.name = name;
+    public void setName(String n) {
+        String oldname = this.name;
+        this.name = n;
+        pcSupport.firePropertyChange("name", oldname, n);
     }
 
-    public void setIcon(int icon) {
-        pcSupport.firePropertyChange("icon", this.icon, icon);
-        this.icon = icon;
+    public void setIcon(int i) {
+        int old = this.icon;
+        this.icon = i;
+        pcSupport.firePropertyChange("icon", old, i);
     }
 
     public int getIndex() {
         return index;
     }
 
-    public void setIndex(int index) {
-        pcSupport.firePropertyChange("index", this.index, index);
-        this.index = index;
+    public void setIndex(int i) {
+        pcSupport.firePropertyChange("index", this.index, i);
+        this.index = i;
     }
 
 }

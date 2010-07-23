@@ -1,7 +1,6 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.tasks.GetConnectorsTask;
 import com.intelix.digihdmi.app.tasks.GetInputsForSelectionTask;
 import com.intelix.digihdmi.app.tasks.GetInputsForCustomizationTask;
 import com.intelix.digihdmi.app.tasks.GetOutputsForCustomizationTask;
@@ -9,6 +8,7 @@ import com.intelix.digihdmi.app.tasks.GetOutputsForSelectionTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.tasks.MakeConnectionTask;
+import com.intelix.digihdmi.app.tasks.SetConnectorIconTask;
 import com.intelix.digihdmi.app.tasks.SetConnectorNameTask;
 import com.intelix.digihdmi.app.views.dialogs.NameChangeDlg;
 import com.intelix.digihdmi.model.Connector;
@@ -16,7 +16,6 @@ import com.intelix.digihdmi.util.Indexed;
 import com.intelix.digihdmi.util.TaskListenerAdapter;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
-import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
@@ -47,19 +46,19 @@ public class ConnectorActions {
         return t;
     }
 
-    @Action (block=Task.BlockingScope.WINDOW)
+    @Action //(block=Task.BlockingScope.WINDOW)
     public Task showOutputListForCustomization() {
         appInstance.showOutputCustomizationView();
         Task t = new GetOutputsForCustomizationTask(appInstance);
-        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        //t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
     }
 
-    @Action (block=Task.BlockingScope.WINDOW)
+    @Action //(block=Task.BlockingScope.WINDOW)
     public Task showInputListForCustomization() {
         appInstance.showInputCustomizationView();
         Task t = new GetInputsForCustomizationTask(appInstance);
-        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        //t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
     }
 
@@ -154,6 +153,10 @@ public class ConnectorActions {
         return onFinishTask;
     }
 
+
+    //--------------------------------------------------------------------------
+    // Assign a new icon to a connector
+    //
     @Action
     public Task showIconChoices()
     {
@@ -174,28 +177,39 @@ public class ConnectorActions {
         return t;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task assignInputIcon(ActionEvent ev)
     {
-        Connector c = appInstance.getDevice().getSelectedInput();
-        int number = -1;
-        if (c != null)
-            number = c.getIndex();
-        JOptionPane.showMessageDialog(null, 
-                "Assigning Input #" + number + " Icon # " + ((Indexed)ev.getSource()).getIndex());
-        return null;
+        Task t = assignIcon(((Indexed)ev.getSource()).getIndex(), true /* is input */);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
     }
 
-    @Action
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task assignOutputIcon(ActionEvent ev)
     {
-        Connector c = appInstance.getDevice().getSelectedOutput();
-        int number = -1;
-        if (c != null)
-            number = c.getIndex();
+        Task t = assignIcon(((Indexed)ev.getSource()).getIndex(), false /* not input */);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
+    }
 
-        JOptionPane.showMessageDialog(null,
-                "Assigning Output #" + number + " Icon # " + ((Indexed)ev.getSource()).getIndex());
-        return null;
+    public Task assignIcon(int iconId, boolean isInput)
+    {
+        Connector c = isInput ? appInstance.getDevice().getSelectedInput() :
+                                appInstance.getDevice().getSelectedOutput();
+
+        final Task onFinishTask = isInput ? showInputListForCustomization() : 
+                                            showOutputListForCustomization();
+
+        Task t = new SetConnectorIconTask(appInstance, iconId, c);
+        t.addTaskListener(new TaskListenerAdapter() {
+            @Override
+            public void finished(TaskEvent event) {
+                onFinishTask.setInputBlocker(appInstance.new BusyInputBlocker(onFinishTask));
+                appInstance.getContext().getTaskService().execute(onFinishTask);
+            }
+        });
+
+        return t;
     }
 }

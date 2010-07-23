@@ -723,15 +723,37 @@ public class Device implements PropertyChangeListener {
     }
 
     private void pushInputName(Input i) {
-        if (connected)
+        if (isConnected())
         {
+            Command c = new SetConnectorNameCommand(i.getName(), i.getIndex(), true /* not input */);
+            deviceWriteAndSkip(c);
             resetInput = true;
         }
     }
 
     private void pushOutputName(Output o) {
-        if (connected)
+        if (isConnected())
         {
+            Command c = new SetConnectorNameCommand(o.getName(), o.getIndex(), false /* not input */);
+            deviceWriteAndSkip(c);
+            resetOutput = true;
+        }
+    }
+
+    private void pushInputIcon(Input i) {
+        if (isConnected())
+        {
+            Command c = new SetConnectorIconCommand(i.getIndex(), i.getIcon(), true /* input */);
+            deviceWriteAndSkip(c);
+            resetInput = true;
+        }
+    }
+
+    private void pushOutputIcon(Output o) {
+        if (isConnected())
+        {
+            Command c = new SetConnectorIconCommand(o.getIndex(), o.getIcon(), false /* NOT input */);
+            deviceWriteAndSkip(c); // just assume that it goes through.
             resetOutput = true;
         }
     }
@@ -740,7 +762,10 @@ public class Device implements PropertyChangeListener {
     {
         try {
             connection.write(cmdOut);
+            Thread.sleep(300);
             connection.clearInput(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -793,6 +818,15 @@ public class Device implements PropertyChangeListener {
                 }
             }
             if ("icon".equals(evt.getPropertyName())) {
+                if (src instanceof Input) {
+                    Input i = (Input) src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on input #" + i.getIndex());
+                    pushInputIcon(i);
+                } else {
+                    Output o = (Output) src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on output #" + o.getIndex());
+                    pushOutputIcon(o);
+                }
             }
         }
     }
@@ -897,10 +931,11 @@ public class Device implements PropertyChangeListener {
                 c = getIconLookupCommand(index + 1);
                 if (deviceWriteRead(c, SequencePayload.class)) {
                     SequencePayload p = (SequencePayload) c.getPayload();
-                    icon = p.get(0);
+                    icon = p.get(1);
                 }
 
                 Connector ctr = makeNewConnector(name, icon, index + 1);
+                ctr.addPropertyChangeListener(Device.this);
                 list.set(index, ctr);
             }
             if (DELAY > 0) {
