@@ -10,6 +10,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -836,16 +837,21 @@ public class Device implements PropertyChangeListener {
                 // 'clear' the input stream before a write
                 //connection.getInStream().skip(connection.getInStream().available());
                 connection.write(cmdOut);
-                if (sleepTime > 0) {
-                    Thread.sleep(sleepTime);
-                }
+                //if (sleepTime > 0) {
+                //    Thread.sleep(sleepTime);
+                //}
                 cmdIn = connection.readOne();
                 obtained = payloadClass.isInstance(cmdIn.getPayload());
             } catch (IOException ex) {
+                if (ex instanceof SocketTimeoutException)
+                {
+                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Gotcha", ex);
+                }
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
-            }
+                i++;
+            } //catch (InterruptedException ex) {
+              //  Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
+            //}
         }
         if (obtained) {
             cmdOut.setPayload(cmdIn.getPayload());

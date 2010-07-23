@@ -133,6 +133,10 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemFileSave.setAccelerator(ctrlS);
     }
 
+    public JMenuItem getMenuItemFileLoad() {
+        return this.menuItemFileLoad;
+    }
+
     public JMenuItem getMenuItemConnected() {
         return this.menuItemConnected;
     }

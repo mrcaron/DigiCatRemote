@@ -215,6 +215,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
                     connected ? "Disconnect" : "Connect");
             ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
                     connected);
+
+            ((DigiHdmiAppMainView)mainFrame).getMenuItemFileLoad().setEnabled(!connected);
         }
     }
 
