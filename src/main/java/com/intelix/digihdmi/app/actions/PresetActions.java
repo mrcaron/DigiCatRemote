@@ -8,8 +8,6 @@ import com.intelix.digihdmi.app.tasks.SavePresetsListTask;
 import com.intelix.digihdmi.app.views.dialogs.NameChangeDlg;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
