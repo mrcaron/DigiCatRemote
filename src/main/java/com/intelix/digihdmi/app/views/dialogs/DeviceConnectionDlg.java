@@ -7,6 +7,9 @@ package com.intelix.digihdmi.app.views.dialogs;
 import com.intelix.digihdmi.util.DHToggleButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -51,6 +54,7 @@ public class DeviceConnectionDlg extends JDialog implements ItemListener {
         setTitle("Device Connection");
         initializeComponents();
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     private void initializeComponents() {
@@ -59,11 +63,11 @@ public class DeviceConnectionDlg extends JDialog implements ItemListener {
 
         p.add(new JLabel("IP Address:"));
         fldIpAddr = new JTextField(20);
-        p.add(fldIpAddr, "wrap");
+        p.add(fldIpAddr, "grow,wrap");
 
         p.add(new JLabel("Port:"));
         fldPort = new JTextField(20);
-        p.add(fldPort, "wrap");
+        p.add(fldPort, "grow,wrap");
 
         btnOk = new JButton("Ok");
         p.add(btnOk, "tag ok, span, split");
@@ -71,7 +75,7 @@ public class DeviceConnectionDlg extends JDialog implements ItemListener {
         p.add(btnCancel, "tag cancel");
         btnTest = new JButton("Test");
         p.add(btnTest, "tag other");
-        btnConnect = new DHToggleButton("Connect");
+        btnConnect = new DHToggleButton("Disconnect");
         p.add(btnConnect, "tag other");
 
         btnConnect.addItemListener(this);
@@ -151,6 +155,7 @@ public class DeviceConnectionDlg extends JDialog implements ItemListener {
             btnTest.setEnabled(false);
         else
             btnTest.setEnabled(true);
+        //this.pack();
     }
 }
 

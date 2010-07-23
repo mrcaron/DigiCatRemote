@@ -33,6 +33,7 @@ public class ConnectionDialogActions {
         dlg.setVisible(false);
         if (connected_while_in_dialog)
             app.showSyncDlg();
+        connected_while_in_dialog = false;
     }
 
     protected Connection[] alterDevice() {
@@ -111,6 +112,7 @@ public class ConnectionDialogActions {
         if (device.isConnected())
             try {
                 device.disconnect();
+                connected_while_in_dialog = false;
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dlg, "Error disconnecting!\n\nDetails:\n\t"
                     + ex.getMessage(),

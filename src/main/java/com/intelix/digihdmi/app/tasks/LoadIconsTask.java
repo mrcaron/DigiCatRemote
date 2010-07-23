@@ -61,7 +61,7 @@ public abstract class LoadIconsTask extends Task {
                     // we're initializing the icons here
                     panel.addButton(b);
                 }
-                ((DigiHdmiApp) getApplication()).getCurrentView().validate();
+                //((DigiHdmiApp) getApplication()).getCurrentView().validate();
             }
         }
     }
