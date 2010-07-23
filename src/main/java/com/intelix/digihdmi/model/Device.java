@@ -132,19 +132,6 @@ public class Device implements PropertyChangeListener {
     public Device() {
         init();
 
-        connection = new IPConnection();
-
-        try {
-            connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
-            connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
-        } catch (NullPointerException ex) {
-            connection = null;
-        } catch (MissingResourceException ex) {
-            connection = null;
-            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
-                    "Missing Device.properties file or information in it!", ex);
-        }
-
         inputs = new ArrayList();
         outputs = new ArrayList();
 
@@ -204,6 +191,18 @@ public class Device implements PropertyChangeListener {
                     "Missing Device.properties file or information in it!", ex);
         } catch (Exception e) {
             // IGNORE
+        }
+                connection = new IPConnection();
+
+        try {
+            connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
+            connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
+        } catch (NullPointerException ex) {
+            connection = null;
+        } catch (MissingResourceException ex) {
+            connection = null;
+            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+                    "Missing Device.properties file or information in it!", ex);
         }
     }
 
