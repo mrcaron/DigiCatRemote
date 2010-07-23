@@ -29,7 +29,7 @@ public class SynchronizationActions {
         dlg.setVisible(false);
 
         Task t = new PushToDeviceTask(app);
-        t.setInputBlocker(app.new BusyInputBlocker(t));
+        //t.setInputBlocker(app.new BusyInputBlocker(t));
         return t;
     }
 

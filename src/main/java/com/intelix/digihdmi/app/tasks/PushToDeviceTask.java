@@ -26,7 +26,13 @@ public class PushToDeviceTask extends Task  implements PropertyChangeListener {
      * Assumes we're connected to the device
      */
     protected Object doInBackground() throws Exception {
-        device.push();
+        //device.push();
+        for(int i=0; i<20; i++)
+        {
+            message("loading"+i);
+            setProgress(i/20f);
+            Thread.sleep(500);
+        }
         return null;
     }
 
