@@ -29,6 +29,7 @@ public class SynchronizationDlg extends JDialog {
         setTitle("Device Synchronization");
         initializeComponents();
         setLocationRelativeTo(null);
+        setResizable(false);
     }
 
     private void initializeComponents() {
@@ -47,7 +48,7 @@ public class SynchronizationDlg extends JDialog {
         btnNo = new JButton("No");
         p.add(btnNo, "tag other, span, split");
 
-        btnDisconnect = new JButton("Cancel");
+        btnDisconnect = new JButton("Disconnect");
         p.add(btnDisconnect, "tag cancel");
 
         setContentPane(p);
