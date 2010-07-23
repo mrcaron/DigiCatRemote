@@ -30,7 +30,7 @@ import org.jdesktop.application.Task.InputBlocker;
 /**
  * The main class of the application.
  */
-public class DigiHdmiApp extends SingleFrameApplication {
+public class DigiHdmiApp extends SingleFrameApplication implements PropertyChangeListener {
 
     JComponent currentView;
     JComponent homeView;
@@ -198,22 +198,21 @@ public class DigiHdmiApp extends SingleFrameApplication {
     public void addDeviceListener(Device d)
     {
         // Listen to the device for connection change information
-        d.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals("connected"))
-                {
-                    boolean connected = (Boolean) evt.getNewValue();
-                    ((DigiHdmiAppMainView)mainFrame).getMenuItemConnected().setText(
-                            connected ? "Disconnect" : "Connect");
+        d.addPropertyChangeListener(this);
+    }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("connected"))
+        {
+            boolean connected = device.isConnected();
+            ((DigiHdmiAppMainView)mainFrame).getMenuItemConnected().setText(
+                    connected ? "Disconnect" : "Connect");
 
-                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setText(
-                            connected ? "Disconnect" : "Connect");
-                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
-                            connected);
-                }
-            }
-        });
+            ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setText(
+                    connected ? "Disconnect" : "Connect");
+            ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
+                    connected);
+        }
     }
 
     @org.jdesktop.application.Action
