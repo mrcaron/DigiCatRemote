@@ -334,7 +334,7 @@ public class Device implements PropertyChangeListener {
             public Preset nextElement() {
                 if (connected && !isPushing() && (resetPresets || live)) {
                     Command c = new GetPresetNameCommand(index + 1);
-                    if (deviceWriteRead(c, IdNamePayload.class,50)) {
+                    if (deviceWriteRead(c, IdNamePayload.class,100)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
                         presets.set(index, new Preset(name, index + 1));

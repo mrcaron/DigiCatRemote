@@ -17,13 +17,12 @@ import org.jdesktop.application.Application;
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
 public class ConnectionDialogActions {
-    Device device;
     DigiHdmiApp app;
     DeviceConnectionDlg dlg;
+    boolean connected_while_in_dialog = false;
 
     public ConnectionDialogActions() {
         app = (DigiHdmiApp)Application.getInstance();
-        device = app.getDevice();
         dlg = app.getConnectionDlg();
     }
 
@@ -32,9 +31,14 @@ public class ConnectionDialogActions {
     {
         alterDevice();
         dlg.setVisible(false);
+        if (connected_while_in_dialog)
+            app.showSyncDlg();
+        connected_while_in_dialog = false;
     }
 
     protected Connection[] alterDevice() {
+        Device device = app.getDevice();
+
         Connection oldC = device.getConnection();
         IPConnection newC = new IPConnection();
         newC.setIpAddr(dlg.getIpAddr());
@@ -56,11 +60,14 @@ public class ConnectionDialogActions {
     public void onCancel()
     {
         dlg.setVisible(false);
+        if (connected_while_in_dialog)
+            app.showSyncDlg();
     }
 
     @Action
     public void onTest()
     {
+        Device device = app.getDevice();
         // connect to the device & show a glass pane
         Connection[] cxns = alterDevice();
         boolean prevConnected = cxns[0].isConnected();
@@ -100,10 +107,12 @@ public class ConnectionDialogActions {
     @Action
     public void onConnect(ActionEvent e)
     {
+        Device device = app.getDevice();
         // This code is virtually duplicated in DeviceActions.toggleConnect
         if (device.isConnected())
             try {
                 device.disconnect();
+                connected_while_in_dialog = false;
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dlg, "Error disconnecting!\n\nDetails:\n\t"
                     + ex.getMessage(),
@@ -114,7 +123,7 @@ public class ConnectionDialogActions {
             alterDevice();
             try {
                 device.connect();
-                app.showSyncDlg();
+                connected_while_in_dialog = true;
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dlg, "Error connecting!\n"
                     + "Remaining in disconnected state.\n\nDetails:\n\t"
