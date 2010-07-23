@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
@@ -112,6 +113,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
      * Main method launching the application.
      */
     public static void main(String[] args) {
+        System.setProperty("java.util.logging.config.file", "com/intelix/digihdmiapp/logging.properties");
+        Logger.getLogger("com.intelix.digihdmi.app.DigiHdmiApp").info("Starting up!");
         launch(DigiHdmiApp.class, args);
     }
 
