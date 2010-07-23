@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.intelix</groupId>
             <artifactId>NetLib</artifactId>
-            <version>0.7.1</version>
+            <version>0.7.2</version>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
