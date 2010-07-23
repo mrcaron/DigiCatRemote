@@ -518,9 +518,20 @@ public class Device implements PropertyChangeListener {
     }
 
     //------------------------------------------------------------------------
-    public void pushPreset(Preset p)
+    public void push(Preset p)
     {
-        
+        if (isConnected() && isPushing())
+        {
+            SetPresetCommand saveCmd = new SetPresetCommand(p.getIndex());
+            for (int i=0; i<p.getConnections().size(); i++)
+            {
+                SequencePayload pld = (SequencePayload) saveCmd.getPayload();
+                pld.add(p.getConnections().get(i) + 1);
+            }
+            deviceWriteAndSkip(saveCmd);
+            SetPresetNameCommand nameCmd = new SetPresetNameCommand(p.getIndex(), p.getName());
+            deviceWriteAndSkip(nameCmd);
+        }
     }
     
     public void savePreset(int number, String name) {

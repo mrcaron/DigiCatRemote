@@ -59,16 +59,10 @@ public class PushToDeviceTask extends Task<Void,Void> implements PropertyChangeL
         Enumeration<Preset> presets = device.getPresets(false /* NOT LIVE */);
         for(int i=0; presets.hasMoreElements(); i++)
         {
-            presets.nextElement();
+            device.push(presets.nextElement());
             setProgress((i+1) / total);
             Thread.sleep(100);
         }
-//        for(int i=0; i<20; i++)
-//        {
-//            message("loading"+i);
-//            setProgress(i/20f);
-//            Thread.sleep(500);
-//        }
         return null;
     }
 
