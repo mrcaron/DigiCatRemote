@@ -16,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -119,6 +120,8 @@ public class DigiHdmiApp extends SingleFrameApplication {
         connectorView = new ButtonListView();
         connectorSelectionView = new ConnectorSelectionView();
         presetView = new PresetLoadListView();
+        Action a = getContext().getActionMap().get("showAndLoadPresetListView");
+        ((PresetLoadListView)presetView).setBtnRefreshAction(a);
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
 
@@ -257,6 +260,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showPresetListView() {
         ((ButtonListView) presetView).getButtonsPanel().clear();
+        showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
+    }
+
+    @org.jdesktop.application.Action
+    public void showAndLoadPresetListView() {
+        ((ButtonListView) presetView).getButtonsPanel().clear();
+        device.setPresetReset(true);
         showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
     }
 

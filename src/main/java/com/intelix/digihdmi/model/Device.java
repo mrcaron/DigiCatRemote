@@ -47,6 +47,7 @@ public class Device implements PropertyChangeListener {
 
     @XStreamOmitField
     private boolean connected;
+    @XStreamOmitField
     private IPConnection connection;
     @XStreamOmitField
     private int numInputs = 0;
@@ -440,6 +441,9 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public void setFullReset(boolean reset) {
         resetInput = resetOutput = resetPresets = resetXP = reset;
+    }
+    public void setPresetReset(boolean reset) {
+        resetPresets = reset;
     }
     //------------------------------------------------------------------------
 
