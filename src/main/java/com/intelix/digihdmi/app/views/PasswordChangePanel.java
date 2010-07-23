@@ -38,8 +38,8 @@ public class PasswordChangePanel extends ApplicationView {
                 (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
                 "al 50% 50%, gapy 10"));
 
-        p.add(btnSetAdminPass,   "align center, growx, wrap");
         p.add(btnSetLockPass,  "align center, growx, wrap");
+        p.add(btnSetAdminPass,   "align center, growx, wrap");
 
         return p;
     }

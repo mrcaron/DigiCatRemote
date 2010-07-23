@@ -1,8 +1,10 @@
 package com.intelix.digihdmi.app.actions;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
+import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Enumeration;
 import javax.swing.ActionMap;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -36,7 +39,7 @@ public class MenuActions {
 
     @Action
     public void onDeviceSettings() {
-        ((DigiHdmiApp) Application.getInstance()).showOptionsDlg();
+        ((DigiHdmiApp) Application.getInstance()).showConnectionDlg();
     }
 
     private class ResetCacheTask extends Task {
@@ -62,7 +65,7 @@ public class MenuActions {
             File file = fc.getSelectedFile();
 
             // Create the serializer
-            XStream xstream = new XStream();
+            XStream xstream = new XStream(new DomDriver());
             xstream.autodetectAnnotations(true);
 
             // setup aliases
@@ -78,6 +81,7 @@ public class MenuActions {
                 if (file.canWrite()) {
                     Writer w = new BufferedWriter(
                             new FileWriter(file));
+                    w.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n\n");
                     w.write(xml);
                     w.close();
                 }
@@ -95,14 +99,29 @@ public class MenuActions {
         JFileChooser fc = new JFileChooser();
         int result = fc.showOpenDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame());
         if (result == JFileChooser.APPROVE_OPTION) {
-            XStream xstream = new XStream();
+            XStream xstream = new XStream(new DomDriver());
             xstream.autodetectAnnotations(true);
             
             File f = fc.getSelectedFile();
             try {
                 Reader r = new FileReader(f);
                 Device d = (Device) xstream.fromXML(r);
+                d.init();
+                ((DigiHdmiApp)Application.getInstance()).addDeviceListener(d);
+                // Create PropertyChange stuff
+                Enumeration<Connector>[] allConnectors = new Enumeration[] {d.getInputs(),d.getOutputs()};
+                for (Enumeration<Connector> cxns : allConnectors)
+                {
+                    while(cxns.hasMoreElements())
+                    {
+                        Connector ctor = cxns.nextElement();
+                        ctor.init();
+                        ctor.addPropertyChangeListener(d);
+                    }
+                }
+
                 ((DigiHdmiApp) Application.getInstance()).setDevice(d);
+                d.setFullReset(true);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(((DigiHdmiApp) Application.getInstance()).getMainFrame(),
                         "Can't load " + f.getAbsolutePath() + " from disk.\n\nDetails:\n" + ex.getMessage(),

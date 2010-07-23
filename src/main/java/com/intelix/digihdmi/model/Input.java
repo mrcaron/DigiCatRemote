@@ -6,7 +6,7 @@ package com.intelix.digihdmi.model;
  */
 public class Input extends Connector {
 
-    Input(String string, String string0, int i) {
-        super(string,string0,i);
+    Input(String name, int icon, int index) {
+        super(name,icon,index);
     }
 }

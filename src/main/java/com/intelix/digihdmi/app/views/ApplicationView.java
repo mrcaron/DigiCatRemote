@@ -15,7 +15,7 @@ public abstract class ApplicationView extends PaintedJPanel {
     private JComponent rightComponent;
     private JButton btnHome;
     protected JPanel homePanel;
-    protected JPanel bottomPanel;
+    protected JPanel home2Panel;
     private Image bgImage;
 
     public ApplicationView() {
@@ -29,15 +29,15 @@ public abstract class ApplicationView extends PaintedJPanel {
     protected void initializeComponents() {
         //setMinimumSize(new Dimension(800, 400));
         //setPreferredSize(new Dimension(800, 400));
-        setLayout(new MigLayout("", "[left]10[right,fill,grow]", "[][grow]"));
+        setLayout(new MigLayout("", "[left]10[right,fill,grow]", "[][grow][]"));
 
         initializeRightComponent();
         initializeHomePanel();
-        initializeBottomPanel();
+        initializeHome2Panel();
 
         add(homePanel, "aligny top, grow");
         add(rightComponent, "spany 2, grow, wrap");
-        add(bottomPanel, "aligny bottom, grow");
+        add(home2Panel, "aligny bottom, grow, wrap");
     }
 
     protected JPanel createHomePanel() {
@@ -53,14 +53,14 @@ public abstract class ApplicationView extends PaintedJPanel {
         setHomeAction(Application.getInstance().getContext().getActionMap().get("showHomeView"));
     }
 
-    protected JPanel createBottomPanel() {
+    protected JPanel createHome2Panel() {
         JPanel p = new JPanel(new MigLayout("wrap 1, aligny bottom"));
         p.setOpaque(false);
         return p;
     }
 
-    protected void initializeBottomPanel() {
-        bottomPanel = createBottomPanel();
+    protected void initializeHome2Panel() {
+        home2Panel = createHome2Panel();
     }
 
     protected abstract JComponent createRightComponent();

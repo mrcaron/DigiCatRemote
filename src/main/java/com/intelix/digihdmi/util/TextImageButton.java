@@ -29,17 +29,8 @@ public class TextImageButton extends ImageButton {
 
     public TextImageButton(String imageName)
     {
-        super();
-        this.imageName = imageName;
-        init();
+        super(imageName, new Dimension(294, 66));
     }
-
-    /* Leave this for later when we do dynamic button creation
-    public ImageButton(String text) {
-        super();
-        buttonText = text;
-        init();
-    }*/
 
     public static void main(String[] args) {
         JFrame f = new JFrame("Swing paint demo");
@@ -75,8 +66,4 @@ public class TextImageButton extends ImageButton {
         f.setVisible(true);
     }
 
-    @Override
-    protected Dimension getMinSize() {
-        return new Dimension(294, 66);
-    }
 }

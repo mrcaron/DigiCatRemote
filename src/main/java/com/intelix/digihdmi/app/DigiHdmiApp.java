@@ -3,17 +3,23 @@
  */
 package com.intelix.digihdmi.app;
 
+import com.intelix.digihdmi.app.views.dialogs.SynchronizationDlg;
+import com.intelix.digihdmi.app.views.dialogs.DeviceConnectionDlg;
 import com.intelix.digihdmi.app.actions.*;
+import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
+import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.views.*;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
@@ -36,8 +42,9 @@ public class DigiHdmiApp extends SingleFrameApplication {
     JComponent adminView;
     JComponent passwordView;
     JComponent connectorChangeView;
+    JComponent inputIconSelectionView;
+    JComponent outputIconSelectionView;
 
-    JDialog deviceOptionsDlg;
     JDialog deviceConnectionDlg;
     JDialog syncDlg;
     
@@ -61,25 +68,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
     public void setDevice(Device d) {
         device = d;
     }
-
+    
     /**
      * At startup create and show the main frame of the application.
      */
     @Override
     protected void startup() {
         device = new Device();
-
-        /*if (!getContext().getResourceMap().getString("connectOnStart", new Object[0]).isEmpty()) {
-            try {
-                device.connect();
-            } catch (IOException ex) {
-                int choice = JOptionPane.showConfirmDialog(null, "An error occured during startup, would you like to continue in off-line mode?\nError: " + ex.getMessage(), "Error during startup", 0);
-
-                if (choice == 1) {
-                    System.exit(1);
-                }
-            }
-        }*/
 
         mainFrame = new DigiHdmiAppMainView(this);
         initializeComponents();
@@ -121,18 +116,22 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     private void initializeComponents() {
+
         connectorView = new ButtonListView();
         connectorSelectionView = new ConnectorSelectionView();
         presetView = new PresetLoadListView();
+        Action a = getContext().getActionMap().get("showAndLoadPresetListView");
+        ((PresetLoadListView)presetView).setBtnRefreshAction(a);
         homeView = new HomePanel();
         //int numOuts = getDevice().getNumOutputs();
 
+        ActionMap aa = getContext().getActionMap(new AdminActions());
         ActionMap connectorMap = getContext().getActionMap(new ConnectorActions());
 
         ((HomePanel)homeView).setLockAction(getContext().getActionMap(new LockActions()).get("lock"));
         ((HomePanel)homeView).setPresetViewAction(getContext().getActionMap().get("showPresetListView"));
         ((HomePanel)homeView).setRoomViewAction(getContext().getActionMap().get("showOutputListView"));
-        ((HomePanel)homeView).setAdminAction(getContext().getActionMap().get("showUtilView"));
+        ((HomePanel)homeView).setAdminAction(aa.get("unlockUtilView"));
         ((HomePanel)homeView).setMatrixViewAction(getContext().getActionMap().get("showAndLoadMatrixView"));
 
         lockView = new LockView();
@@ -142,24 +141,32 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((MatrixView)matrixView).getMatrixPanel().setDefaultButtonAction(
             getContext().getActionMap(new MatrixActions()).get("setConnection")
         );
+        ((MatrixView)matrixView).getMatrixPanel().setBtnRefreshAction(
+                getContext().getActionMap().get("showAndLoadMatrixView"));
 
         adminView = new AdminPanel();
-        AdminActions aa = new AdminActions();
         ((AdminPanel)adminView).setBtnPsswdAction(getContext().getActionMap().get("showPasswdView"));
         ((AdminPanel)adminView).setBtnDefineInputsAction(connectorMap.get("showInputListForCustomization"));
         ((AdminPanel)adminView).setBtnDefineOutputsAction(connectorMap.get("showOutputListForCustomization"));
 
         passwordView = new PasswordChangePanel();
         ((PasswordChangePanel)passwordView).setBtnAdminPsswdAction(
-                getContext().getActionMap(aa).get("setAdminPassword"));
+                aa.get("setAdminPassword"));
         ((PasswordChangePanel)passwordView).setBtnUnlockPsswdAction(
-                getContext().getActionMap(aa).get("setUnlockPassword"));
+                aa.get("setUnlockPassword"));
 
         connectorChangeView = new CustomizeConnectorPanel();
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefIconAction(
-                getContext().getActionMap().get("showIconChoicePanel"));
+                connectorMap.get("showIconChoices"));
         ((CustomizeConnectorPanel)connectorChangeView).setBtnDefTextAction(
                 connectorMap.get("assignNewName"));
+
+        inputIconSelectionView = new InputIconListView();
+        getContext().getTaskService().execute(new LoadIconsForInputTask(this,
+                (IconContainerPanel)((ButtonListView)inputIconSelectionView).getButtonsPanel()));
+        outputIconSelectionView = new OutputIconListView();
+        getContext().getTaskService().execute(new LoadIconsForOutputTask(this,
+                (IconContainerPanel)((ButtonListView)outputIconSelectionView).getButtonsPanel()));
 
         // Set up menu actions
         ActionMap menuActionMap = getContext().getActionMap(new MenuActions());
@@ -172,24 +179,41 @@ public class DigiHdmiApp extends SingleFrameApplication {
         ((DigiHdmiAppMainView) mainFrame).setFileSaveMenuItemAction(menuActionMap.get("onFileSave"));
 
         // Set up dialogs
-        deviceOptionsDlg = new DevicePrefsDlg(mainFrame.getFrame());
-        ActionMap devicePrefsMap = getContext().getActionMap(new OptionsDialogActions());
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnConnectionAction(devicePrefsMap.get("onConnectProps"));
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnOkAction(devicePrefsMap.get("onOk"));
-        ((DevicePrefsDlg)deviceOptionsDlg).setBtnCancelAction(devicePrefsMap.get("onCancel"));
-
-        deviceConnectionDlg = new DeviceConnectionDlg(deviceOptionsDlg);
+        deviceConnectionDlg = new DeviceConnectionDlg(mainFrame.getFrame());
         ActionMap deviceCxnMap = getContext().getActionMap(new ConnectionDialogActions());
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnTestAction(deviceCxnMap.get("onTest"));
-        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceActionMap.get("toggleDeviceConnect"));
+        ((DeviceConnectionDlg)deviceConnectionDlg).setBtnConnectAction(deviceCxnMap.get("onConnect"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnOkAction(deviceCxnMap.get("onOk"));
         ((DeviceConnectionDlg)deviceConnectionDlg).setBtnCancelAction(deviceCxnMap.get("onCancel"));
-
+        
         syncDlg = new SynchronizationDlg(mainFrame.getFrame());
         ActionMap syncMap = getContext().getActionMap(new SynchronizationActions());
         ((SynchronizationDlg)syncDlg).setBtnDisconnectAction(syncMap.get("onCancel"));
         ((SynchronizationDlg)syncDlg).setBtnNoAction(syncMap.get("onPull"));
         ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
+
+        addDeviceListener(device);
+    }
+
+    public void addDeviceListener(Device d)
+    {
+        // Listen to the device for connection change information
+        d.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("connected"))
+                {
+                    boolean connected = (Boolean) evt.getNewValue();
+                    ((DigiHdmiAppMainView)mainFrame).getMenuItemConnected().setText(
+                            connected ? "Disconnect" : "Connect");
+
+                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setText(
+                            connected ? "Disconnect" : "Connect");
+                    ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
+                            connected);
+                }
+            }
+        });
     }
 
     @org.jdesktop.application.Action
@@ -240,6 +264,13 @@ public class DigiHdmiApp extends SingleFrameApplication {
     }
 
     @org.jdesktop.application.Action
+    public void showAndLoadPresetListView() {
+        ((ButtonListView) presetView).getButtonsPanel().clear();
+        device.setPresetReset(true);
+        showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForLoad");
+    }
+
+    @org.jdesktop.application.Action
     public void showPresetSaveView() {
         ((ButtonListView) presetView).getButtonsPanel().clear();
         showPanel(presetView, "Preset View", new PresetActions(), "showPresetListForSave");
@@ -248,19 +279,25 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showInputChangeView()
     {
-        showPanel(connectorChangeView, "Define Inputs");
+        showPanel(connectorChangeView, "Define Input");
     }
 
     @org.jdesktop.application.Action
     public void showOutputChangeView()
     {
-        showPanel(connectorChangeView, "Define Outputs");
+        showPanel(connectorChangeView, "Define Output");
     }
 
     @org.jdesktop.application.Action
-    public void showIconChoicePanel()
+    public void showInputIconChoicePanel()
     {
-        JOptionPane.showMessageDialog(null, "Show Icon Choice Panel");
+        showPanel(inputIconSelectionView, "Choose Input Icon");
+    }
+
+    @org.jdesktop.application.Action
+    public void showOutputIconChoicePanel()
+    {
+        showPanel(outputIconSelectionView, "Choose Output Icon");
     }
 
     private void showPanel(JComponent panel, String title) {
@@ -287,7 +324,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         // TODO: add a confirmation dialog
         showPanel(lockView, "Lock View");
     }
-
+    
     @org.jdesktop.application.Action
     public void showUtilView() {
         showPanel(adminView, "Utilities");
@@ -296,30 +333,6 @@ public class DigiHdmiApp extends SingleFrameApplication {
     @org.jdesktop.application.Action
     public void showPasswdView() {
         showPanel(passwordView, "Change Passwords");
-    }
-
-    @org.jdesktop.application.Action
-    public void showOptionsDlg()
-    {
-        DevicePrefsDlg dlg = (DevicePrefsDlg)deviceOptionsDlg;
-        dlg.setNumOutputs(device.getNumOutputs());
-        dlg.setNumInputs(device.getNumInputs());
-        dlg.setNumPresets(device.getNumPresets());
-        dlg.setPresetNameLength(device.getPresetNameLength());
-        dlg.setAdminPassLength(device.getAdminPassLength());
-        dlg.setLockPassLength(device.getLockPassLength());
-        
-        deviceOptionsDlg.setVisible(true);
-    }
-
-    @org.jdesktop.application.Action
-    public void hideOptionsDlg()
-    {
-        deviceOptionsDlg.setVisible(false);
-    }
-    
-    public DevicePrefsDlg getOptionsDlg() {
-        return (DevicePrefsDlg)deviceOptionsDlg;
     }
 
     @org.jdesktop.application.Action
@@ -344,7 +357,7 @@ public class DigiHdmiApp extends SingleFrameApplication {
         {
             dlg.setIpAddr(((IPConnection)c).getIpAddr());
             dlg.setPort(((IPConnection)c).getPort());
-            dlg.toggleConnectButton(c.isConnected());
+            //dlg.toggleConnectButton(c.isConnected());
         }
 
         deviceConnectionDlg.setVisible(true);

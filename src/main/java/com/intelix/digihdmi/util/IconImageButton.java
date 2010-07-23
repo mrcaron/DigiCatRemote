@@ -28,14 +28,14 @@ public class IconImageButton extends ImageButton {
 
     public IconImageButton(String imageName)
     {
-        super(imageName);
-    }
-    
-    @Override
-    protected Dimension getMinSize() {
-        return new Dimension(55,63);
+        super(imageName, new Dimension(55,63));
     }
 
+    public IconImageButton(String imageName, Dimension size)
+    {
+        super(imageName, size);
+    }
+    
     public static void main(String[] args) {
         JFrame f = new JFrame("Swing paint demo");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

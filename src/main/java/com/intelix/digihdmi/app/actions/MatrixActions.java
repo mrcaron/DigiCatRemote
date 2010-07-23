@@ -37,12 +37,20 @@ public class MatrixActions {
     }
 
     @Action (block=Task.BlockingScope.WINDOW)
+    public Task loadMatrixConnections()
+    {
+        Task t = new InitMatrixTask(appInstance, false /* Don't load the names */);
+        t.setInputBlocker(appInstance.new BusyInputBlocker(t));
+        return t;
+    }
+
+    @Action (block=Task.BlockingScope.WINDOW)
     public Task setConnection(ActionEvent e) {
         AbstractButton b = (AbstractButton) e.getSource();
         String toggleInfo = b.getName();  // Name is "b_<OUTPUT>_<INPUT>"
         String[] parts = toggleInfo.split("_");
 
-        Task t = new MakeConnectionTask(appInstance, Integer.parseInt(parts[2])+1, Integer.parseInt(parts[1])+1);
+        Task t = new MakeConnectionTask(appInstance, Integer.parseInt(parts[2]), Integer.parseInt(parts[1]));
         t.setInputBlocker(appInstance.new BusyInputBlocker(t));
         return t;
     }

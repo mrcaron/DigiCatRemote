@@ -1,12 +1,7 @@
 package com.intelix.digihdmi.app.tasks;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.app.views.MatrixPanel;
-import com.intelix.digihdmi.app.views.MatrixView;
 import com.intelix.digihdmi.model.Device;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
@@ -33,16 +28,25 @@ public class ApplyPresetTask extends Task {
         message("presetLoaded");
 
         DigiHdmiApp dApp = (DigiHdmiApp)getApplication();
-        MatrixView view = (MatrixView) dApp.getCurrentView();
-        MatrixPanel panel = view.getMatrixPanel();
-        HashMap<Integer,Integer> xp = device.getCrossPoints();
-        Iterator<Entry<Integer,Integer>> xpIterator = xp.entrySet().iterator();
-        for(int i=0; xpIterator.hasNext(); i++)
-        {
-            setMessage("Setting output " + (i+1));
-            Entry<Integer,Integer> e = xpIterator.next();
-            panel.select(e.getKey()-1 /* Output */, e.getValue()-1 /* Input */, true /*INIT*/);
-        }
+        dApp.showMatrixView();
+        Task t = new InitMatrixTask(dApp, false);
+        t.setInputBlocker(dApp.new BusyInputBlocker(t));
+        dApp.getContext().getTaskService().execute(t);
+        /*
+        ActionMap m = dApp.getContext().getActionMap(new MatrixActions());
+        javax.swing.Action loadMatrixCxns = m.get("loadMatrixConnections");
+        loadMatrixCxns.actionPerformed(new ActionEvent(this, 1001, ""));*/
+
+        //MatrixView view = (MatrixView) dApp.getCurrentView();
+        //MatrixPanel panel = view.getMatrixPanel();
+        //HashMap<Integer,Integer> xp = device.getCrossPoints();
+        //Iterator<Entry<Integer,Integer>> xpIterator = xp.entrySet().iterator();
+        //for(int i=0; xpIterator.hasNext(); i++)
+        //{
+        //    setMessage("Setting output " + (i+1));
+        //    Entry<Integer,Integer> e = xpIterator.next();
+        //    panel.select(e.getKey()-1 /* Output */, e.getValue()-1 /* Input */, true /*INIT*/);
+        //}
         
 
         return null;

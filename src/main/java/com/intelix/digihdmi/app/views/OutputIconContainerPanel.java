@@ -1,17 +1,14 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package com.intelix.digihdmi.app.views;
-
-import javax.swing.JDialog;
 
 /**
  *
- * @author developer
+ * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class PresetSaveConfirmDlg extends JDialog {
+public class OutputIconContainerPanel extends IconContainerPanel {
+
+    public OutputIconContainerPanel() {
+        super();
+    }
 
     /**
      * @param args the command line arguments

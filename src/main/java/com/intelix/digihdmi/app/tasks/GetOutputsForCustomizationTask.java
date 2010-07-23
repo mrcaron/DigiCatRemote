@@ -26,4 +26,9 @@ public class GetOutputsForCustomizationTask extends GetConnectorsTask {
 
         return getOutputs;
     }
+
+    @Override
+    protected String getIconNameHead() {
+        return "output";
+    }
 }

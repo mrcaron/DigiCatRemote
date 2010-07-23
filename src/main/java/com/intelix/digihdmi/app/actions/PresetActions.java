@@ -5,6 +5,7 @@ import com.intelix.digihdmi.app.tasks.ApplyPresetTask;
 import com.intelix.digihdmi.app.tasks.LoadPresetsListTask;
 import com.intelix.digihdmi.app.tasks.SavePresetTask;
 import com.intelix.digihdmi.app.tasks.SavePresetsListTask;
+import com.intelix.digihdmi.app.views.dialogs.NameChangeDlg;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
@@ -57,20 +58,17 @@ public class PresetActions {
         int presetNumber = Integer.parseInt(b.getName().substring(index));
 
         // Get the new name of the preset
-        JTextField name = new JTextField(18);
-        int result = JOptionPane.showConfirmDialog(
-            ((DigiHdmiApp)appInstance).getMainFrame(),
-            name,
-            "Enter Name",
-            JOptionPane.OK_CANCEL_OPTION
-            );
+        NameChangeDlg dlg = new NameChangeDlg(appInstance.getMainFrame(),
+                "Enter new name for preset "+(presetNumber+1),appInstance.getDevice().getPresetNameLength());
+        dlg.setVisible(true);
 
         appInstance.showMatrixView();
 
-        if (result != JOptionPane.CANCEL_OPTION)
+        String newName = dlg.getTheName();
+        if (!dlg.isCancelled() && newName.length() > 0)
         {
             // populate the matrix view with results from preset application
-            Task t = new SavePresetTask(appInstance, presetNumber, name.getText());
+            Task t = new SavePresetTask(appInstance, presetNumber, newName);
             t.setInputBlocker(appInstance.new BusyInputBlocker(t));
             return t;
         } else {

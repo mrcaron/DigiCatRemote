@@ -6,7 +6,11 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -23,11 +27,14 @@ import java.util.logging.Logger;
  *
  * @author Michael Caron <michael.r.caron@gmail.com>
  */
-public class Device extends Observable implements PropertyChangeListener {
+public class Device implements PropertyChangeListener {
 
-    PropertyChangeSupport pcsupport = new PropertyChangeSupport(this);
+    @XStreamOmitField
+    PropertyChangeSupport pcsupport;
+
     @XStreamOmitField
     private int selectedOutput;
+
     @XStreamOmitField
     private int selectedInput;
     private ArrayList<Connector> inputs = new ArrayList();
@@ -36,19 +43,30 @@ public class Device extends Observable implements PropertyChangeListener {
     private HashMap<Integer, Integer> cxnMatrix = new HashMap();  /* KEY=Output,VALUE=Input */
 
     @XStreamOmitField
-    private static ResourceBundle config;
+    private static Properties config;
+
     @XStreamOmitField
     private boolean connected;
+    @XStreamOmitField
     private IPConnection connection;
+    @XStreamOmitField
     private int numInputs = 0;
+    @XStreamOmitField
     private int numOutputs = 0;
+    @XStreamOmitField
     private int numPresets = 0;
+    @XStreamOmitField
     private int maxPresetNameLength = 0;
-    private int maxAdminPassLength = 0;
-    private int maxLockPassLength = 0;
+    @XStreamOmitField
+    private int maxIONameLength = 0;
+    @XStreamOmitField
+    private int maxPassLength = 0;
     // PropertyChangeListeners will get reports about this one
+
+    @XStreamOmitField
     private float progress = 0f;
     private static int MAX_TRIES = 3;
+
     @XStreamOmitField
     private boolean locked = false;
     private String unlockPassword = "abcd";
@@ -56,60 +74,75 @@ public class Device extends Observable implements PropertyChangeListener {
     // flag used to determine if we need to visit the device for input/output information
     @XStreamOmitField
     private boolean resetInput = true;
+
     @XStreamOmitField
     private boolean resetOutput = true;
+
     @XStreamOmitField
     private boolean resetPresets = true;
+
+    @XStreamOmitField
+    private String activeAdminPassword = "";
+
     @XStreamOmitField
     private boolean resetXP = true;
+
+    @XStreamOmitField
+    private boolean adminUnlocked = true;
+
+    @XStreamOmitField
+    private static URL propertiesFile;
+
     // DEBUG PROPERTIES
+    @XStreamOmitField
     private static int DELAY = 0;
 
+    @XStreamOmitField
+    private boolean pushing = false;
+
     //------------------------------------------------------------------------
-    private static ResourceBundle getConfiguration() {
+    public void setPushing(boolean pushing) {
+        this.pushing = pushing;
+    }
+    public boolean isPushing()
+    {
+        return pushing;
+    }
+
+    //------------------------------------------------------------------------
+    private static Properties getConfiguration() {
         if (config == null) {
-            config = ResourceBundle.getBundle("Device");
+            //config = PropertyResourceBundle.getBundle("Device");
+            propertiesFile = ClassLoader.getSystemResource("Device.properties");
+            config = new Properties();
+            try {
+                config.load(new FileInputStream(propertiesFile.getFile()));
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                config = null;
+            }
         }
         return config;
+    }
+
+    private static void saveConfiguration() {
+        if (config != null)
+        {
+            try {
+                OutputStream out = new FileOutputStream(propertiesFile.getFile());
+                config.store(out, "---Routine Save---");
+                out.close();
+            } catch (Exception ex) {
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE,
+                        "Error while saving Device properties file", ex);
+            }
+        }
     }
 
     //------------------------------------------------------------------------
     /* Initialize the Device */
     public Device() {
-        connected = false;
-        connection = new IPConnection();
-
-        try {
-            String delay = getConfiguration().getString("delay");
-            DELAY = Integer.parseInt(delay);
-        } catch (Exception e) {
-            // IGNORE - We'll just have a 0 delay then, and a 4 length password
-        }
-
-        try {
-            maxPresetNameLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_PRESET_NAME_LENGTH"));
-            maxAdminPassLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_ADMIN_PASS_LENGTH"));
-            maxLockPassLength = Integer.parseInt(
-                    getConfiguration().getString("MAX_LOCK_PASS_LENGTH"));
-        } catch (Exception e) {
-            // IGNORE
-        }
-
-        try {
-            connection.setIpAddr(getConfiguration().getString("ipAddr"));
-            connection.setPort(Integer.parseInt(getConfiguration().getString("port")));
-
-            numInputs = Integer.parseInt(getConfiguration().getString("MAX_INPUTS"));
-            numOutputs = Integer.parseInt(getConfiguration().getString("MAX_OUTPUTS"));
-            numPresets = Integer.parseInt(getConfiguration().getString("MAX_PRESETS"));
-
-        } catch (NullPointerException ex) {
-            connection = null;
-        } catch (MissingResourceException ex) {
-            connection = null;
-        }
+        init();
 
         inputs = new ArrayList();
         outputs = new ArrayList();
@@ -117,10 +150,10 @@ public class Device extends Observable implements PropertyChangeListener {
         // MRC - This initialization assumes that # inputs == # outputs
         for (int i = 0; i < numInputs; ++i) {
 
-            Input inpt = new Input("I_" + (i + 1), "", i + 1);
+            Input inpt = new Input("I_" + (i + 1), 1, i + 1);
             inpt.addPropertyChangeListener(this);
 
-            Output otpt = new Output("O_" + (i + 1), "", i + 1);
+            Output otpt = new Output("O_" + (i + 1), 1, i + 1);
             otpt.addPropertyChangeListener(this);
 
             inputs.add(inpt);            // Connectors are 1-based for their index
@@ -134,6 +167,54 @@ public class Device extends Observable implements PropertyChangeListener {
                 p.makeConnection((j * i) % numInputs, (j + i) % numInputs);
             }
             presets.add(p);
+        }
+    }
+
+    public void init()
+    {
+        pcsupport = new PropertyChangeSupport(this);
+        connected = false;
+        
+        if (connection != null)
+        {
+            connection.init();
+        }
+
+        try {
+            String delay = getConfiguration().getProperty("delay");
+            DELAY = Integer.parseInt(delay);
+        } catch (Exception e) {
+            // IGNORE - We'll just have a 0 delay then, and a 4 length password
+        }
+
+        try {
+            maxPresetNameLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_PRESET_NAME_LENGTH"));
+            maxPassLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_PASS_LENGTH"));
+            maxIONameLength = Integer.parseInt(
+                    getConfiguration().getProperty("MAX_IO_NAME_LENGTH"));
+            numInputs = Integer.parseInt(getConfiguration().getProperty("MAX_INPUTS"));
+            numOutputs = Integer.parseInt(getConfiguration().getProperty("MAX_OUTPUTS"));
+            numPresets = Integer.parseInt(getConfiguration().getProperty("MAX_PRESETS"));
+        } catch (MissingResourceException ex) {
+            connection = null;
+            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+                    "Missing Device.properties file or information in it!", ex);
+        } catch (Exception e) {
+            // IGNORE
+        }
+                connection = new IPConnection();
+
+        try {
+            connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
+            connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
+        } catch (NullPointerException ex) {
+            connection = null;
+        } catch (MissingResourceException ex) {
+            connection = null;
+            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+                    "Missing Device.properties file or information in it!", ex);
         }
     }
 
@@ -151,9 +232,13 @@ public class Device extends Observable implements PropertyChangeListener {
     /* connect to the actual HDMI devine if we can. */
     public void connect()
             throws IOException {
-        if (connection != null) {
+        if (connection != null && !connection.isConnected()) {
             connection.connect();
-            connected = true;
+
+            boolean connectedNew = connection.isConnected();
+            pcsupport.firePropertyChange("connected", connected, connectedNew);
+            connected = connectedNew;
+            
             setFullReset(true);
         } else {
             throw new IOException("Device can't be found. Check your device's configuration.");
@@ -163,15 +248,27 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     /* Disconnect from the device */
     public void disconnect() throws IOException {
-        if (connection != null) {
+        if (connection != null && connection.isConnected()) {
+
+            if (adminUnlocked)
+                lockAdmin();
+
             connection.disconnect();
-            connected = false;
+
+            boolean connectedNew = connection.isConnected();
+            pcsupport.firePropertyChange("connected", connected, connectedNew);
+            connected = connectedNew;
+
+            // when we're disconnected, there should be no password to lock
+            // or unlock the admin screens. Makes no sense.
+            adminUnlocked = true;
+
         }
     }
 
     //------------------------------------------------------------------------
     public boolean isConnected() {
-        return connected;
+        return connection.isConnected();
     }
 
     //------------------------------------------------------------------------
@@ -198,6 +295,7 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public boolean makeConnection() {
         if (connected) {
+            Logger.getLogger(Device.class.getName()).info("input: " + selectedInput + ", output: " + selectedOutput);
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
@@ -213,13 +311,16 @@ public class Device extends Observable implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     public Enumeration<Preset> getPresets() {
+        return getPresets(false);
+    }
+    public Enumeration<Preset> getPresets(final boolean live) {
         return new Enumeration() {
 
             int index = 0;
 
             @Override
             public boolean hasMoreElements() {
-                if (connected && resetPresets) {
+                if (connected && !isPushing() && (resetPresets || live)) {
                     boolean r = index < numPresets;
                     if (!r) {
                         resetPresets = false;
@@ -231,9 +332,9 @@ public class Device extends Observable implements PropertyChangeListener {
 
             @Override
             public Preset nextElement() {
-                if (connected && resetPresets) {
+                if (connected && !isPushing() && (resetPresets || live)) {
                     Command c = new GetPresetNameCommand(index + 1);
-                    if (deviceWriteRead(c, IdNamePayload.class)) {
+                    if (deviceWriteRead(c, IdNamePayload.class,50)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
                         presets.set(index, new Preset(name, index + 1));
@@ -281,8 +382,13 @@ public class Device extends Observable implements PropertyChangeListener {
             }
 
             @Override
-            protected Connector makeNewConnector(String name, String string, int i) {
-                return new Input(name, string, i);
+            protected Connector makeNewConnector(String name, int icon, int index) {
+                return new Input(name, icon, index);
+            }
+
+            @Override
+            public Command getIconLookupCommand(int index) {
+                return new GetInputIconCommand(index);
             }
         };
     }
@@ -316,19 +422,24 @@ public class Device extends Observable implements PropertyChangeListener {
             }
 
             @Override
-            protected Connector makeNewConnector(String name, String string, int i) {
-                return new Output(name, string, i);
+            protected Connector makeNewConnector(String name, int icon, int index) {
+                return new Output(name, icon, index);
+            }
+
+            @Override
+            public Command getIconLookupCommand(int index) {
+                return new GetOutputIconCommand(index);
             }
         };
     }
 
     //------------------------------------------------------------------------
     public HashMap<Integer, Integer> getCrossPoints() {
-        return getCrossPoints(false);
+        return getCrossPoints(true);
     }
 
     public HashMap<Integer, Integer> getCrossPoints(boolean live) {
-        if (connected && resetXP) {
+        if (connected && (resetXP || live)) {
             Command c = new GetAllCrosspointsCommand();
             if (deviceWriteRead(c, SequencePayload.class)) {
                 SequencePayload p = (SequencePayload) c.getPayload();
@@ -345,10 +456,13 @@ public class Device extends Observable implements PropertyChangeListener {
     public void setFullReset(boolean reset) {
         resetInput = resetOutput = resetPresets = resetXP = reset;
     }
+    public void setPresetReset(boolean reset) {
+        resetPresets = reset;
+    }
     //------------------------------------------------------------------------
 
     public void setSelectedOutput(int selectedOutput) {
-        this.selectedOutput = selectedOutput - 1;
+        this.selectedOutput = selectedOutput;
     }
 
     //------------------------------------------------------------------------
@@ -362,7 +476,7 @@ public class Device extends Observable implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     public void setSelectedInput(int selectedInput) {
-        this.selectedInput = selectedInput - 1;
+        this.selectedInput = selectedInput;
     }
 
     //------------------------------------------------------------------------
@@ -378,26 +492,54 @@ public class Device extends Observable implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public void loadPreset(int number) {
         // get the preset from the array
-        Preset p = presets.get(number - 1);
+        Preset preset = presets.get(number);
 
         if (connected) {
-            Command cmd = new GetPresetCommand(number);
-            if (deviceWriteRead(cmd, PresetReportPayload.class)) {
-                p = readPresetReport(p.getName(), number, (PresetReportPayload) cmd.getPayload());
+            Command cmd = new TriggerPresetCommand(preset.getIndex());
+            deviceWriteAndSkip(cmd);
+
+            cmd = new GetAllCrosspointsCommand();
+            if (deviceWriteRead(cmd, SequencePayload.class,2000)) {
+                SequencePayload p = (SequencePayload) cmd.getPayload();
+                for (int i = 0; i < p.size(); i++) {
+                    cxnMatrix.put(i/*Output*/, p.get(i) - 1/*Input*/);
+                }
+                resetXP = false;
             }
+
+            //if (deviceWriteRead(cmd, PresetReportPayload.class))
+            //    preset = readPresetReport(preset.getName(),
+            //                              preset.getIndex(),
+            //                              (PresetReportPayload) cmd.getPayload());
         }
 
         // set the connection matrix from this
-        cxnMatrix = p.getConnections();
+        cxnMatrix = preset.getConnections();
     }
 
     //------------------------------------------------------------------------
+    public void push(Preset p)
+    {
+        if (isConnected() && isPushing())
+        {
+            SetPresetCommand saveCmd = new SetPresetCommand(p.getIndex());
+            for (int i=0; i<p.getConnections().size(); i++)
+            {
+                SequencePayload pld = (SequencePayload) saveCmd.getPayload();
+                pld.add(p.getConnections().get(i) + 1);
+            }
+            deviceWriteAndSkip(saveCmd);
+            SetPresetNameCommand nameCmd = new SetPresetNameCommand(p.getIndex(), p.getName());
+            deviceWriteAndSkip(nameCmd);
+        }
+    }
+    
     public void savePreset(int number, String name) {
         // Get current preset
-        Preset newPreset = new Preset(name, number);
+        Preset newPreset = new Preset(name, number+1);
 
         // Setup the set preset command while filling up new preset
-        SetPresetCommand saveCmd = new SetPresetCommand(number);
+        SetPresetCommand saveCmd = new SetPresetCommand(number+1);
         for (int i = 0; i < cxnMatrix.size(); i++) {
             // add the input to the payload in the correct slot
             SequencePayload p = (SequencePayload) saveCmd.getPayload();
@@ -408,12 +550,19 @@ public class Device extends Observable implements PropertyChangeListener {
         }
 
         if (connected) {
-            if (deviceWriteRead(saveCmd, PresetReportPayload.class)) {
-                newPreset = readPresetReport(name, number, (PresetReportPayload) saveCmd.getPayload());
+            setProgress(1f / 3);
+            if (deviceWriteRead(saveCmd, PresetReportPayload.class, 2000)) {
+                newPreset = readPresetReport(name, number+1, (PresetReportPayload) saveCmd.getPayload());
             }
+            setProgress(2f / 3);
+            SetPresetNameCommand nameCmd = new SetPresetNameCommand(number+1, name);
+            if (deviceWriteRead(nameCmd, IdNamePayload.class))
+                newPreset.setName( ((IdNamePayload)nameCmd.getPayload()).getStrData() );
+            setProgress(3f / 3);
         }
 
-        presets.set(number - 1, newPreset);
+        presets.set(number, newPreset);
+        resetPresets = true;
     }
 
     //------------------------------------------------------------------------
@@ -453,22 +602,17 @@ public class Device extends Observable implements PropertyChangeListener {
         resetPresets = true;
     }
 
-    public int getAdminPassLength() {
-        return maxAdminPassLength;
+    public int getPassLength() {
+        return maxPassLength;
     }
-
-    public void setAdminPassLength(int apl) {
-        maxAdminPassLength = apl;
+    public void setPassLength(int length) {
+        maxPassLength = length;
     }
-
-    public int getLockPassLength() {
-        return maxLockPassLength;
+    
+    public int getIONameLength() {
+        return maxIONameLength;
     }
-
-    public void setLockPassLength(int lpl) {
-        maxLockPassLength = lpl;
-    }
-
+    
     public int getPresetNameLength() {
         return maxPresetNameLength;
     }
@@ -482,6 +626,9 @@ public class Device extends Observable implements PropertyChangeListener {
             disconnect();
         }
         connection = (IPConnection) cxn;
+        getConfiguration().setProperty("ipAddr", ((IPConnection)cxn).getIpAddr());
+        getConfiguration().setProperty("port", ""+((IPConnection)cxn).getPort());
+        saveConfiguration();
     }
 
     public Connection getConnection() {
@@ -609,17 +756,69 @@ public class Device extends Observable implements PropertyChangeListener {
         return;
     }
 
-    private void pushInputName(Input i) {
-        if (connected)
+    public void push(Connector c)
+    {
+        if (isConnected() && isPushing())
         {
+            if (c instanceof Input)
+            {
+                pushInputName((Input)c);
+                pushInputIcon((Input)c);
+            }
+            else
+            {
+                pushOutputName((Output)c);
+                pushOutputIcon((Output)c);
+            }
+        }
+    }
+
+    private void pushInputName(Input i) {
+        if (isConnected())
+        {
+            Command c = new SetConnectorNameCommand(i.getName(), i.getIndex(), true /* not input */);
+            deviceWriteAndSkip(c);
             resetInput = true;
         }
     }
 
     private void pushOutputName(Output o) {
-        if (connected)
+        if (isConnected())
         {
+            Command c = new SetConnectorNameCommand(o.getName(), o.getIndex(), false /* not input */);
+            deviceWriteAndSkip(c);
             resetOutput = true;
+        }
+    }
+
+    private void pushInputIcon(Input i) {
+        if (isConnected())
+        {
+            Command c = new SetConnectorIconCommand(i.getIndex(), i.getIcon(), true /* input */);
+            deviceWriteAndSkip(c);
+            resetInput = true;
+        }
+    }
+
+    private void pushOutputIcon(Output o) {
+        if (isConnected())
+        {
+            Command c = new SetConnectorIconCommand(o.getIndex(), o.getIcon(), false /* NOT input */);
+            deviceWriteAndSkip(c); // just assume that it goes through.
+            resetOutput = true;
+        }
+    }
+
+    private void deviceWriteAndSkip(Command cmdOut)
+    {
+        try {
+            connection.write(cmdOut);
+            Thread.sleep(300);
+            connection.clearInput(500);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -634,6 +833,8 @@ public class Device extends Observable implements PropertyChangeListener {
         int i = 0;
         while (!obtained && i < MAX_TRIES) {
             try {
+                // 'clear' the input stream before a write
+                //connection.getInStream().skip(connection.getInStream().available());
                 connection.write(cmdOut);
                 if (sleepTime > 0) {
                     Thread.sleep(sleepTime);
@@ -668,8 +869,71 @@ public class Device extends Observable implements PropertyChangeListener {
                 }
             }
             if ("icon".equals(evt.getPropertyName())) {
+                if (src instanceof Input) {
+                    Input i = (Input) src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on input #" + i.getIndex());
+                    pushInputIcon(i);
+                } else {
+                    Output o = (Output) src;
+                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on output #" + o.getIndex());
+                    pushOutputIcon(o);
+                }
             }
         }
+    }
+
+    public void lockAdmin()
+    {
+        if (isConnected())
+        {
+            Command cmd = new ToggleUtilityLockCommand();
+            if (deviceWriteRead(cmd, SequencePayload.class))
+            {
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    adminUnlocked = false;
+                } else {
+                    activeAdminPassword = "";
+                    adminUnlocked = true;
+                }
+            }
+        }
+    }
+
+    public void unlockAdmin(String password)
+    {
+        if (isConnected())
+        {
+            Command cmd = new ToggleUtilityLockCommand(password);
+            if (deviceWriteRead(cmd, SequencePayload.class))
+            {
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    activeAdminPassword = password;
+                    adminUnlocked = true;
+                } else {
+                    activeAdminPassword = "";
+                    adminUnlocked = false;
+                }
+            }
+        }
+    }
+
+    public boolean isAdminLocked() {
+        if (isConnected())
+        {
+            Command cmd = new GetAdminLockStatusCommand();
+            if (deviceWriteRead(cmd,SequencePayload.class,500))
+            {
+                if (((SequencePayload)cmd.getPayload()).get(0) > 0)
+                {
+                    adminUnlocked = true;
+                } else {
+                    adminUnlocked = false;
+                }
+            }
+        }
+        return ! adminUnlocked;
     }
 
     //------------------------------------------------------------------------
@@ -694,7 +958,7 @@ public class Device extends Observable implements PropertyChangeListener {
 
         @Override
         public boolean hasMoreElements() {
-            if (connected && (live || isReset())) {
+            if (connected && !isPushing() && (live || isReset())) {
                 boolean r = index < getMax();
                 // We do not need to fetch from the device any longer
                 if (!r) {
@@ -707,15 +971,23 @@ public class Device extends Observable implements PropertyChangeListener {
 
         @Override
         public Connector nextElement() {
-            if (connected && (live || isReset())) {
+            if (connected && !isPushing() && (live || isReset())) {
                 Command c = getNameLookupCommand(index + 1);
+                String name = null;
+                int icon = 0;
                 if (deviceWriteRead(c, IdNamePayload.class)) {
                     IdNamePayload p = (IdNamePayload) c.getPayload();
-                    String name = p.getStrData();
-
-                    Connector ctr = makeNewConnector(name, "", index + 1);
-                    list.set(index, ctr);
+                    name = p.getStrData();
                 }
+                c = getIconLookupCommand(index + 1);
+                if (deviceWriteRead(c, SequencePayload.class)) {
+                    SequencePayload p = (SequencePayload) c.getPayload();
+                    icon = p.get(1);
+                }
+
+                Connector ctr = makeNewConnector(name, icon, index + 1);
+                ctr.addPropertyChangeListener(Device.this);
+                list.set(index, ctr);
             }
             if (DELAY > 0) {
                 try {
@@ -733,9 +1005,11 @@ public class Device extends Observable implements PropertyChangeListener {
         public abstract void setReset(boolean r);
 
         public abstract Command getNameLookupCommand(int paramInt);
+        public abstract Command getIconLookupCommand(int i);
 
         public abstract int getMax();
 
-        protected abstract Connector makeNewConnector(String name, String string, int i);
+        protected abstract Connector makeNewConnector(String name, int icon, int index);
+
     }
 }

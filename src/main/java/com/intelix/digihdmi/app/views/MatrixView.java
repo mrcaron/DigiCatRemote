@@ -43,8 +43,6 @@ public class MatrixView extends ApplicationView {
         homePanel.add(btnLoadPreset);
     }
 
-
-
     public MatrixPanel getMatrixPanel() {
         return panel;
     }

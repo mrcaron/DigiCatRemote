@@ -3,7 +3,7 @@ package com.intelix.digihdmi.app.actions;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.app.tasks.PullFromDeviceTask;
 import com.intelix.digihdmi.app.tasks.PushToDeviceTask;
-import com.intelix.digihdmi.app.views.SynchronizationDlg;
+import com.intelix.digihdmi.app.views.dialogs.SynchronizationDlg;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,7 +29,7 @@ public class SynchronizationActions {
         dlg.setVisible(false);
 
         Task t = new PushToDeviceTask(app);
-        t.setInputBlocker(app.new BusyInputBlocker(t));
+        //t.setInputBlocker(app.new BusyInputBlocker(t));
         return t;
     }
 

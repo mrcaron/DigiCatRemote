@@ -1,5 +1,7 @@
-package com.intelix.digihdmi.app.views;
+package com.intelix.digihdmi.app.views.dialogs;
 
+import com.intelix.digihdmi.util.JTextFieldLimit;
+import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,6 +34,12 @@ public class SetPasswordDialog extends JDialog {
         setModal(true);
         setTitle("Change password");
         initializeComponents();
+    }
+
+    public SetPasswordDialog(Window w, int maxLength) {
+        this(w);
+        tfPass1.setDocument(new JTextFieldLimit(maxLength));
+        tfPass2.setDocument(new JTextFieldLimit(maxLength));
     }
 
     private void initializeComponents()
@@ -73,7 +81,7 @@ public class SetPasswordDialog extends JDialog {
             }
         });
 
-        p.add(btnOK, "tag ok, span 2");
+        p.add(btnOK, "tag ok, span, split");
         p.add(btnCancel, "tag cancel");
 
         setContentPane(p);
@@ -107,7 +115,7 @@ public class SetPasswordDialog extends JDialog {
                 f.setContentPane(p);
 
                 System.setProperty("DEBUG_UI", "true");
-                final SetPasswordDialog d = new SetPasswordDialog(f);
+                final SetPasswordDialog d = new SetPasswordDialog(f,4);
                 f.setSize(700,400);
 
                 f.pack();

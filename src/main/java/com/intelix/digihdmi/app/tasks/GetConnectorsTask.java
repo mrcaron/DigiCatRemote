@@ -7,23 +7,27 @@ import com.intelix.digihdmi.model.Connector;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.BasicAction;
 import java.awt.event.ActionEvent;
-//import java.beans.PropertyChangeEvent;
-//import java.beans.PropertyChangeListener;
+import java.text.NumberFormat;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
-public class GetConnectorsTask extends Task /*implements PropertyChangeListener*/ {
+public abstract class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chunk> /*implements PropertyChangeListener*/ {
 
     protected final ButtonContainerPanel panel;
     protected final Device device;
     protected int numConnectors;
+    private Logger logger;
 
     public GetConnectorsTask(Application app) {
         super(app);
+
+        logger = Logger.getLogger(getClass().getCanonicalName());
 
         device = ((DigiHdmiApp) app).getDevice();
         //device.addPropertyChangeListener(this);
@@ -51,29 +55,48 @@ public class GetConnectorsTask extends Task /*implements PropertyChangeListener*
     }
 
     @Override
-    protected Object doInBackground()
+    protected Void doInBackground()
             throws Exception {
         if ((panel != null) && (device != null)) {
             Enumeration connectorList = getConnectors();
             for (int i=0; connectorList.hasMoreElements(); i++) {
-                message("loadingConnectionD",i);
+                message("loadingConnectionD",i+1);
                 Connector c = (Connector) connectorList.nextElement();
+                postProcessConnector(c);
                 message("loadedConnectionDS",i,c.getName());
                 setProgress(i,0,numConnectors);
-                postProcessConnector(c);
+                logger.info("Loaded connection " + (i+1));
             }
         }
         return null;
     }
 
     @Override
-    protected void succeeded(Object result) {
+    protected void succeeded(Void result) {
         message("finished");
     }
 
     protected void postProcessConnector(Connector c) {
-        panel.addButton(c.getName(), c.getIcon(), getConnectorAction(c));
+        logger.info("Creating button with name" + c.getName());
+        publish(new Chunk( c.getName(), c.getIcon() , getConnectorAction(c) ));
     }
+
+    private static NumberFormat f = null;
+
+    @Override
+    protected void process(List<Chunk> values) {
+        if (f == null)
+        {
+            f = NumberFormat.getInstance();
+            f.setMinimumIntegerDigits(2);
+        }
+        for(Chunk c : values)
+            panel.addButton(c.getName(), c.getIcon() > 0 ? 
+                    (getIconNameHead() + "_" + f.format(c.getIcon()))
+                  : "", c.getAction());
+    }
+
+    protected abstract String getIconNameHead();
 
     /*
     @Override
@@ -83,4 +106,27 @@ public class GetConnectorsTask extends Task /*implements PropertyChangeListener*
             setProgress((Float)evt.getNewValue());
         }
     }*/
+
+    protected class Chunk {
+        String name;
+        int icon;
+        Action action;
+        public Chunk(String name, int icon, Action action) {
+            this.name = name;
+            this.icon = icon;
+            this.action = action;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Action getAction() {
+            return action;
+        }
+
+        public int getIcon() {
+            return icon;
+        }
+    }
 }

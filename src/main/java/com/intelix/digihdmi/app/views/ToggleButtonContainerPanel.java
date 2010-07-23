@@ -5,19 +5,20 @@ import java.awt.event.ItemListener;
 import javax.swing.AbstractButton;
 import javax.swing.JToggleButton;
 
-public class InputButtonContainerPanel extends ButtonContainerPanel
+public class ToggleButtonContainerPanel extends ButtonContainerPanel
         implements ItemListener {
 
     protected AbstractButton selectedButton;
 
-    public InputButtonContainerPanel() {
+    public ToggleButtonContainerPanel() {
         this.selectedButton = null;
     }
 
     @Override
-    protected AbstractButton createButton(String name, String iconName) {
+    public AbstractButton createButton(String name, String iconName) {
         JToggleButton b = new JToggleButton(name);
         b.addItemListener(this);
+        b.setIcon(getIconImage(iconName));
         return b;
     }
 

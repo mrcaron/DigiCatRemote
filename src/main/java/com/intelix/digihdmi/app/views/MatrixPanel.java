@@ -6,11 +6,11 @@
 package com.intelix.digihdmi.app.views;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +35,7 @@ public class MatrixPanel extends JPanel {
     ArrayList<ButtonGroup> outputSelections = new ArrayList<ButtonGroup>();
     ArrayList<JLabel> outputLabels = new ArrayList<JLabel>();
     ArrayList<JLabel> inputLabels = new ArrayList<JLabel>();
+    JButton btnRefresh;
 
     public MatrixPanel() {
         this(8,8,null);
@@ -52,7 +53,9 @@ public class MatrixPanel extends JPanel {
     }
 
     protected void initComponents() {
-        setLayout(new MigLayout("align 50% 50%, filly, gapx 10, wrap " + (cols+1) , "", ""));
+        setLayout(new MigLayout(
+                (System.getProperty("DEBUG_UI") == null ? "" : "debug,") +
+                "align 50% 50%, filly, gapx 10, wrap " + (cols+1) , "", ""));
 
         for (int x=0; x<cols; x++)
         {
@@ -89,6 +92,16 @@ public class MatrixPanel extends JPanel {
                 this.add(b,"align 50% 50%");
             }
         }
+
+        // Add refresh button
+        btnRefresh = new JButton("Refresh");
+        this.add(btnRefresh, "span, alignx right");
+    }
+
+    public void setBtnRefreshAction(Action a)
+    {
+        btnRefresh.setAction(a);
+        btnRefresh.setText("Refresh");
     }
 
     public void reset() {
@@ -141,6 +154,7 @@ public class MatrixPanel extends JPanel {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.setProperty("DEBUG_UI", "true");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {

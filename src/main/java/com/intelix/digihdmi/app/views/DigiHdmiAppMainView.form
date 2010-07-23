@@ -75,6 +75,12 @@
             <Property name="name" type="java.lang.String" value="menuDevice" noResource="true"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="menuItemConnected">
+              <Properties>
+                <Property name="text" type="java.lang.String" resourceKey="menuItemConnected.text"/>
+                <Property name="name" type="java.lang.String" value="menuItemConnected" noResource="true"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="menuItemOptions">
               <Properties>
                 <Property name="text" type="java.lang.String" resourceKey="menuItemOptions.text"/>

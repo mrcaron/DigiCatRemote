@@ -2,7 +2,7 @@
  * Copyright 2010, Intelix, LLC. All rights reserved.
  */
 
-package com.intelix.digihdmi.app.views;
+package com.intelix.digihdmi.app.views.dialogs;
 
 import javax.swing.Action;
 import javax.swing.JButton;
