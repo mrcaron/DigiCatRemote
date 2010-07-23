@@ -39,7 +39,7 @@ public class PushToDeviceTask extends Task<Void,Void> implements PropertyChangeL
         Enumeration<Connector> ins = device.getInputs(false /* NOT LIVE */);
         for(int i=0; ins.hasMoreElements(); i++)
         {
-            ins.nextElement();
+            device.push(ins.nextElement());
             setProgress((i+1) / total);
             Thread.sleep(100);
         }
@@ -49,7 +49,7 @@ public class PushToDeviceTask extends Task<Void,Void> implements PropertyChangeL
         Enumeration<Connector> outs = device.getOutputs(false /* NOT LIVE */);
         for(int i=0; outs.hasMoreElements(); i++)
         {
-            outs.nextElement();
+            device.push(outs.nextElement());
             setProgress((i+1) / total);
             Thread.sleep(100);
         }

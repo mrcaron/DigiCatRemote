@@ -98,11 +98,15 @@ public class Device implements PropertyChangeListener {
     private static int DELAY = 0;
 
     @XStreamOmitField
-    private static boolean pushing = false;
+    private boolean pushing = false;
 
     //------------------------------------------------------------------------
-    public static void setPushing(boolean pushing) {
-        Device.pushing = pushing;
+    public void setPushing(boolean pushing) {
+        this.pushing = pushing;
+    }
+    public boolean isPushing()
+    {
+        return pushing;
     }
 
     //------------------------------------------------------------------------
@@ -316,7 +320,7 @@ public class Device implements PropertyChangeListener {
 
             @Override
             public boolean hasMoreElements() {
-                if (connected && !pushing && (resetPresets || live)) {
+                if (connected && !isPushing() && (resetPresets || live)) {
                     boolean r = index < numPresets;
                     if (!r) {
                         resetPresets = false;
@@ -328,7 +332,7 @@ public class Device implements PropertyChangeListener {
 
             @Override
             public Preset nextElement() {
-                if (connected && !pushing && (resetPresets || live)) {
+                if (connected && !isPushing() && (resetPresets || live)) {
                     Command c = new GetPresetNameCommand(index + 1);
                     if (deviceWriteRead(c, IdNamePayload.class,50)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
@@ -514,6 +518,11 @@ public class Device implements PropertyChangeListener {
     }
 
     //------------------------------------------------------------------------
+    public void pushPreset(Preset p)
+    {
+        
+    }
+    
     public void savePreset(int number, String name) {
         // Get current preset
         Preset newPreset = new Preset(name, number+1);
@@ -736,6 +745,23 @@ public class Device implements PropertyChangeListener {
         return;
     }
 
+    public void push(Connector c)
+    {
+        if (isConnected() && isPushing())
+        {
+            if (c instanceof Input)
+            {
+                pushInputName((Input)c);
+                pushInputIcon((Input)c);
+            }
+            else
+            {
+                pushOutputName((Output)c);
+                pushOutputIcon((Output)c);
+            }
+        }
+    }
+
     private void pushInputName(Input i) {
         if (isConnected())
         {
@@ -921,7 +947,7 @@ public class Device implements PropertyChangeListener {
 
         @Override
         public boolean hasMoreElements() {
-            if (connected && !pushing && (live || isReset())) {
+            if (connected && !isPushing() && (live || isReset())) {
                 boolean r = index < getMax();
                 // We do not need to fetch from the device any longer
                 if (!r) {
@@ -934,7 +960,7 @@ public class Device implements PropertyChangeListener {
 
         @Override
         public Connector nextElement() {
-            if (connected && !pushing && (live || isReset())) {
+            if (connected && !isPushing() && (live || isReset())) {
                 Command c = getNameLookupCommand(index + 1);
                 String name = null;
                 int icon = 0;
