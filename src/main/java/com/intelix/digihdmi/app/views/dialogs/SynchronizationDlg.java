@@ -37,9 +37,7 @@ public class SynchronizationDlg extends JDialog {
         p.setLayout(new MigLayout((System.getProperty("DEBUG_UI") == null ? "" : "debug,"),"","[]20[]"));
 
         // Use HTML tags to create a line break in the JLabel text
-        JLabel l = new JLabel("<html>Push current configuration to device"
-                + "?<br/>(all data will be <i>live</i> otherwise)?"
-                + "</html>");
+        JLabel l = new JLabel("<html>Overwrite matrix settings?" + "</html>");
 
         p.add(l,"wrap");
 

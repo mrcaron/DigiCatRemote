@@ -5,11 +5,15 @@ import com.intelix.digihdmi.util.IconImageButton;
 import com.intelix.digihdmi.util.PaintedJPanel;
 import com.intelix.digihdmi.util.TextImageButton;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.net.URL;
+import javax.imageio.ImageIO;
 import javax.swing.Action;
-import javax.swing.ActionMap;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.application.Application;
@@ -22,6 +26,7 @@ public class HomePanel extends PaintedJPanel {
     private JButton btnMatrixView;
     private JButton btnPresetView;
     private JButton btnRoomView;
+    private JLabel  lblLogo;
 
     private ResourceMap resourceMap;
 
@@ -37,11 +42,14 @@ public class HomePanel extends PaintedJPanel {
         btnMatrixView.setName("btnMatrixView");
         btnPresetView = new TextImageButton("PresetViewBtn");
         btnPresetView.setName("btnPresetView");
-        btnAdmin = new IconImageButton("UtilBtn");;
+        btnAdmin = new IconImageButton("UtilBtn");
         btnAdmin.setName("btnAdmin");
         btnLock = new IconImageButton("LockBtn");
         btnLock.setName("btnLock");
 
+        Icon i = Application.getInstance().getContext().getResourceMap(getClass()).getIcon("intelixlogo");
+        lblLogo = new JLabel(i);
+        lblLogo.setOpaque(false);
 
         setMinimumSize(new Dimension(600, 400));
         setName("Form");
@@ -54,7 +62,9 @@ public class HomePanel extends PaintedJPanel {
         this.add(btnMatrixView, "wrap");
         this.add(btnPresetView, "wrap");
         this.add(btnLock, "id blk, pos (visual.x2 - pref) (visual.y2 - pref)");
-        this.add(btnAdmin, "pos (blk.x - pref) (blk.y)");
+        this.add(btnAdmin, "id bgr, pos (blk.x - pref) (blk.y)");
+        this.add(lblLogo, "pos (visual.x) (blk.y+5)");
+        
         
     }
 

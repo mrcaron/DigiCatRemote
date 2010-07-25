@@ -13,6 +13,7 @@ import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -82,8 +83,11 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
 
         show(mainFrame);
         showHomeView();
-        mainFrame.getFrame().setMinimumSize(new Dimension(700, 400));
-        mainFrame.getFrame().setPreferredSize(new Dimension(700, 400));
+        mainFrame.getFrame().setMinimumSize(new Dimension(700, 450));
+        mainFrame.getFrame().setPreferredSize(new Dimension(700, 450));
+        mainFrame.getFrame().setMaximumSize(new Dimension(1067, 800));
+        mainFrame.getFrame().setResizable(false);
+        mainFrame.getFrame().setMaximizedBounds(new Rectangle(new Dimension(1067,800)));
         mainFrame.getFrame().setLocationRelativeTo(null);
     }
 
@@ -113,7 +117,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
      * Main method launching the application.
      */
     public static void main(String[] args) {
-        System.setProperty("java.util.logging.config.file", "com/intelix/digihdmiapp/logging.properties");
+        //System.setProperty("java.util.logging.config.file", "logging.properties");
+        //System.setProperty(null, null);
         Logger.getLogger("com.intelix.digihdmi.app.DigiHdmiApp").info("Starting up!");
         launch(DigiHdmiApp.class, args);
     }
@@ -177,7 +182,6 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
         ((DigiHdmiAppMainView) mainFrame).setConnectMenuItemAction(deviceActionMap.get("toggleDeviceConnect"));
         ((DigiHdmiAppMainView) mainFrame).setOptionsMenuItemAction(menuActionMap.get("onDeviceSettings"));
         ((DigiHdmiAppMainView) mainFrame).setDeviceMenuAction(menuActionMap.get("menuDevice"));
-        ((DigiHdmiAppMainView) mainFrame).setResetCacheMenuItemAction(menuActionMap.get("resetCache"));
         ((DigiHdmiAppMainView) mainFrame).setFileLoadMenuItemAction(menuActionMap.get("onFileLoad"));
         ((DigiHdmiAppMainView) mainFrame).setFileSaveMenuItemAction(menuActionMap.get("onFileSave"));
 
@@ -307,7 +311,7 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
     private void showPanel(JComponent panel, String title) {
         currentView = panel;
         mainFrame.setComponent(currentView);
-        mainFrame.getFrame().setTitle(title);
+        mainFrame.getFrame().setTitle("Intelix DigiCat Series Software | " + title);
 
         mainFrame.getFrame().setVisible(true);
         mainFrame.getFrame().repaint();
