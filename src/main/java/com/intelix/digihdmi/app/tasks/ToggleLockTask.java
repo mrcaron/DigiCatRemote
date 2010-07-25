@@ -42,7 +42,7 @@ public class ToggleLockTask extends Task {
         if (lock) {
             message("lockStart");
             device.lock();
-            ((DigiHdmiApp)getApplication()).lockApp();
+            //((DigiHdmiApp)getApplication()).lockApp();
             message("lockEnd");
         } else {
             message("unlockStart");
