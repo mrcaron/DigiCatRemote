@@ -5,12 +5,10 @@
 package com.intelix.digihdmi.app.views;
 
 import com.intelix.digihdmi.app.DigiHdmiApp;
-import com.intelix.digihdmi.util.DHCheckBoxMenuItem;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import javax.swing.Icon;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -115,10 +113,6 @@ public class DigiHdmiAppMainView extends FrameView {
         this.menuItemOptions.setAction(a);
     }
 
-    public void setResetCacheMenuItemAction(javax.swing.Action a) {
-        this.menuItemResetCache.setAction(a);
-    }
-
     public void setFileLoadMenuItemAction(javax.swing.Action a) {
         this.menuItemFileLoad.setAction(a);
 
@@ -131,6 +125,10 @@ public class DigiHdmiAppMainView extends FrameView {
 
         KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK);
         this.menuItemFileSave.setAccelerator(ctrlS);
+    }
+
+    public JMenuItem getMenuItemFileLoad() {
+        return this.menuItemFileLoad;
     }
 
     public JMenuItem getMenuItemConnected() {
@@ -148,7 +146,6 @@ public class DigiHdmiAppMainView extends FrameView {
 
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-        menuItemResetCache = new javax.swing.JMenuItem();
         menuItemFileSave = new javax.swing.JMenuItem();
         menuItemFileLoad = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
@@ -168,10 +165,6 @@ public class DigiHdmiAppMainView extends FrameView {
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getResourceMap(DigiHdmiAppMainView.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
-
-        menuItemResetCache.setText(resourceMap.getString("menuItemResetCache.text")); // NOI18N
-        menuItemResetCache.setName("menuItemResetCache"); // NOI18N
-        fileMenu.add(menuItemResetCache);
 
         menuItemFileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuItemFileSave.setMnemonic('S');
@@ -266,7 +259,6 @@ public class DigiHdmiAppMainView extends FrameView {
     private javax.swing.JMenuItem menuItemFileLoad;
     private javax.swing.JMenuItem menuItemFileSave;
     private javax.swing.JMenuItem menuItemOptions;
-    private javax.swing.JMenuItem menuItemResetCache;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;
     private javax.swing.JLabel statusMessageLabel;

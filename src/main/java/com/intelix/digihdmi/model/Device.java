@@ -1,6 +1,8 @@
 package com.intelix.digihdmi.model;
 
+import com.intelix.net.commands.*;
 import com.intelix.net.*;
+import com.intelix.net.exceptions.UnidentifiedMessageException;
 import com.intelix.net.payload.*;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import java.beans.PropertyChangeEvent;
@@ -10,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -65,7 +68,7 @@ public class Device implements PropertyChangeListener {
 
     @XStreamOmitField
     private float progress = 0f;
-    private static int MAX_TRIES = 3;
+    private static int MAX_TRIES = 2;
 
     @XStreamOmitField
     private boolean locked = false;
@@ -295,12 +298,12 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public boolean makeConnection() {
         if (connected) {
-            Logger.getLogger(Device.class.getName()).info("input: " + selectedInput + ", output: " + selectedOutput);
+            Logger.getLogger(Device.class.getName()).fine("Connecting input: " + selectedInput + ", output: " + selectedOutput);
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
             Command c = new SetCrosspointCommand(selectedInput + 1, selectedOutput + 1);
-            if (deviceWriteRead(c, PairSequencePayload.class, 1500)) {
+            if (deviceWriteRead(c, PairSequencePayload.class/*, 1500*/)) {
                 PairSequencePayload p = (PairSequencePayload) c.getPayload();
                 selectedInput = p.get(selectedOutput + 1) - 1;
             }
@@ -334,7 +337,7 @@ public class Device implements PropertyChangeListener {
             public Preset nextElement() {
                 if (connected && !isPushing() && (resetPresets || live)) {
                     Command c = new GetPresetNameCommand(index + 1);
-                    if (deviceWriteRead(c, IdNamePayload.class,100)) {
+                    if (deviceWriteRead(c, IdNamePayload.class)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
                         presets.set(index, new Preset(name, index + 1));
@@ -499,7 +502,7 @@ public class Device implements PropertyChangeListener {
             deviceWriteAndSkip(cmd);
 
             cmd = new GetAllCrosspointsCommand();
-            if (deviceWriteRead(cmd, SequencePayload.class,2000)) {
+            if (deviceWriteRead(cmd, SequencePayload.class/*,2000*/)) {
                 SequencePayload p = (SequencePayload) cmd.getPayload();
                 for (int i = 0; i < p.size(); i++) {
                     cxnMatrix.put(i/*Output*/, p.get(i) - 1/*Input*/);
@@ -551,7 +554,7 @@ public class Device implements PropertyChangeListener {
 
         if (connected) {
             setProgress(1f / 3);
-            if (deviceWriteRead(saveCmd, PresetReportPayload.class, 2000)) {
+            if (deviceWriteRead(saveCmd, PresetReportPayload.class/*, 2000*/)) {
                 newPreset = readPresetReport(name, number+1, (PresetReportPayload) saveCmd.getPayload());
             }
             setProgress(2f / 3);
@@ -831,18 +834,32 @@ public class Device implements PropertyChangeListener {
         boolean obtained = false;
         Command cmdIn = null;
         int i = 0;
+        boolean skipWrite = false;
         while (!obtained && i < MAX_TRIES) {
             try {
                 // 'clear' the input stream before a write
                 //connection.getInStream().skip(connection.getInStream().available());
-                connection.write(cmdOut);
-                if (sleepTime > 0) {
-                    Thread.sleep(sleepTime);
+                if (! skipWrite)
+                {
+                    connection.write(cmdOut);
+                    if (sleepTime > 0) {
+                        Thread.sleep(sleepTime);
+                    }
                 }
-                cmdIn = connection.readOne();
-                obtained = payloadClass.isInstance(cmdIn.getPayload());
+                try {
+                    cmdIn = connection.readOne();
+                    obtained = payloadClass.isInstance(cmdIn.getPayload());
+                } catch (UnidentifiedMessageException ex)
+                {
+                    skipWrite = true;
+                }
             } catch (IOException ex) {
+                if (ex instanceof SocketTimeoutException)
+                {
+                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Gotcha", ex);
+                }
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
+                i++;
             } catch (InterruptedException ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
             }
@@ -923,7 +940,7 @@ public class Device implements PropertyChangeListener {
         if (isConnected())
         {
             Command cmd = new GetAdminLockStatusCommand();
-            if (deviceWriteRead(cmd,SequencePayload.class,500))
+            if (deviceWriteRead(cmd,SequencePayload.class/*,500*/))
             {
                 if (((SequencePayload)cmd.getPayload()).get(0) > 0)
                 {

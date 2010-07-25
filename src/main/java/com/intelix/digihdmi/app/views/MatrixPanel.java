@@ -5,6 +5,7 @@
 
 package com.intelix.digihdmi.app.views;
 
+import com.intelix.digihdmi.util.DigiRadioButton;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ public class MatrixPanel extends JPanel {
         this.cols = cols;
         initComponents();
         setDefaultButtonAction(defaultAction);
+
     }
 
     protected void initComponents() {
@@ -82,7 +84,7 @@ public class MatrixPanel extends JPanel {
                     outputSelections.add(g);
                 }
 
-                JRadioButton b = new JRadioButton();
+                DigiRadioButton b = new DigiRadioButton();
                 b.setOpaque(false);
                 b.setName("b_" + x + "_" + y);   // name is "b_<OUTPUT>_<INPUT>"
                 b.setSelected(y == 0);

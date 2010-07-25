@@ -4,7 +4,7 @@
     <groupId>com.intelix</groupId>
     <artifactId>DigiHdmiApp</artifactId>
     <packaging>jar</packaging>
-    <version>0.13.0</version>
+    <version>0.13.3</version>
     <name>DigiHdmiApp - AppFramework Application</name>
     <properties>
         <netbeans.hint.license>intelix</netbeans.hint.license>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.intelix</groupId>
             <artifactId>NetLib</artifactId>
-            <version>0.7.3</version>
+            <version>0.8.0</version>
         </dependency>
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
