@@ -200,6 +200,7 @@ public class Device implements PropertyChangeListener {
             numInputs = Integer.parseInt(getConfiguration().getProperty("MAX_INPUTS"));
             numOutputs = Integer.parseInt(getConfiguration().getProperty("MAX_OUTPUTS"));
             numPresets = Integer.parseInt(getConfiguration().getProperty("MAX_PRESETS"));
+
         } catch (MissingResourceException ex) {
             connection = null;
             Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
@@ -236,6 +237,12 @@ public class Device implements PropertyChangeListener {
     public void connect()
             throws IOException {
         if (connection != null && !connection.isConnected()) {
+
+            // set timeout
+            String ioTimeout = getConfiguration().getProperty("ioTimeout");
+            if (ioTimeout != null && !ioTimeout.isEmpty())
+                connection.setIoTimeout(Integer.parseInt(ioTimeout));
+
             connection.connect();
 
             boolean connectedNew = connection.isConnected();
