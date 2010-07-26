@@ -144,6 +144,7 @@ public class Device implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     /* Initialize the Device */
+    @SuppressWarnings("LeakingThisInConstructor")
     public Device() {
         init();
 
@@ -173,7 +174,7 @@ public class Device implements PropertyChangeListener {
         }
     }
 
-    public void init()
+    public final void init()
     {
         pcsupport = new PropertyChangeSupport(this);
         connected = false;
@@ -224,6 +225,7 @@ public class Device implements PropertyChangeListener {
 
     //------------------------------------------------------------------------
     @Override
+    @SuppressWarnings("FinalizeDeclaration")
     protected void finalize() throws Throwable {
         /* Kill the connection on finailzation in the case that it's still up. */
         super.finalize();
@@ -305,7 +307,7 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     public boolean makeConnection() {
         if (connected) {
-            Logger.getLogger(Device.class.getName()).fine("Connecting input: " + selectedInput + ", output: " + selectedOutput);
+            Logger.getLogger(Device.class.getName()).log(Level.FINE, "Connecting input: {0}, output: {1}", new Object[]{selectedInput, selectedOutput});
             if ((selectedInput < 0) || (selectedOutput < 0)) {
                 return false;
             }
@@ -823,21 +825,26 @@ public class Device implements PropertyChangeListener {
     {
         try {
             connection.write(cmdOut);
+        }   catch (IOException ex) {
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while writing to the device!", ex);
+        }
+        try {
             Thread.sleep(300);
             connection.clearInput(500);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while sleeping between a write and read to the device.", ex);
         } catch (IOException ex) {
-            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while reading from the device!", ex);
         }
     }
 
     /// WARNING!!! MUTATES cmdOut!!!
     private boolean deviceWriteRead(Command cmdOut, Class payloadClass) {
-        return deviceWriteRead(cmdOut, payloadClass, 0);
+/*        return deviceWriteRead(cmdOut, payloadClass, 0);
     }
 
     private boolean deviceWriteRead(Command cmdOut, Class payloadClass, int sleepTime) {
+*/
         boolean obtained = false;
         Command cmdIn = null;
         int i = 0;
@@ -849,9 +856,9 @@ public class Device implements PropertyChangeListener {
                 if (! skipWrite)
                 {
                     connection.write(cmdOut);
-                    if (sleepTime > 0) {
-                        Thread.sleep(sleepTime);
-                    }
+                    //if (sleepTime > 0) {
+                    //    Thread.sleep(sleepTime);
+                    //}
                 }
                 try {
                     cmdIn = connection.readOne();
@@ -863,13 +870,13 @@ public class Device implements PropertyChangeListener {
             } catch (IOException ex) {
                 if (ex instanceof SocketTimeoutException)
                 {
-                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Gotcha", ex);
+                    Logger.getLogger(Device.class.getName()).log(Level.FINE, "Gotcha", ex);
                 }
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
                 i++;
-            } catch (InterruptedException ex) {
+            } /*catch (InterruptedException ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
-            }
+            }*/
         }
         if (obtained) {
             cmdOut.setPayload(cmdIn.getPayload());
@@ -884,22 +891,22 @@ public class Device implements PropertyChangeListener {
             if ("name".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).info("Detected name change on input #" + i.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected name change on input #{0}", i.getIndex());
                     pushInputName(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).info("Detected name change on output #" + o.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected name change on output #{0}", o.getIndex());
                     pushOutputName(o);
                 }
             }
             if ("icon".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on input #" + i.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected icon change on input #{0}", i.getIndex());
                     pushInputIcon(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).info("Detected icon change on output #" + o.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected icon change on output #{0}", o.getIndex());
                     pushOutputIcon(o);
                 }
             }
