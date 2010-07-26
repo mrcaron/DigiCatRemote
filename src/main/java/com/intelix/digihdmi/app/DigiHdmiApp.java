@@ -13,10 +13,12 @@ import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -80,6 +82,14 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
 
         mainFrame = new DigiHdmiAppMainView(this);
         initializeComponents();
+
+        mainFrame.getFrame().setIconImage(getContext().getResourceMap().getImageIcon("appImageIcon").getImage());
+        
+        ArrayList<Image> imgs = new ArrayList<Image>();
+        imgs.add(getContext().getResourceMap().getImageIcon("appImageIcon48").getImage());
+        imgs.add(getContext().getResourceMap().getImageIcon("appImageIcon32").getImage());
+        imgs.add(getContext().getResourceMap().getImageIcon("appImageIcon16").getImage());
+        mainFrame.getFrame().setIconImages(imgs);
 
         show(mainFrame);
         showHomeView();
