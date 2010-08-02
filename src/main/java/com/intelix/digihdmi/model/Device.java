@@ -121,7 +121,7 @@ public class Device implements PropertyChangeListener {
             try {
                 config.load(new FileInputStream(propertiesFile.getFile()));
             } catch (Exception ex) {
-                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Can't find Device.properties file! Loading a blank one.", ex);
                 config = null;
             }
         }
@@ -356,7 +356,7 @@ public class Device implements PropertyChangeListener {
                     try {
                         Thread.sleep(DELAY);
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                        //Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
                 setProgress((float) index / presets.size());
@@ -510,14 +510,15 @@ public class Device implements PropertyChangeListener {
             Command cmd = new TriggerPresetCommand(preset.getIndex());
             deviceWriteAndSkip(cmd);
 
+            /*
             cmd = new GetAllCrosspointsCommand();
-            if (deviceWriteRead(cmd, SequencePayload.class/*,2000*/)) {
+            if (deviceWriteRead(cmd, SequencePayload.class/*,2000 * /)) {
                 SequencePayload p = (SequencePayload) cmd.getPayload();
                 for (int i = 0; i < p.size(); i++) {
-                    cxnMatrix.put(i/*Output*/, p.get(i) - 1/*Input*/);
+                    cxnMatrix.put(i/*Output * /, p.get(i) - 1/*Input * /);
                 }
                 resetXP = false;
-            }
+            }*/
 
             //if (deviceWriteRead(cmd, PresetReportPayload.class))
             //    preset = readPresetReport(preset.getName(),
@@ -670,7 +671,7 @@ public class Device implements PropertyChangeListener {
             md.update(pwd.getBytes());
             digested = md.digest();
         } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Tried to get a message digest of the password.", ex);
         }
 
         return digested;
@@ -832,7 +833,7 @@ public class Device implements PropertyChangeListener {
             Thread.sleep(300);
             connection.clearInput(500);
         } catch (InterruptedException ex) {
-            Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while sleeping between a write and read to the device.", ex);
+            //Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while sleeping between a write and read to the device.", ex);
         } catch (IOException ex) {
             Logger.getLogger(Device.class.getName()).log(Level.SEVERE, "Exception while reading from the device!", ex);
         }
@@ -872,7 +873,7 @@ public class Device implements PropertyChangeListener {
                 {
                     Logger.getLogger(Device.class.getName()).log(Level.FINE, "Gotcha", ex);
                 }
-                Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
+                Logger.getLogger(Device.class.getName()).log(Level.INFO, "Unexpected situation when doing I/O", ex);
                 i++;
             } /*catch (InterruptedException ex) {
                 Logger.getLogger(Device.class.getName()).log(Level.WARNING, null, ex);
@@ -891,22 +892,22 @@ public class Device implements PropertyChangeListener {
             if ("name".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected name change on input #{0}", i.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected name change on input #{0}", i.getIndex());
                     pushInputName(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected name change on output #{0}", o.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected name change on output #{0}", o.getIndex());
                     pushOutputName(o);
                 }
             }
             if ("icon".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected icon change on input #{0}", i.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected icon change on input #{0}", i.getIndex());
                     pushInputIcon(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Detected icon change on output #{0}", o.getIndex());
+                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected icon change on output #{0}", o.getIndex());
                     pushOutputIcon(o);
                 }
             }
@@ -1024,7 +1025,7 @@ public class Device implements PropertyChangeListener {
                 try {
                     Thread.sleep(DELAY);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
+                    //Logger.getLogger(Device.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             setProgress((float) index / list.size());
