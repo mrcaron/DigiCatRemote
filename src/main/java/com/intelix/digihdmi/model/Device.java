@@ -741,6 +741,14 @@ public class Device implements PropertyChangeListener {
         return !locked;
     }
 
+    public void save() {
+        if (connected)
+        {
+            Command c = new ForceSaveCommand();
+            deviceWriteAndSkip(c);
+        }
+    }
+
     public void lock() {
         // send code to machine to lock itself.
         if (connected) {

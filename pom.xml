@@ -4,7 +4,7 @@
     <groupId>com.intelix</groupId>
     <artifactId>DigiHdmiApp</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>DigiHdmiApp - AppFramework Application</name>
     <properties>
         <netbeans.hint.license>intelix</netbeans.hint.license>
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.intelix</groupId>
             <artifactId>NetLib</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
 </project>
