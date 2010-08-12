@@ -78,6 +78,8 @@ public class DigiHdmiApp extends SingleFrameApplication
 
     public void setDevice(Device d) {
         device = d;
+        addDeviceListener(device);
+        device.addConnectionListener(this);
     }
     
     /**
@@ -221,7 +223,6 @@ public class DigiHdmiApp extends SingleFrameApplication
         ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
 
         addDeviceListener(device);
-
         device.addConnectionListener(this);
     }
 

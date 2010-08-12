@@ -107,7 +107,6 @@ public class MenuActions {
                 Reader r = new FileReader(f);
                 Device d = (Device) xstream.fromXML(r);
                 d.init();
-                ((DigiHdmiApp)Application.getInstance()).addDeviceListener(d);
                 // Create PropertyChange stuff
                 Enumeration<Connector>[] allConnectors = new Enumeration[] {d.getInputs(),d.getOutputs()};
                 for (Enumeration<Connector> cxns : allConnectors)
