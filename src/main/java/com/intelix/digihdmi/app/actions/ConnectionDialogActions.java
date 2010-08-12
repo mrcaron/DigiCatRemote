@@ -79,12 +79,10 @@ public class ConnectionDialogActions {
             device.connect();
             device.disconnect();
             fail = false;
-        } catch (IOException ex)
-        {
-            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
-        } catch (InterruptedException ex)
-        {
+        } catch (InterruptedException ex) {
             // Ignore
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
         }
 
         if (! fail)

@@ -1,5 +1,6 @@
 package com.intelix.digihdmi.model;
 
+import com.intelix.digihdmi.util.FakeConnection;
 import com.intelix.net.commands.*;
 import com.intelix.net.*;
 import com.intelix.net.exceptions.UnidentifiedMessageException;
@@ -51,7 +52,9 @@ public class Device implements PropertyChangeListener {
     @XStreamOmitField
     private boolean connected;
     @XStreamOmitField
-    private IPConnection connection;
+    //private IPConnection connection;
+    private Connection connection;
+    
     @XStreamOmitField
     private int numInputs = 0;
     @XStreamOmitField
@@ -102,6 +105,9 @@ public class Device implements PropertyChangeListener {
 
     @XStreamOmitField
     private boolean pushing = false;
+
+    @XStreamOmitField
+    private ConnectionListenerSupport cxnEvtSupport;
 
     //------------------------------------------------------------------------
     public void setPushing(boolean pushing) {
@@ -176,6 +182,7 @@ public class Device implements PropertyChangeListener {
 
     public final void init()
     {
+        cxnEvtSupport = new ConnectionListenerSupport();
         pcsupport = new PropertyChangeSupport(this);
         connected = false;
         
@@ -209,18 +216,33 @@ public class Device implements PropertyChangeListener {
         } catch (Exception e) {
             // IGNORE
         }
-                connection = new IPConnection();
+
+        if (System.getProperty("USE_FAKE_CXN") != null)
+            initializeFakeConnection();
+        else
+            initializeIPConnection();
+    }
+
+    private void initializeFakeConnection() {
+        FakeConnection c = new FakeConnection();
+        this.connection = c;
+    }
+
+    private void initializeIPConnection() {
+        IPConnection c = new IPConnection();
 
         try {
-            connection.setIpAddr(getConfiguration().getProperty("ipAddr"));
-            connection.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
+            c.setIpAddr(getConfiguration().getProperty("ipAddr"));
+            c.setPort(Integer.parseInt(getConfiguration().getProperty("port")));
         } catch (NullPointerException ex) {
-            connection = null;
+            c = null;
         } catch (MissingResourceException ex) {
-            connection = null;
+            c = null;
             Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
                     "Missing Device.properties file or information in it!", ex);
         }
+
+        this.connection = c;
     }
 
     //------------------------------------------------------------------------
@@ -237,13 +259,16 @@ public class Device implements PropertyChangeListener {
     //------------------------------------------------------------------------
     /* connect to the actual HDMI devine if we can. */
     public void connect()
-            throws IOException {
+            throws Exception {
         if (connection != null && !connection.isConnected()) {
 
             // set timeout
-            String ioTimeout = getConfiguration().getProperty("ioTimeout");
-            if (ioTimeout != null && !ioTimeout.isEmpty())
-                connection.setIoTimeout(Integer.parseInt(ioTimeout));
+            if (connection instanceof IPConnection)
+            {
+                String ioTimeout = getConfiguration().getProperty("ioTimeout");
+                if (ioTimeout != null && !ioTimeout.isEmpty())
+                    ((IPConnection)connection).setIoTimeout(Integer.parseInt(ioTimeout));
+            }
 
             connection.connect();
 
@@ -262,8 +287,11 @@ public class Device implements PropertyChangeListener {
     public void disconnect() throws IOException {
         if (connection != null && connection.isConnected()) {
 
-            if (adminUnlocked)
-                lockAdmin();
+            cxnEvtSupport.fireDisconnect();
+
+            if (System.getProperty("USE_FAKE_CXN") == null)
+                if (adminUnlocked)
+                    lockAdmin();
 
             connection.disconnect();
 
@@ -660,6 +688,14 @@ public class Device implements PropertyChangeListener {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         pcsupport.removePropertyChangeListener(listener);
+    }
+
+    public void addConnectionListener(ConnectionListener c) {
+        cxnEvtSupport.addConnectionListener(c);
+    }
+
+    public void removeConnectionListener(ConnectionListener c) {
+        cxnEvtSupport.removeConnectionListener(c);
     }
 
     //------------------------------------------------------------------------

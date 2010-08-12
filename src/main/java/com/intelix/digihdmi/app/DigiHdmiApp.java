@@ -9,6 +9,7 @@ import com.intelix.digihdmi.app.actions.*;
 import com.intelix.digihdmi.app.tasks.LoadIconsForInputTask;
 import com.intelix.digihdmi.app.tasks.LoadIconsForOutputTask;
 import com.intelix.digihdmi.app.views.*;
+import com.intelix.digihdmi.model.ConnectionListener;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.net.Connection;
 import com.intelix.net.IPConnection;
@@ -18,14 +19,19 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EventObject;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.event.MouseInputAdapter;
 import org.jdesktop.application.Application;
+import org.jdesktop.application.Application.ExitListener;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.Task;
@@ -34,7 +40,8 @@ import org.jdesktop.application.Task.InputBlocker;
 /**
  * The main class of the application.
  */
-public class DigiHdmiApp extends SingleFrameApplication implements PropertyChangeListener {
+public class DigiHdmiApp extends SingleFrameApplication 
+        implements PropertyChangeListener, ConnectionListener, ExitListener {
 
     JComponent currentView;
     JComponent homeView;
@@ -106,6 +113,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
         super.ready();
     }
 
+
+
     /**
      * This method is to initialize the specified window by injecting resources.
      * Windows shown in our application come fully initialized from the GUI
@@ -134,6 +143,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
     }
 
     private void initializeComponents() {
+
+        this.addExitListener(this);
 
         connectorView = new ButtonListView();
         connectorSelectionView = new ConnectorSelectionView();
@@ -210,6 +221,8 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
         ((SynchronizationDlg)syncDlg).setBtnYesAction(syncMap.get("onPush"));
 
         addDeviceListener(device);
+
+        device.addConnectionListener(this);
     }
 
     public void addDeviceListener(Device d)
@@ -393,6 +406,33 @@ public class DigiHdmiApp extends SingleFrameApplication implements PropertyChang
 
     public SynchronizationDlg getSyncDlg() {
         return (SynchronizationDlg)syncDlg;
+    }
+
+    @Override
+    public void onDisconnect() {
+        // throw up a dialog to ask the user if they want to force save
+        int result = JOptionPane.showConfirmDialog(mainFrame.getFrame(), "Do you want to permanently save the changes made to the matrix?", "Save?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION)
+            device.save();
+    }
+
+    @Override
+    public void onConnect() {
+        // ignore this
+    }
+
+    @Override
+    public boolean canExit(EventObject event) {
+        return true;
+    }
+
+    @Override
+    public void willExit(EventObject event) {
+        try {
+            device.disconnect();
+        } catch (IOException ex) {
+            Logger.getLogger(DigiHdmiApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public class BusyInputBlocker extends InputBlocker
