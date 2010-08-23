@@ -37,7 +37,7 @@ public class ToggleDeviceConnectTask extends Task<Object, Void> {
                 ((DigiHdmiApp)getApplication()).showSyncDlg();
             }
             return this.device.isConnected() ? "Connected!" : "Disconnected!";
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             if (item != null)
                 item.setSelected(false);
             System.err.println("Error with connection: " + ex.getMessage());
