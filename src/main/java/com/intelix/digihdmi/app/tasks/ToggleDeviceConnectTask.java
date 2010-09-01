@@ -3,7 +3,6 @@ package com.intelix.digihdmi.app.tasks;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.Selectable;
-import java.io.IOException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
@@ -37,7 +36,7 @@ public class ToggleDeviceConnectTask extends Task<Object, Void> {
                 ((DigiHdmiApp)getApplication()).showSyncDlg();
             }
             return this.device.isConnected() ? "Connected!" : "Disconnected!";
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             if (item != null)
                 item.setSelected(false);
             System.err.println("Error with connection: " + ex.getMessage());
