@@ -3,6 +3,7 @@ package com.intelix.digihdmi.app.tasks;
 import com.intelix.digihdmi.app.DigiHdmiApp;
 import com.intelix.digihdmi.model.Device;
 import com.intelix.digihdmi.util.Selectable;
+import java.io.IOException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
