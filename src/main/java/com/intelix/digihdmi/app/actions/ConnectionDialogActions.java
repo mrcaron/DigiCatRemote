@@ -76,44 +76,20 @@ public class ConnectionDialogActions {
         Device device = app.getDevice();
         IPConnection cxn = getCxnInfo();
         boolean go = true;
-        if (device.getConnection() instanceof IPConnection)
-        {
-            IPConnection c = (IPConnection)device.getConnection();
-            if (cxn.getIpAddr().equals(c.getIpAddr()) &&
-                cxn.getPort() == c.getPort())
-                go = false;
-        }
-        //boolean prevConnected = cxns[0].isConnected();
         boolean fail = true;
 
         // No need to disconnect on a TEST.
-        if (go)
-            try {
-                //if (prevConnected) { device.disconnect(); Thread.sleep(10);}
-                //device.setConnection(cxns[1]);
-                //Thread.sleep(10);
-                cxn.connect();
-                cxn.disconnect();
-                fail = false;
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
-            }
+        try {
+            cxn.connect();
+            cxn.disconnect();
+            fail = false;
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(dlg, "Connection failed!\n\nDetails:\n\t" + ex.getMessage(), "Fail!", JOptionPane.ERROR_MESSAGE);
+        }
 
         if (! fail)
             JOptionPane.showMessageDialog(dlg, "Success!",
                     "Win!", JOptionPane.INFORMATION_MESSAGE);
-
-        /*
-        try {
-            device.setConnection(cxns[0]);
-            if (prevConnected)
-                device.connect();
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(dlg, "Error reconnecting to previously set connection!\n"
-                    + "Remaining in disconnected state.\n\nDetails:\n\t"
-                    + ex.getMessage(),
-                    "Fail!", JOptionPane.ERROR_MESSAGE);
-        }*/
     }
 
     @Action
