@@ -377,7 +377,11 @@ public class Device implements PropertyChangeListener {
                     if (deviceWriteRead(c, IdNamePayload.class)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
-                        presets.set(index, new Preset(name, index + 1));
+
+                        Preset oldP = presets.get(index);
+                        Preset newP = new Preset(name, index+1);
+                        newP.setConnections(oldP.getConnections());
+                        presets.set(index, newP);
                     }
                 }
                 if (DELAY > 0) {
