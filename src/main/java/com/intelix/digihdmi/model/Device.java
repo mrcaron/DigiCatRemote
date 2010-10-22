@@ -109,6 +109,9 @@ public class Device implements PropertyChangeListener {
     @XStreamOmitField
     private ConnectionListenerSupport cxnEvtSupport;
 
+    @XStreamOmitField
+    private boolean pulling;
+
     //------------------------------------------------------------------------
     public void setPushing(boolean pushing) {
         this.pushing = pushing;
@@ -354,6 +357,9 @@ public class Device implements PropertyChangeListener {
         return getPresets(false);
     }
     public Enumeration<Preset> getPresets(final boolean live) {
+        return getPresets(live, false);
+    }
+    public Enumeration<Preset> getPresets(final boolean live, final boolean full) {
         return new Enumeration() {
 
             int index = 0;
@@ -372,15 +378,29 @@ public class Device implements PropertyChangeListener {
 
             @Override
             public Preset nextElement() {
-                if (connected && !isPushing() && (resetPresets || live)) {
+                if (connected && !isPushing() && (resetPresets || live || full)) {
                     Command c = new GetPresetNameCommand(index + 1);
                     if (deviceWriteRead(c, IdNamePayload.class)) {
                         IdNamePayload p = (IdNamePayload) c.getPayload();
                         String name = p.getStrData();
-
-                        Preset oldP = presets.get(index);
                         Preset newP = new Preset(name, index+1);
-                        newP.setConnections(oldP.getConnections());
+
+                        // if we're doing a full pull down, we need to get all the
+                        // connections for the preset.
+                        if (full)
+                        {
+                            Command c2 = new GetPresetCommand(index + 1);
+                            if (deviceWriteRead(c2, PresetReportPayload.class)) {
+                                PresetReportPayload p2 = (PresetReportPayload) c2.getPayload();
+                                for(int i=0; i<numInputs; i++)
+                                {
+                                    newP.makeConnection(p2.getInputForOutput(i+1)-1, i);
+                                }
+                            }
+                        } else {
+                            Preset oldP = presets.get(index);
+                            newP.setConnections(oldP.getConnections());
+                        }
                         presets.set(index, newP);
                     }
                 }
@@ -1015,6 +1035,10 @@ public class Device implements PropertyChangeListener {
             }
         }
         return ! adminUnlocked;
+    }
+
+    public void setPulling(boolean b) {
+        pulling = b;
     }
 
     //------------------------------------------------------------------------

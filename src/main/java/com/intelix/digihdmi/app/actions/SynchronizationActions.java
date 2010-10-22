@@ -33,11 +33,14 @@ public class SynchronizationActions {
         return t;
     }
 
-    @Action
-    public void onPull() {
+    @Action(block=Task.BlockingScope.WINDOW)
+    public Task onPull() {
         dlg.setVisible(false);
         // then we just close the dialog because the default operation is to
         // pull lazily from the device
+        Task t = new PullFromDeviceTask(app);
+
+        return t;
     }
 
     @Action
