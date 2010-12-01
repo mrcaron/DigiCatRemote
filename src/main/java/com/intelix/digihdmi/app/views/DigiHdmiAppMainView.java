@@ -114,22 +114,28 @@ public class DigiHdmiAppMainView extends FrameView {
     }
 
     public void setFileLoadMenuItemAction(javax.swing.Action a) {
+        /*
         this.menuItemFileLoad.setAction(a);
 
         KeyStroke ctrlO = KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK);
         this.menuItemFileLoad.setAccelerator(ctrlO);
+         *
+         */
     }
 
     public void setFileSaveMenuItemAction(javax.swing.Action a) {
+        /*
         this.menuItemFileSave.setAction(a);
 
         KeyStroke ctrlS = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_MASK);
         this.menuItemFileSave.setAccelerator(ctrlS);
+         * 
+         */
     }
 
-    public JMenuItem getMenuItemFileLoad() {
-        return this.menuItemFileLoad;
-    }
+    //public JMenuItem getMenuItemFileLoad() {
+        //return this.menuItemFileLoad;
+    //}
 
     public JMenuItem getMenuItemConnected() {
         return this.menuItemConnected;
@@ -146,8 +152,6 @@ public class DigiHdmiAppMainView extends FrameView {
 
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-        menuItemFileSave = new javax.swing.JMenuItem();
-        menuItemFileLoad = new javax.swing.JMenuItem();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         menuDevice = new javax.swing.JMenu();
         menuItemConnected = new javax.swing.JMenuItem();
@@ -165,22 +169,6 @@ public class DigiHdmiAppMainView extends FrameView {
         org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getResourceMap(DigiHdmiAppMainView.class);
         fileMenu.setText(resourceMap.getString("fileMenu.text")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
-
-        menuItemFileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        menuItemFileSave.setMnemonic('S');
-        menuItemFileSave.setText(resourceMap.getString("menuItemFileSave.text")); // NOI18N
-        menuItemFileSave.setToolTipText(resourceMap.getString("menuItemFileSave.toolTipText")); // NOI18N
-        menuItemFileSave.setName("menuItemFileSave"); // NOI18N
-        fileMenu.add(menuItemFileSave);
-        menuItemFileSave.getAccessibleContext().setAccessibleDescription(resourceMap.getString("menuItemFileSave.AccessibleContext.accessibleDescription")); // NOI18N
-
-        menuItemFileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        menuItemFileLoad.setMnemonic('O');
-        menuItemFileLoad.setText(resourceMap.getString("menuItemFileLoad.text")); // NOI18N
-        menuItemFileLoad.setToolTipText(resourceMap.getString("menuItemFileLoad.toolTipText")); // NOI18N
-        menuItemFileLoad.setName("menuItemFileLoad"); // NOI18N
-        fileMenu.add(menuItemFileLoad);
-        menuItemFileLoad.getAccessibleContext().setAccessibleDescription(resourceMap.getString("menuItemFileLoad.AccessibleContext.accessibleDescription")); // NOI18N
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(com.intelix.digihdmi.app.DigiHdmiApp.class).getContext().getActionMap(DigiHdmiAppMainView.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
@@ -256,8 +244,6 @@ public class DigiHdmiAppMainView extends FrameView {
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu menuDevice;
     private javax.swing.JMenuItem menuItemConnected;
-    private javax.swing.JMenuItem menuItemFileLoad;
-    private javax.swing.JMenuItem menuItemFileSave;
     private javax.swing.JMenuItem menuItemOptions;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JLabel statusAnimationLabel;

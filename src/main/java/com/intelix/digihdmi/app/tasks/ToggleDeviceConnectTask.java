@@ -34,7 +34,7 @@ public class ToggleDeviceConnectTask extends Task<Object, Void> {
             else
             {
                 this.device.connect();
-                ((DigiHdmiApp)getApplication()).showSyncDlg();
+                //((DigiHdmiApp)getApplication()).showSyncDlg();
             }
             return this.device.isConnected() ? "Connected!" : "Disconnected!";
         } catch (Exception ex) {

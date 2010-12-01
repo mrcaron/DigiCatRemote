@@ -244,7 +244,7 @@ public class DigiHdmiApp extends SingleFrameApplication
             ((DeviceConnectionDlg)deviceConnectionDlg).getConnectButton().setSelected(
                     connected);
 
-            ((DigiHdmiAppMainView)mainFrame).getMenuItemFileLoad().setEnabled(!connected);
+            //((DigiHdmiAppMainView)mainFrame).getMenuItemFileLoad().setEnabled(!connected);
         }
     }
 
@@ -412,9 +412,9 @@ public class DigiHdmiApp extends SingleFrameApplication
     @Override
     public void onDisconnect() {
         // throw up a dialog to ask the user if they want to force save
-        int result = JOptionPane.showConfirmDialog(mainFrame.getFrame(), "Do you want to permanently save the changes made to the matrix?", "Save?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (result == JOptionPane.YES_OPTION)
-            device.save();
+        //int result = JOptionPane.showConfirmDialog(mainFrame.getFrame(), "Do you want to permanently save the changes made to the matrix?", "Save?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        //if (result == JOptionPane.YES_OPTION)
+        //    device.save();
     }
 
     @Override

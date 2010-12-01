@@ -31,8 +31,8 @@ public class ConnectionDialogActions {
     {
         alterDevice();
         dlg.setVisible(false);
-        if (connected_while_in_dialog)
-            app.showSyncDlg();
+        //if (connected_while_in_dialog)
+        //    app.showSyncDlg();
         connected_while_in_dialog = false;
     }
 
