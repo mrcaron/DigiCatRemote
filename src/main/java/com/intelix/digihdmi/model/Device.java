@@ -592,7 +592,7 @@ public class Device implements PropertyChangeListener {
             {
                 SequencePayload pld = (SequencePayload) saveCmd.getPayload();
                 HashMap<Integer,Integer> cxns = p.getConnections();
-                pld.add(cxns.get(i + 1));
+                pld.add(cxns.get(i));
             }
             deviceWriteAndSkip(saveCmd);
             SetPresetNameCommand nameCmd = new SetPresetNameCommand(p.getIndex(), p.getName());
