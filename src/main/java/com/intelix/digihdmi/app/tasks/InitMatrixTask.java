@@ -42,14 +42,15 @@ public class InitMatrixTask extends Task {
         MatrixView view = (MatrixView) dApp.getCurrentView();
         MatrixPanel panel = view.getMatrixPanel();
 
-        int numCrossPoints = device.getCrossPoints().size();
+        // TODO (6/25): At somepoint, we get into an xp.size = 9. How that happens, I don't know.
+        HashMap<Integer,Integer> xp = device.getCrossPoints();
+        int numCrossPoints = xp.size();
         int numOutputs = device.getNumOutputs();
         int numInputs = device.getNumInputs();
         int totalTasks = numCrossPoints + numInputs + numOutputs;
 
         // Get the connections
         message("loadingConnections");
-        HashMap<Integer,Integer> xp = device.getCrossPoints();
         Iterator<Entry<Integer,Integer>> xpIterator = xp.entrySet().iterator();
         for(int i=0;xpIterator.hasNext();i++)
         {
