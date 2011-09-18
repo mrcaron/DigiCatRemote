@@ -32,11 +32,15 @@ public class NameChangeDlg extends JDialog implements PropertyChangeListener, Ac
     String theName;
     boolean cancelled = false;
 
-    public NameChangeDlg(Frame f, String question, int maxChars) {
+    public NameChangeDlg(Frame f, String question, int maxChars, String defaultValue) {
         super(f, true);
         this.question = question;
         this.maxChars = maxChars;
         initializeComponents();
+        
+        tfName.setText(defaultValue);
+        tfName.selectAll();
+        tfName.requestFocus();
 
         setLocationRelativeTo(f);
 
@@ -52,7 +56,11 @@ public class NameChangeDlg extends JDialog implements PropertyChangeListener, Ac
              */
                 optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
             }
-        });
+        });        
+    }
+    
+    public NameChangeDlg(Frame f, String question, int maxChars) {
+        this(f,question,maxChars,"");
     }
 
     private void initializeComponents()

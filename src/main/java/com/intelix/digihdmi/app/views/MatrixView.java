@@ -33,7 +33,6 @@ public class MatrixView extends ApplicationView {
         btnLoadPreset.setName("btnLoadPreset");
         btnLoadPreset.setOpaque(false);
 
-        // right here is breaking the snizzle...
         btnLoadPreset.setAction(
                 Application.getInstance().getContext().getActionMap().get("showPresetListView"));
         btnSavePreset.setAction(

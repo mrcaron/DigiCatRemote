@@ -27,7 +27,7 @@ public abstract class GetConnectorsTask extends Task<Void,GetConnectorsTask.Chun
     public GetConnectorsTask(Application app) {
         super(app);
 
-        logger = Logger.getLogger(getClass().getCanonicalName());
+        logger = Logger.getLogger(getClass().getName());
 
         device = ((DigiHdmiApp) app).getDevice();
         //device.addPropertyChangeListener(this);

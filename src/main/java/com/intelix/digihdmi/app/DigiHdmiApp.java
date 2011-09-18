@@ -22,7 +22,11 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.SimpleFormatter;
 import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -140,6 +144,20 @@ public class DigiHdmiApp extends SingleFrameApplication
     public static void main(String[] args) {
         //System.setProperty("java.util.logging.config.file", "logging.properties");
         //System.setProperty(null, null);
+        
+        if ("DEBUG".equals(System.getProperty("LOG")))
+        {
+            try {
+                Handler handler = new FileHandler("%h/digicat.log");
+                handler.setFormatter(new SimpleFormatter());
+                Logger.getLogger("com.intelix").addHandler(handler);
+                Logger.getLogger("com.intelix").setLevel(Level.ALL);
+            } catch (IOException e)
+            {
+                // IGNORE
+            }
+        }
+        
         Logger.getLogger("com.intelix.digihdmi.app.DigiHdmiApp").info("Starting up!");
         launch(DigiHdmiApp.class, args);
     }
