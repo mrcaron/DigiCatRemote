@@ -70,7 +70,7 @@ public abstract class LoadIconsTask extends Task {
 
     @Override
     protected Object doInBackground() throws Exception {
-        Logger.getLogger(this.getClass().getCanonicalName()).fine("Running load icons task");
+        Logger.getLogger(this.getClass().getName()).fine("Running load icons task");
 
         int numIcons = panel.getNumIcons();
         if (selected == null)
@@ -90,7 +90,7 @@ public abstract class LoadIconsTask extends Task {
             }
         }
 
-        Logger.getLogger(this.getClass().getCanonicalName()).fine("Finished load icons task");
+        Logger.getLogger(this.getClass().getName()).fine("Finished load icons task");
         return null;
     }
 

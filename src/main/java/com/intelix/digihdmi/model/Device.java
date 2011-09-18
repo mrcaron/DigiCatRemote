@@ -214,7 +214,7 @@ public class Device implements PropertyChangeListener {
 
         } catch (MissingResourceException ex) {
             connection = null;
-            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
                     "Missing Device.properties file or information in it!", ex);
         } catch (Exception e) {
             // IGNORE
@@ -241,7 +241,7 @@ public class Device implements PropertyChangeListener {
             c = null;
         } catch (MissingResourceException ex) {
             c = null;
-            Logger.getLogger(this.getClass().getCanonicalName()).log(Level.SEVERE,
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE,
                     "Missing Device.properties file or information in it!", ex);
         }
 
@@ -345,7 +345,12 @@ public class Device implements PropertyChangeListener {
             Command c = new SetCrosspointCommand(selectedInput + 1, selectedOutput + 1);
             if (deviceWriteRead(c, PairSequencePayload.class/*, 1500*/)) {
                 PairSequencePayload p = (PairSequencePayload) c.getPayload();
-                selectedInput = p.get(selectedOutput + 1) - 1;
+                try {
+                    selectedInput = p.get(selectedOutput + 1) - 1;
+                } catch (NullPointerException e)
+                {
+                    throw e;
+                }
             }
         }
         cxnMatrix.put(selectedOutput, selectedInput);
@@ -361,9 +366,7 @@ public class Device implements PropertyChangeListener {
     }
     public Enumeration<Preset> getPresets(final boolean live, final boolean full) {
         return new Enumeration() {
-
             int index = 0;
-
             @Override
             public boolean hasMoreElements() {
                 if (connected && !isPushing() && (resetPresets || live)) {
@@ -557,6 +560,10 @@ public class Device implements PropertyChangeListener {
     public void loadPreset(int number) {
         // get the preset from the array
         Preset preset = presets.get(number);
+        if (preset.getConnections().size() > 8)
+        {
+            Logger.getLogger(getClass().getName()).fine("oops, too many connections!");
+        }
 
         if (connected) {
             Command cmd = new TriggerPresetCommand(preset.getIndex());
@@ -635,7 +642,7 @@ public class Device implements PropertyChangeListener {
     private Preset readPresetReport(String name, int number, PresetReportPayload pld) {
         Preset p = new Preset(name, number);
         for (int i = 1; i <= numOutputs; i++) {
-            p.makeConnection(pld.getInputForOutput(i), i);
+            p.makeConnection(pld.getInputForOutput(i)-1, i-1);
         }
         return p;
     }
@@ -961,22 +968,22 @@ public class Device implements PropertyChangeListener {
             if ("name".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected name change on input #{0}", i.getIndex());
+                    Logger.getLogger(getClass().getName()).log(Level.FINE, "Detected name change on input #{0}", i.getIndex());
                     pushInputName(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected name change on output #{0}", o.getIndex());
+                    Logger.getLogger(getClass().getName()).log(Level.FINE, "Detected name change on output #{0}", o.getIndex());
                     pushOutputName(o);
                 }
             }
             if ("icon".equals(evt.getPropertyName())) {
                 if (src instanceof Input) {
                     Input i = (Input) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected icon change on input #{0}", i.getIndex());
+                    Logger.getLogger(getClass().getName()).log(Level.FINE, "Detected icon change on input #{0}", i.getIndex());
                     pushInputIcon(i);
                 } else {
                     Output o = (Output) src;
-                    Logger.getLogger(getClass().getCanonicalName()).log(Level.FINE, "Detected icon change on output #{0}", o.getIndex());
+                    Logger.getLogger(getClass().getName()).log(Level.FINE, "Detected icon change on output #{0}", o.getIndex());
                     pushOutputIcon(o);
                 }
             }

@@ -15,6 +15,7 @@ import com.intelix.digihdmi.model.Preset;
 //import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.JComponent;
@@ -49,12 +50,21 @@ public abstract class PresetsListTask extends Task<Void,PresetsListTask.Chunk> /
         ActionMap map = getContext().getActionMap(new PresetActions());
         if ((this.panel != null) && (this.device != null)) {
             Enumeration presetList = this.device.getPresets();
+            String lastName = "";
             for (int i = 0; presetList.hasMoreElements(); i++) {
                 message("loadingPresetD", i);
-                Preset c = (Preset) presetList.nextElement();
-                publish(new Chunk(c.getName(), map.get(getActionName())));
-                message("loadedPresetDS", i, c.getName());
-                setProgress(i,0,device.getNumPresets());
+                Preset c = (Preset) presetList.nextElement();        
+                if (lastName.equals(c.getName()))
+                {
+                    Logger.getLogger(getClass().getName()).severe("While getting preset list, two buttons with same name!");
+                    //throw new Exception("SAME NAME!");
+                } else 
+                {
+                    publish(new Chunk(c.getName(), map.get(getActionName())));
+                    lastName = c.getName();
+                    message("loadedPresetDS", i, c.getName());
+                    setProgress(i,0,device.getNumPresets());
+                }
             }
         }
         return null;
@@ -83,6 +93,7 @@ public abstract class PresetsListTask extends Task<Void,PresetsListTask.Chunk> /
         Action action;
 
         public Chunk(String name, Action action) {
+            
             this.name = name;
             this.action = action;
         }

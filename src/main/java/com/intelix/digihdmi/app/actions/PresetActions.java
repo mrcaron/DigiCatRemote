@@ -56,8 +56,10 @@ public class PresetActions {
         int presetNumber = Integer.parseInt(b.getName().substring(index));
 
         // Get the new name of the preset
-        NameChangeDlg dlg = new NameChangeDlg(appInstance.getMainFrame(),
-                "Enter new name for preset "+(presetNumber+1),appInstance.getDevice().getPresetNameLength());
+        NameChangeDlg dlg = new NameChangeDlg(
+                appInstance.getMainFrame(),
+                "Enter new name for preset "+(presetNumber+1),appInstance.getDevice().getPresetNameLength(),
+                b.getText());
         dlg.setVisible(true);
 
         appInstance.showMatrixView();

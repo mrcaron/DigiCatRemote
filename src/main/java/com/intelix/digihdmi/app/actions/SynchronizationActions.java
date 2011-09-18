@@ -49,7 +49,7 @@ public class SynchronizationActions {
             app.getDevice().disconnect();
         } catch (IOException e)
         {
-            Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Can't disconnect from device during synchronization cancellation.");
+            Logger.getLogger(getClass().getName()).log(Level.INFO, "Can't disconnect from device during synchronization cancellation.");
         }
         dlg.setVisible(false);
     }

@@ -1,6 +1,7 @@
 package com.intelix.digihdmi.model;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class Preset {
 
@@ -39,11 +40,21 @@ public class Preset {
     }
 
     public void setConnections(HashMap<Integer, Integer> connections) {
-        this.connections = connections;
+        if (connections.size() > 8)
+        {
+            Logger.getLogger(getClass().getName()).fine("oops, too many!");
+        } else {
+            this.connections = connections;
+        }
     }
 
     public void makeConnection(int input, int output)
     {
-        this.connections.put(output, input);
+        if (input > 7)
+        {
+            Logger.getLogger(getClass().getName()).fine("oops, too many!");
+        } else { 
+            this.connections.put(output, input);
+        }
     }
 }
