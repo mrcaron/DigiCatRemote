@@ -15,25 +15,25 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_23146FB8C49F48CCB05B760008DA8D57"
+        "MsmKey" = "8:_27AD997412E9407ABA129FF9750644EF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CCFF1F827CF441648138FA243BBA8F4C"
+        "MsmKey" = "8:_2C577CC9EFB84E5F9983857EBFADC2BE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E97D92D1540940DEAA258E9BF8908E59"
+        "MsmKey" = "8:_89247F3D25C04CD891FAD09BF9F4E8A6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F03D1FC55EFB4889A714C2059D51609E"
+        "MsmKey" = "8:_C66970750EF64638BB60CDACF39EC9F6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -55,6 +55,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -71,6 +79,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -92,9 +108,9 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_23146FB8C49F48CCB05B760008DA8D57"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_27AD997412E9407ABA129FF9750644EF"
             {
-            "SourcePath" = "8:C:\\Users\\mcaron\\Development\\Intelix\\DigiCatAppIcon_48x48.ico"
+            "SourcePath" = "8:..\\..\\DigiCatAppIcon_48x48.ico"
             "TargetName" = "8:DigiCatAppIcon_48x48.ico"
             "Tag" = "8:"
             "Folder" = "8:_121A7A4385714D82A89672C552BB386A"
@@ -112,12 +128,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CCFF1F827CF441648138FA243BBA8F4C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2C577CC9EFB84E5F9983857EBFADC2BE"
             {
-            "SourcePath" = "8:C:\\Users\\mcaron\\Development\\Intelix\\Device.properties"
-            "TargetName" = "8:Device.properties"
+            "SourcePath" = "8:..\\..\\digicatlive.bat"
+            "TargetName" = "8:digicatlive.bat"
             "Tag" = "8:"
-            "Folder" = "8:_CD3FD27BB4A0472DB2EC801610BA393C"
+            "Folder" = "8:_121A7A4385714D82A89672C552BB386A"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -132,9 +148,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E97D92D1540940DEAA258E9BF8908E59"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89247F3D25C04CD891FAD09BF9F4E8A6"
             {
-            "SourcePath" = "8:C:\\Users\\mcaron\\Development\\Intelix\\DigiCatLive.jar"
+            "SourcePath" = "8:..\\..\\DigiCatLive.jar"
             "TargetName" = "8:DigiCatLive.jar"
             "Tag" = "8:"
             "Folder" = "8:_121A7A4385714D82A89672C552BB386A"
@@ -152,12 +168,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F03D1FC55EFB4889A714C2059D51609E"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C66970750EF64638BB60CDACF39EC9F6"
             {
-            "SourcePath" = "8:C:\\Users\\mcaron\\Development\\Intelix\\digicatlive.bat"
-            "TargetName" = "8:digicatlive.bat"
+            "SourcePath" = "8:..\\..\\Device.properties"
+            "TargetName" = "8:Device.properties"
             "Tag" = "8:"
-            "Folder" = "8:_121A7A4385714D82A89672C552BB386A"
+            "Folder" = "8:_CD3FD27BB4A0472DB2EC801610BA393C"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -379,10 +395,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_F03D1FC55EFB4889A714C2059D51609E"
+            "Target" = "8:_2C577CC9EFB84E5F9983857EBFADC2BE"
             "Folder" = "8:_AC1CC21A6F674BA0B8587B631047EBBD"
             "WorkingFolder" = "8:_121A7A4385714D82A89672C552BB386A"
-            "Icon" = "8:_23146FB8C49F48CCB05B760008DA8D57"
+            "Icon" = "8:_27AD997412E9407ABA129FF9750644EF"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_BB5D7BAEC9BD40FBB6925F31AE546269"
@@ -393,10 +409,10 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_F03D1FC55EFB4889A714C2059D51609E"
+            "Target" = "8:_2C577CC9EFB84E5F9983857EBFADC2BE"
             "Folder" = "8:_DBE0C994B130421CB465E9C49DDCC0EE"
             "WorkingFolder" = "8:_121A7A4385714D82A89672C552BB386A"
-            "Icon" = "8:_23146FB8C49F48CCB05B760008DA8D57"
+            "Icon" = "8:_27AD997412E9407ABA129FF9750644EF"
             "Feature" = "8:"
             }
         }
