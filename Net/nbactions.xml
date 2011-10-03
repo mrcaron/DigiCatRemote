@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-install</actionName>
+            <displayName>install</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>install</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-full install</actionName>
+            <displayName>full install</displayName>
+            <goals>
+                <goal>package</goal>
+                <goal>install</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Fin</actionName>
+            <displayName>Fin</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+                <goal>install</goal>
+            </goals>
+        </action>
+    </actions>
