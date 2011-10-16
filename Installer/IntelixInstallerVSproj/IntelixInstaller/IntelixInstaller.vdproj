@@ -27,7 +27,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_89247F3D25C04CD891FAD09BF9F4E8A6"
+        "MsmKey" = "8:_705D9F3A1C454327A9C77E21C9E11DFE"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -62,6 +62,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
         "Release"
@@ -86,6 +99,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
     }
@@ -148,9 +174,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_89247F3D25C04CD891FAD09BF9F4E8A6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_705D9F3A1C454327A9C77E21C9E11DFE"
             {
-            "SourcePath" = "8:..\\..\\DigiCatLive.jar"
+            "SourcePath" = "8:..\\..\\..\\dist\\DigiCatLive.jar"
             "TargetName" = "8:DigiCatLive.jar"
             "Tag" = "8:"
             "Folder" = "8:_121A7A4385714D82A89672C552BB386A"
@@ -265,7 +291,7 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:DigiCatLive"
+        "ProductName" = "8:DigiCatLive 1.0.2"
         "ProductCode" = "8:{4009A060-E927-4867-A2B0-E773BA402041}"
         "PackageCode" = "8:{BDD91E6C-1F1E-4A71-9E0B-8FB364C791A1}"
         "UpgradeCode" = "8:{462374A9-F950-4612-B7E6-318422720CCA}"

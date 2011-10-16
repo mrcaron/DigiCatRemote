@@ -75,8 +75,8 @@ public class ApplyPresetTask extends Task {
                 @Override
                 public void finished(TaskEvent te) {
                     Task t2 = new InitMatrixTask(dhaApp, false);
-                    //t2.setInputBlocker(dhaApp.new BusyInputBlocker((t2)));
-                    //dhaApp.getContext().getTaskService().execute(t2);
+                    t2.setInputBlocker(dhaApp.new BusyInputBlocker((t2)));
+                    dhaApp.getContext().getTaskService().execute(t2);
                 }
                 
             });
